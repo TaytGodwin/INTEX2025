@@ -1,0 +1,14 @@
+/* Navbar.css */
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  
+  .nav-link {
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .nav-link:hover {
+    color: #ffdb58 !important;
+  }
