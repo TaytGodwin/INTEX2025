@@ -27,6 +27,9 @@ const Navbar = () => {
             <li className="nav-item">
               <Link to="/privacy" className="nav-link">Privacy Policy</Link>
             </li>
+            <li className="nav-item">
+              <Link to="/admin" className="nav-link">Admin</Link>
+            </li>
             {/* Add more links here if needed */}
           </ul>
         </div>
