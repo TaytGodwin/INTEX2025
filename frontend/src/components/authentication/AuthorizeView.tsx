@@ -1,7 +1,7 @@
 // This component checks if the user is authenticated. If they are, it stores their email and allows access to child components
 // If they are not authorized, it redirects them to /login
 import React, { useState, useEffect, createContext } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { pingAuth } from '../../api/IdentityAPI';
 
 const UserContext = createContext<User | null>(null);
