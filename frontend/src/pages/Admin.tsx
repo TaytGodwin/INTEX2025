@@ -3,7 +3,17 @@ import AuthorizeView from '../components/authentication/AuthorizeView';
 import Pagination from '../components/layout/Pagination';
 
 function AdminPage() {
+    //
+    //
+    //
     // CHANGE 'OBJECT' TO THE CORRECT CLASS OF INTEX
+    // I used 'o', 'object', and 'objects'
+    //
+    //
+    //
+    //
+    //
+    //
     const selectedCategories: string[] = [];
     // const [objects, setObjects] = useState<Object[]>([]);
     const [pageSize, setPageSize] = useState<number>(5);
