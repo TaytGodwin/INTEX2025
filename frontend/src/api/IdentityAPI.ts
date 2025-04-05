@@ -1,4 +1,5 @@
-const Identity_API_URL = 'https://localhost:5000';
+const Identity_API_URL =
+  'https://intexbackend-a6fvcvg6cha4hwcx.eastus-01.azurewebsites.net';
 
 interface LoggedInUser {
   // This is what the first call will return
