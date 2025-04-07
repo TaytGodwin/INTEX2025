@@ -15,21 +15,21 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public routes */}
+          {/* Public Routes */}
+          <Route path="/" element={<Layout />}>
+            <Route index element={<HomePage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-use" element={<TermsOfUse />} />
+            <Route path="/menu" element={<HomePage />} />
+            <Route path="*" element={<Navigate to="/menu" />} />
+          </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-use" element={<TermsOfUse />} />
 
-          {/* Protected routes */}
+          {/* Protected Routes */}
           <Route element={<AuthorizeView children={undefined} />}>
             <Route path="/admin" element={<AdminPage />} />
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomePage />} />
-              
-              <Route path="/menu" element={<HomePage />} />
-              <Route path="*" element={<Navigate to="/menu" />} />
-            </Route>
+            {/* Add other protected routes here */}
           </Route>
         </Routes>
       </BrowserRouter>

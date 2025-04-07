@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import GuestNavBar from './GuestNavBar';
 import UserNavBar from './UserNavBar';
 import AdminNavBar from './AdminNavBar';

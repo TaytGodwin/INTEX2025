@@ -5,7 +5,7 @@ const GuestNavbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
-        <Link to="/" className="navbar-brand">MySite</Link>
+        <Link to="/" className="navbar-brand">Guess Nav Bar</Link>
 
         <button
           className="navbar-toggler"
@@ -25,7 +25,7 @@ const GuestNavbar = () => {
               <Link to="/HomePage" className="nav-link">Home</Link>
             </li>
             <li className="nav-item">
-              <Link to="/LoginPage" className="nav-link">Sign Up</Link>
+              <Link to="/login" className="nav-link">Login</Link>
             </li>
             {/* Add more links here if needed */}
           </ul>
