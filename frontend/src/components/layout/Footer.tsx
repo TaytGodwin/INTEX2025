@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer style={footerStyle}>
@@ -5,6 +7,9 @@ const Footer = () => {
         <p style={{ margin: 0 }}>
           &copy; {new Date().getFullYear()} This is Intex
         </p>
+        <li className="nav-item">
+              <Link to="/privacy" className="nav-link">Privacy Policy</Link>
+            </li>
       </div>
     </footer>
   );
