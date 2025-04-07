@@ -1,4 +1,4 @@
-function Index() {
+function HomePage() {
   return (
     <>
       <main style={{ textAlign: 'center', marginTop: '2rem' }}>
@@ -9,4 +9,4 @@ function Index() {
   );
 }
 
-export default Index;
+export default HomePage;
