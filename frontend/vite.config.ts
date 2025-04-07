@@ -1,9 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path'; // Hilton's fix for deploy errors
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // This entire build block is from hilton. Keep server stuff for CORS and security
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      input: path.resolve(__dirname, 'index.html'),
+    },
+  },
   server: {
     port: 3030,
     headers: {

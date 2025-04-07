@@ -25,9 +25,6 @@ const Navbar = () => {
               <Link to="/menu" className="nav-link">Home</Link>
             </li>
             <li className="nav-item">
-              <Link to="/privacy" className="nav-link">Privacy Policy</Link>
-            </li>
-            <li className="nav-item">
               <Link to="/admin" className="nav-link">Admin</Link>
             </li>
             {/* Add more links here if needed */}
