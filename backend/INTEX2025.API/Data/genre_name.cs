@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-public class genre
+public class genre_name
 {
     [Key]
     public int GenreID { get; set; }

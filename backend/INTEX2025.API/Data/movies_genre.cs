@@ -6,5 +6,5 @@ public class movie_genre
     public int GenreID { get; set; }
 
     public movies_title Movie { get; set; }
-    public genre Genre { get; set; }
+    public genre_name Genre { get; set; }
 }
