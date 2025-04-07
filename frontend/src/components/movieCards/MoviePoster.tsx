@@ -1,0 +1,1 @@
+// This is a component for the Movie posters for carousels, including minimum details. 
