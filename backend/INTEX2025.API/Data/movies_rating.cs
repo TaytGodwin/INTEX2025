@@ -2,7 +2,7 @@
 
 namespace INTEX.API.Data
 {
-    public class movies_ratings
+    public class movies_rating
     {
         [Required]
         public int user_id { get; set; }

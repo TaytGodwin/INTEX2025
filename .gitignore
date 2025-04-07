@@ -34,3 +34,6 @@ obj/
 *.tlog
 
 secrets.json
+
+# This is what I have used to change the database
+databaseManagement/

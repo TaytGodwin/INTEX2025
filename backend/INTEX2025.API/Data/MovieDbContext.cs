@@ -4,11 +4,19 @@ using INTEX.API.Data;
 
 public class MovieDbContext : DbContext
 {
-    public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options)
-    {
-    }
+    public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options) { }
 
-    public DbSet<movies_ratings> Ratings { get; set; } // For movie ratings table
-    public DbSet<movies_titles> Movies { get; set; } // Title tables
-    public DbSet<movies_users> Users { get; set; } // Users table
+    public DbSet<movies_rating> Ratings { get; set; }     // Ratings table
+    public DbSet<movies_title> Movies { get; set; }       // Movies table
+    public DbSet<movies_user> Users { get; set; }         // Users table
+    public DbSet<genre> Genres { get; set; }              // Genres table
+    public DbSet<movie_genre> MovieGenres { get; set; }  // linking table
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<movie_genre>()
+            .HasKey(mg => new { mg.show_id, mg.GenreID });
+
+        base.OnModelCreating(modelBuilder);
+    }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace INTEX.API.Data
 {
-    public class movies_users
+    public class movies_user
     {
         [Key]
         public int user_id { get; set; }
