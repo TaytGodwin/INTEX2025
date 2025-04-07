@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import '../../css/Navbar.css'; // For custom tweaks
 
-const Navbar = () => {
+const UserNavbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
-        <Link to="/" className="navbar-brand">Old Nav Bar</Link>
+        <Link to="/" className="navbar-brand">User Nav Bar</Link>
 
         <button
           className="navbar-toggler"
@@ -35,4 +35,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default UserNavbar;
