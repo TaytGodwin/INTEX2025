@@ -6,6 +6,20 @@ function RegisterPage() {
   // state variables for email and passwords
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [age, setAge] = useState('')
+  const [gender, setGender] = useState('')
+  const [city, setCity] = useState('')
+  const [state, setState] = useState('')
+  const [zip, setZip] = useState('')
+  const [netflix, setNetflix] = useState(false);
+  const [amazonPrime, setAmazonPrime] = useState(false);
+  const [disneyPlus, setDisneyPlus] = useState(false);
+  const [paramountPlus, setParamountPlus] = useState(false);
+  const [max, setMax] = useState(false);
+  const [hulu, setHulu] = useState(false);
+  const [appleTVPlus, setAppleTVPlus] = useState(false);
+  const [peacock, setPeacock] = useState(false);
+
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
@@ -92,11 +106,170 @@ function RegisterPage() {
                 <label htmlFor="confirmPassword">Confirm Password</label>
               </div>
 
+              {/* Additional Columns for User information */}
+
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="age"
+                  id="age"
+                  name="age"
+                  value={age}
+                  onChange={handleChange}
+                />
+                <label htmlFor="age">Age</label>
+              </div>
+          
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="gender"
+                  id="gender"
+                  name="gender"
+                  value={gender}
+                  onChange={handleChange}
+                />
+                <label htmlFor="gender">Gender</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="city"
+                  id="city"
+                  name="city"
+                  value={city}
+                  onChange={handleChange}
+                />
+                <label htmlFor="city">City</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="state"
+                  id="state"
+                  name="state"
+                  value={state}
+                  onChange={handleChange}
+                />
+                <label htmlFor="state">State</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="zip"
+                  id="zip"
+                  name="zip"
+                  value={zip}
+                  onChange={handleChange}
+                />
+                <label htmlFor="zip">Zip</label>
+              </div>
+
               <div className="d-grid mb-2">
                 <button
                   className="btn btn-primary btn-login text-uppercase fw-bold"
                   type="submit"
                 >
+
+<div className="mb-3">
+  <h6>Select Your Current Subscriptions:</h6>
+  <div className="form-check">
+    <input
+      className="form-check-input"
+      type="checkbox"
+      id="netflix"
+      checked={netflix}
+      onChange={(e) => setNetflix(e.target.checked)}
+    />
+    <label className="form-check-label" htmlFor="netflix">
+      Netflix
+    </label>
+  </div>
+  <div className="form-check">
+    <input
+      className="form-check-input"
+      type="checkbox"
+      id="amazonPrime"
+      checked={amazonPrime}
+      onChange={(e) => setAmazonPrime(e.target.checked)}
+    />
+    <label className="form-check-label" htmlFor="amazonPrime">
+      Amazon Prime
+    </label>
+  </div>
+  <div className="form-check">
+    <input
+      className="form-check-input"
+      type="checkbox"
+      id="disneyPlus"
+      checked={disneyPlus}
+      onChange={(e) => setDisneyPlus(e.target.checked)}
+    />
+    <label className="form-check-label" htmlFor="disneyPlus">
+      Disney+
+    </label>
+  </div>
+  <div className="form-check">
+    <input
+      className="form-check-input"
+      type="checkbox"
+      id="paramountPlus"
+      checked={paramountPlus}
+      onChange={(e) => setParamountPlus(e.target.checked)}
+    />
+    <label className="form-check-label" htmlFor="paramountPlus">
+      Paramount+
+    </label>
+  </div>
+  <div className="form-check">
+    <input
+      className="form-check-input"
+      type="checkbox"
+      id="max"
+      checked={max}
+      onChange={(e) => setMax(e.target.checked)}
+    />
+                <label className="form-check-label" htmlFor="max">
+                  Max
+                </label>
+              </div>
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="hulu"
+                  checked={hulu}
+                  onChange={(e) => setHulu(e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="hulu">
+                  Hulu
+                </label>
+              </div>
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="appleTVPlus"
+                  checked={appleTVPlus}
+                  onChange={(e) => setAppleTVPlus(e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="appleTVPlus">
+                  Apple TV+
+                </label>
+              </div>
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="peacock"
+                  checked={peacock}
+                  onChange={(e) => setPeacock(e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="peacock">
+                  Peacock
+                </label>
+              </div>
+            </div>
                   Register
                 </button>
               </div>
@@ -107,6 +280,7 @@ function RegisterPage() {
                 >
                   Go to Login
                 </button>
+                
               </div>
             </form>
             <strong>{error && <p className="error">{error}</p>}</strong>
