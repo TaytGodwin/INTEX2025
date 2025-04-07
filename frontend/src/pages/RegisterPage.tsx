@@ -6,6 +6,12 @@ function RegisterPage() {
   // state variables for email and passwords
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [age, setAge] = useState('')
+  const [gender, setGender] = useState('')
+  const [city, setCity] = useState('')
+  const [state, setState] = useState('')
+  const [zip, setZip] = useState('')
+
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
@@ -92,6 +98,75 @@ function RegisterPage() {
                 <label htmlFor="confirmPassword">Confirm Password</label>
               </div>
 
+              {/* Additional Columns for User information */}
+
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="age"
+                  id="age"
+                  name="age"
+                  value={age}
+                  onChange={handleChange}
+                />
+                <label htmlFor="age">Age</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="age"
+                  id="age"
+                  name="age"
+                  value={age}
+                  onChange={handleChange}
+                />
+                <label htmlFor="age">Gender</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="gender"
+                  id="gender"
+                  name="gender"
+                  value={gender}
+                  onChange={handleChange}
+                />
+                <label htmlFor="gender">gender</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="city"
+                  id="city"
+                  name="city"
+                  value={city}
+                  onChange={handleChange}
+                />
+                <label htmlFor="city">City</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="state"
+                  id="state"
+                  name="state"
+                  value={state}
+                  onChange={handleChange}
+                />
+                <label htmlFor="state">State</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="zip"
+                  id="zip"
+                  name="zip"
+                  value={zip}
+                  onChange={handleChange}
+                />
+                <label htmlFor="zip">Zip</label>
+              </div>
+
               <div className="d-grid mb-2">
                 <button
                   className="btn btn-primary btn-login text-uppercase fw-bold"
@@ -107,6 +182,7 @@ function RegisterPage() {
                 >
                   Go to Login
                 </button>
+                
               </div>
             </form>
             <strong>{error && <p className="error">{error}</p>}</strong>
