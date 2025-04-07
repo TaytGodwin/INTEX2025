@@ -2,14 +2,14 @@ function PrivacyPolicy() {
   return (
     <div className="max-w-4xl mx-auto p-6 text-gray-800">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
-      <p><strong>Effective Date:</strong> [Insert Date]</p>
+      <p><strong>Effective Date:</strong>April 7, 2025</p>
 
       <section className="mt-6">
         <h2 className="text-xl font-semibold">1. Who We Are</h2>
         <p>
-          We are <strong>[Your Company Name]</strong>, the data controller responsible for your personal data. You can contact us at:
+          We are <strong>CineNiche</strong>, the data controller responsible for your personal data. You can contact us at:
           <br />
-          <strong>Email:</strong> privacy@[yourdomain].com
+          <strong>Email:</strong> privacy@CineNiche.com
         </p>
       </section>
 
@@ -80,7 +80,7 @@ function PrivacyPolicy() {
           <li>Withdraw consent at any time</li>
         </ul>
         <p className="mt-2">
-          Contact us at privacy@[yourdomain].com to exercise any of these rights.
+          Contact us at privacy@CineNiche.com to exercise any of these rights.
         </p>
       </section>
 
