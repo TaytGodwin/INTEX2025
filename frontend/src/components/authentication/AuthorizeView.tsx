@@ -45,7 +45,8 @@ function AuthorizeView(props: { children: React.ReactNode }) {
       <UserContext.Provider value={user}>{props.children}</UserContext.Provider>
     );
   }
-  return <Navigate to="/login" />;
+  //Redirects unauthorized users to the homepage instead of /login
+  return <Navigate to="/" />;
 }
 export function AuthorizedUser(props: { value: string }) {
   const user = React.useContext(UserContext);

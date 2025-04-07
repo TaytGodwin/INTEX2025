@@ -71,6 +71,15 @@ function RegisterPage() {
             <h5 className="card-title text-center mb-5 fw-light fs-5">
               Register
             </h5>
+            <div className="d-grid mb-2">
+                <button
+                  className="btn btn-primary btn-login text-uppercase fw-bold"
+                  onClick={handleLoginClick}
+                >
+                  I already have a login
+                </button>
+                
+              </div>
             <form onSubmit={handleSubmit}>
               <div className="form-floating mb-3">
                 <input
@@ -233,6 +242,7 @@ function RegisterPage() {
                   Max
                 </label>
               </div>
+              
               <div className="form-check">
                 <input
                   className="form-check-input"

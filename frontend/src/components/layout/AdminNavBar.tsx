@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import '../../css/Navbar.css'; // For custom tweaks
 
-const Navbar = () => {
+const AdminNavbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
-        <Link to="/" className="navbar-brand">Old Nav Bar</Link>
+        <Link to="/Admin" className="navbar-brand">Admin Page</Link>
 
         <button
           className="navbar-toggler"
@@ -22,10 +22,10 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link to="/menu" className="nav-link">Home</Link>
+              <Link to="/AdminDatabasePage" className="nav-link">Database Page</Link>
             </li>
             <li className="nav-item">
-              <Link to="/admin" className="nav-link">Admin</Link>
+              <Link to="/AdminUsers" className="nav-link">Users</Link>
             </li>
             {/* Add more links here if needed */}
           </ul>
@@ -35,4 +35,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default AdminNavbar;

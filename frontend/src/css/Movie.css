@@ -1,0 +1,37 @@
+.movie-poster {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .movie-poster-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Enlarge the image on hover */
+  .movie-poster:hover .movie-poster-image {
+    transform: scale(1.1);
+  }
+  
+  /* Overlay title styling */
+  .movie-poster-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 0.5rem;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Reveal the title on hover */
+  .movie-poster:hover .movie-poster-title {
+    opacity: 1;
+  }

@@ -14,3 +14,103 @@
   font-size: 1.25rem;
   color: #555;
 }
+
+/* home page styling */
+.testimonial-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.quote {
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+.testimonial-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+.faq-item {
+  background-color: #f3ecff; /* Light purple background */
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.faq-item.open {
+  background-color: #e8d9ff; /* Slightly darker purple when open */
+}
+
+.faq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-question {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.faq-toggle-icon {
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
+.faq-toggle-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  margin-top: 0.5rem;
+}
+.pricing-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.pricing-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-card.highlighted {
+  background: #333; /* or your brand color */
+  color: #fff;
+}
+
+.price {
+  font-size: 2rem;
+  margin: 1rem 0;
+}
+
+.price-amount {
+  font-weight: bold;
+  margin-right: 0.25rem;
+}
+
+.price-unit {
+  font-size: 1rem;
+  color: #666;
+}
+
+.ul-boxed{
+  list-style: disc inside;
+  text-align: left;
+  margin: 1rem auto;
+  max-width: 200px;
+}

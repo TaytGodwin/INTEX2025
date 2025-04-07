@@ -1,22 +1,47 @@
-// AuthContext.jsx
-import React, { createContext, useContext, useState } from 'react';
+// src/context/AuthContext.tsx
+import React, { createContext, useContext, useState, FC } from 'react';
 
-const AuthContext = createContext(null);
+export type UserRole = 'admin' | 'user';
 
-export function AuthProvider({ children }) {
-  // user is null if not logged in; if logged in, it could be an object like { username, role: 'admin' }
-  const [user, setUser] = useState(null);
+export interface User {
+  id: string;
+  username: string;
+  role: UserRole;
+  // add any additional user fields as needed
+}
 
-  const login = (userData) => setUser(userData);
-  const logout = () => setUser(null);
+interface AuthContextType {
+  user: User | null;
+  login: (userData: User) => void;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  const login = (userData: User) => {
+    setUser(userData);
+    // Optionally, persist user data to localStorage or cookies here
+  };
+
+  const logout = () => {
+    setUser(null);
+    // Optionally, remove persisted user data here
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth() {
-  return useContext(AuthContext);
+export function useAuth(): AuthContextType {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }
