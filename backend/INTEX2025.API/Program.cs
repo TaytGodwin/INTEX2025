@@ -1,7 +1,8 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using INTEX.API.Data;
 using INTEX.API.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,10 +20,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnection")));
 
-builder.Services.AddAuthorization();
+Console.WriteLine("🎯 IdentityConnection: " + builder.Configuration.GetConnectionString("IdentityConnection"));
 
-// builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-//     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddAuthorization();
 
 // This code above is replaced by the one below for using roles
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -67,6 +67,9 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod(); // Lets you do post, delete, put, get, etc
         });
 });
+
+builder.Services.AddSingleton<IEmailSender<IdentityUser>, NoOpEmailSender<IdentityUser>>();
+
 
 var app = builder.Build();
 

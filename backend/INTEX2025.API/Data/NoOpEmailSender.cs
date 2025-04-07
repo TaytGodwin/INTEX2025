@@ -1,7 +1,7 @@
 // This class does nothing, but we need it for use with role managing
 using Microsoft.AspNetCore.Identity;
 
-namespace RootkitAuth.API.Data;
+namespace INTEX.API.Data;
 
 public class NoOpEmailSender<TUser> : IEmailSender<TUser> where TUser : class
 {
@@ -11,10 +11,9 @@ public class NoOpEmailSender<TUser> : IEmailSender<TUser> where TUser : class
     public Task SendPasswordResetLinkAsync(TUser user, string email, string resetLink) =>
         Task.CompletedTask;
 
-    public Task SendPasswordResetCodeAsync(TUser user, string email, string resetCode)
-    {
-        throw new NotImplementedException();
-    }
+    public Task SendPasswordResetCodeAsync(TUser user, string email, string resetCode) =>
+        Task.CompletedTask;
+
 
     public Task SendEmailAsync(TUser user, string email, string subject, string htmlMessage) =>
         Task.CompletedTask;
