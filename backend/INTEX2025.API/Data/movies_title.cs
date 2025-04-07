@@ -28,7 +28,7 @@ namespace INTEX.API.Data
         public int GenreID { get ; set; }
 
         // ✅ Many-to-many relationship via linking table
-        public ICollection<movie_genres> MovieGenres { get; set; }
+        public ICollection<movie_genre> MovieGenres { get; set; }
 
     }
 }

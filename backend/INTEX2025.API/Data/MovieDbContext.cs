@@ -9,7 +9,7 @@ public class MovieDbContext : DbContext
     public DbSet<movies_rating> Ratings { get; set; }     // Ratings table
     public DbSet<movies_title> Movies { get; set; }       // Movies table
     public DbSet<movies_user> Users { get; set; }         // Users table
-    public DbSet<genre> Genres { get; set; }              // Genres table
+    public DbSet<genre_name> GenreNames { get; set; }              // Genres table
     public DbSet<movie_genre> MovieGenres { get; set; }  // linking table
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
