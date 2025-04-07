@@ -33,3 +33,4 @@ obj/
 *.log
 *.tlog
 
+secrets.json
