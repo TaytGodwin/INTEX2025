@@ -33,11 +33,14 @@ namespace INTEX.API.Controllers
         [HttpGet("{imageName}")]
         public async Task<IActionResult> GetImage(string imageName)
         {
+            // Append the folder name correctly (no URL encoding here)
+            string imagePath = "Movie Posters/" + imageName;
+
             // Get the container client
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
             // Get the blob client for the requested image
-            var blobClient = containerClient.GetBlobClient(imageName);
+            var blobClient = containerClient.GetBlobClient(imagePath);
 
             // Check if the blob exists
             if (!await blobClient.ExistsAsync())
@@ -48,9 +51,11 @@ namespace INTEX.API.Controllers
             // Download the image
             var blobDownloadInfo = await blobClient.DownloadAsync();
 
-            // Set the content type for the response (you can dynamically detect the content type based on the file extension if needed)
-            var contentType = "image/jpeg"; // Default content type, improve this based on your use case
+            // Set the content type for the response
+            var contentType = "image/jpeg"; // You can improve this by checking file extension
+
             return File(blobDownloadInfo.Value.Content, contentType);
         }
+
     }
 }

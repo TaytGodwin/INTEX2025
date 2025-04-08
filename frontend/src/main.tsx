@@ -5,7 +5,7 @@ import App from './App.tsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // This is the javascript
-import { AuthProvider } from './context/AuthContext.tsx'; //This is helping to authenticate, if there's an autheticated user 
+import { AuthProvider } from './context/AuthContext.tsx'; //This is helping to authenticate, if there's an autheticated user
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
