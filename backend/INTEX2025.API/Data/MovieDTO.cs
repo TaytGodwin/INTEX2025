@@ -2,6 +2,7 @@
 {
     public class MovieUpdateDto
     {
+        public string show_id {  get; set; }
         public string title { get; set; }
         public string type { get; set; }
         public string director { get; set; }

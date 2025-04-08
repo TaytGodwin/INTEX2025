@@ -28,11 +28,12 @@ public class RecommenderController : ControllerBase
             .Where(m => showIds.Contains(m.show_id))
             .Select(m => new MovieUpdateDto
             {
+                show_id = m.show_id,
                 title = m.title,
                 type = m.type,
                 director = m.director,
                 cast = m.cast,
-                countery = m.country,
+                country = m.country,
                 release_year = m.release_year,
                 rating = m.rating,
                 duration = m.duration,
@@ -48,6 +49,61 @@ public class RecommenderController : ControllerBase
             .ToListAsync();
 
         return movieDtos;
+    }
+
+
+
+    // Endpoint: /api/recommender/genre_recommendations
+    // Description: Randomly selects one comedy show and returns its top 10 genre-based recommendations
+    [HttpGet("comedy_recommendations")]
+    public async Task<IActionResult> GetGenreRecommendations()
+    {
+        // Get all comedy show IDs
+        var comedyShowIds = _context.GenreRecommendations
+            .Where(gr => gr.Genre.Contains("Comedies"))
+            .Select(gr => gr.ShowId)
+            .Distinct()
+            .ToList();
+
+        if (!comedyShowIds.Any())
+            return NotFound("No comedy show_ids found.");
+
+        // Pick one comedy show at random
+        var rand = new Random();
+        var selectedShowId = comedyShowIds[rand.Next(comedyShowIds.Count)];
+
+        // Retrieve top 10 recommendations for the selected comedy show
+        var recommendations = _context.GenreRecommendations
+            .Where(gr => gr.ShowId == selectedShowId)
+            .OrderByDescending(gr => gr.Score)
+            .Take(10)
+            .Select(gr => gr.RecommendedId)
+            .ToList();
+
+        var movieDetails = await GetMovieDetailsByShowIds(recommendations);
+
+        return Ok(movieDetails);
+    }
+
+    // Endpoint: /api/recommender/topmovies
+    // Description: Returns top 10 movies overall based on predicted ratings
+    [HttpGet("topmovies")]
+    public async Task<IActionResult> GetTopMovies()
+    {
+        // Step 1: Retrieve top 10 movie predictions ordered by highest predicted rating
+        var topPredicted = await _context.TopMovies
+            .OrderByDescending(m => m.PredictedRating)
+            .Take(10)
+            .ToListAsync();
+
+        // Step 2: Extract the show IDs from the top predictions
+        var showIds = topPredicted.Select(m => m.ShowId).ToList();
+
+        // Step 3: Use those show IDs to fetch full movie details (title, cast, genre, etc.)
+        var movieDetails = await GetMovieDetailsByShowIds(showIds);
+
+        // Step 4: Return the movie detail objects as the response
+        return Ok(movieDetails);
     }
 
 
@@ -100,38 +156,6 @@ public class RecommenderController : ControllerBase
         var showIds = topResults.Select(r => r.ShowId).ToList();
 
         var movieDetails = await GetMovieDetailsByShowIds(showIds);
-
-        return Ok(movieDetails);
-    }
-
-    // Endpoint: /api/recommender/genre_recommendations
-    // Description: Randomly selects one comedy show and returns its top 10 genre-based recommendations
-    [HttpGet("genre_recommendations")]
-    public async Task<IActionResult> GetGenreRecommendations()
-    {
-        // Get all comedy show IDs
-        var comedyShowIds = _context.GenreRecommendations
-            .Where(gr => gr.Genre.Contains("Comedies"))
-            .Select(gr => gr.ShowId)
-            .Distinct()
-            .ToList();
-
-        if (!comedyShowIds.Any())
-            return NotFound("No comedy show_ids found.");
-
-        // Pick one comedy show at random
-        var rand = new Random();
-        var selectedShowId = comedyShowIds[rand.Next(comedyShowIds.Count)];
-
-        // Retrieve top 10 recommendations for the selected comedy show
-        var recommendations = _context.GenreRecommendations
-            .Where(gr => gr.ShowId == selectedShowId)
-            .OrderByDescending(gr => gr.Score)
-            .Take(10)
-            .Select(gr => gr.RecommendedId)
-            .ToList();
-
-        var movieDetails = await GetMovieDetailsByShowIds(recommendations);
 
         return Ok(movieDetails);
     }
@@ -210,28 +234,6 @@ public class RecommenderController : ControllerBase
         var movieDetails = await GetMovieDetailsByShowIds(showIds);
 
         // Step 5: Return the movie details in the response with the first one being the one they like
-        return Ok(movieDetails);
-    }
-
-
-    // Endpoint: /api/recommender/topmovies
-    // Description: Returns top 10 movies overall based on predicted ratings
-    [HttpGet("topmovies")]
-    public async Task<IActionResult> GetTopMovies()
-    {
-        // Step 1: Retrieve top 10 movie predictions ordered by highest predicted rating
-        var topPredicted = await _context.TopMovies
-            .OrderByDescending(m => m.PredictedRating)
-            .Take(10)
-            .ToListAsync();
-
-        // Step 2: Extract the show IDs from the top predictions
-        var showIds = topPredicted.Select(m => m.ShowId).ToList();
-
-        // Step 3: Use those show IDs to fetch full movie details (title, cast, genre, etc.)
-        var movieDetails = await GetMovieDetailsByShowIds(showIds);
-
-        // Step 4: Return the movie detail objects as the response
         return Ok(movieDetails);
     }
 

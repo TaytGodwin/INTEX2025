@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using INTEX.API.Data;
+using Azure.Storage.Blobs;
 
 namespace INTEX.API.Controllers
 {
@@ -12,8 +13,18 @@ namespace INTEX.API.Controllers
     public class MovieController : ControllerBase
     {
         // Instance of context file
-        private MovieDbContext _movieContext;
-        public MovieController(MovieDbContext temp) => _movieContext = temp; // Set instance
+        private readonly MovieDbContext _movieContext;
+        private readonly string _connectionString;
+        private readonly string _containerName;
+
+        public MovieController(MovieDbContext context, IConfiguration configuration)
+        {
+            _movieContext = context;
+            _connectionString = configuration["ConnectionStrings:AzureBlobStorage:ConnectionString"];
+            _containerName = configuration["ConnectionStrings:AzureBlobStorage:ContainerName"];
+        }
+
+
 
         [HttpGet("Test")]
         public IActionResult Test()
@@ -210,5 +221,43 @@ namespace INTEX.API.Controllers
 
             return NoContent();
         }
+
+
+        // This allows you to upload an image
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            try
+            {
+                var blobServiceClient = new BlobServiceClient(_connectionString);
+                var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
+
+                // Create the container if it doesn't exist
+                await containerClient.CreateIfNotExistsAsync();
+
+                // Optional: make blobs publicly accessible (for URL access)
+                await containerClient.SetAccessPolicyAsync(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
+
+                // Use the original filename OR generate your own (below we're using the original filename)
+                var blobClient = containerClient.GetBlobClient(file.FileName);
+
+                // Upload and overwrite if the blob already exists
+                using (var stream = file.OpenReadStream())
+                {
+                    await blobClient.UploadAsync(stream, overwrite: true);
+                }
+
+                var url = blobClient.Uri.ToString();
+                return Ok(new { url });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Upload failed: {ex.Message}");
+            }
+        }
+
     }
 }
