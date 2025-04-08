@@ -26,21 +26,21 @@ function App() {
             <Route path="/terms-of-use" element={<TermsOfUse />} />
             <Route path="/menu" element={<HomePage />} />
             <Route path="*" element={<Navigate to="/menu" />} />
-          </Route>
-          <Route path="/" element={<Layout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/movieDetails" element={<MovieDetailPage/>} />
-            <Route path="/logout" element={<Logout/>} />
-            <Route path="/movies" element={<MoviePage/>} />
-            <Route path="search" element={<SearchPage/>} />
-            <Route path="/admin" element={<AdminDatabasePage />} />
-          
           </Route>
+        
           
           {/* Protected Routes */}
           <Route element={<AuthorizeView children={undefined} />}>
-            
+            <Route path="/" element={<Layout />}>
+              
+              <Route path="/movieDetails" element={<MovieDetailPage/>} />
+              <Route path="/logout" element={<Logout/>} />
+              <Route path="/movies" element={<MoviePage/>} />
+              <Route path="search" element={<SearchPage/>} />
+              <Route path="/admin" element={<AdminDatabasePage />} />
+            </Route>
             {/* Add other protected routes here */}
           </Route>
         </Routes>
