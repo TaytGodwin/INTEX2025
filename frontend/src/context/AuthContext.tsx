@@ -1,34 +1,31 @@
-// src/context/AuthContext.tsx
+
+// AuthContext.tsx
 import React, { createContext, useContext, useState, FC } from 'react';
 
-export type UserRole = 'admin' | 'user';
-
-export interface User {
-  id: string;
-  username: string;
-  role: UserRole;
-  // add any additional user fields as needed
+export interface LoggedInUser {
+  email: string;
+  // add additional properties if needed
 }
 
 interface AuthContextType {
-  user: User | null;
-  login: (userData: User) => void;
+  user: LoggedInUser | null;
+  login: (userData: LoggedInUser) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<LoggedInUser | null>(null);
 
-  const login = (userData: User) => {
+  const login = (userData: LoggedInUser) => {
     setUser(userData);
-    // Optionally, persist user data to localStorage or cookies here
+    // Optionally persist data (localStorage, cookies, etc.)
   };
 
   const logout = () => {
     setUser(null);
-    // Optionally, remove persisted user data here
+    // Optionally clear persisted data
   };
 
   return (
@@ -40,8 +37,6 @@ export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
 
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 }
