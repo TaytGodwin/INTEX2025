@@ -23,22 +23,27 @@ function UserNavbar() {
             <i className="bi bi-house fs-2"></i>
           </Link>
         </li>
-        {/* Favorites */}
+        {/* For you page?*/}
         <li className="nav-item my-3 text-center">
           <Link to="/favorites" className="nav-link text-white">
             <i className="bi bi-heart fs-2"></i>
           </Link>
         </li>
-        {/* Some other icon */}
+        {/* Repeat Errors*/}
         <li className="nav-item my-3 text-center">
           <Link to="/recommendations" className="nav-link text-white">
             <i className="bi bi-arrow-repeat fs-2"></i>
           </Link>
         </li>
-        {/* Add or More */}
+        {/* Add to a favorites List EXTRA STUFF */}
         <li className="nav-item my-3 text-center">
           <Link to="/add" className="nav-link text-white">
             <i className="bi bi-plus fs-2"></i>
+          </Link>
+        </li>
+        <li className="nav-item my-3 text-center">
+          <Link to="/logout" className="nav-link text-white">
+            <i className="bi bi-arrow-repeat fs-2"></i>
           </Link>
         </li>
       </ul>
