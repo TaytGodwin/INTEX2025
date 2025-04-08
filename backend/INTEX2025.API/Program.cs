@@ -31,16 +31,14 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
 builder.Services.AddDbContext<RecommenderDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RecommenderConnection")));
 
-// Set up Azure Blob storage client
-if (!string.IsNullOrEmpty(blobConnectionString) && !string.IsNullOrEmpty(containerName))
-{
-    var blobServiceClient = new BlobServiceClient(blobConnectionString);
-    var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
-}
-else
-{
-    Console.WriteLine("Blob connection string or container name is missing!");
-}
+// Set up Azure Blob storage client for the images
+if (string.IsNullOrEmpty(blobConnectionString) && string.IsNullOrEmpty(containerName))
+    {
+        Console.WriteLine("Blob connection string or container name is missing!");
+    }
+
+var blobServiceClient = new BlobServiceClient(blobConnectionString);
+var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -54,6 +52,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 13;
+    options.Password.RequiredUniqueChars = 2; // This makes sure they don't type all the same characters
     //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); // Locks out user for 10 minutes
     //options.Lockout.MaxFailedAccessAttempts = 5; // User  can only try to log in 5 times
     //options.Lockout.AllowedForNewUsers = true; // Allows above rules to be the case for new users too
@@ -113,5 +112,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy();
 app.MapControllers();
-
+app.MapIdentityApi<IdentityUser>().RequireCors("AllowReactApp");
 app.Run();
