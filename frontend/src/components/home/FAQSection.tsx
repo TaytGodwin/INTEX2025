@@ -7,7 +7,6 @@ interface FAQ {
 }
 
 const FAQSection: React.FC = () => {
-  // In a real application, you might fetch these from an API or a CMS
   const faqs: FAQ[] = [
     {
       question: 'How do I sign up?',
@@ -28,8 +27,8 @@ const FAQSection: React.FC = () => {
   ];
 
   return (
-    <section className="my-5 container">
-      <h2 className="mb-4">FAQs</h2>
+    <section className="faq-section">
+      <h2>FAQs</h2>
       {faqs.map((faq, index) => (
         <FAQItem key={index} question={faq.question} answer={faq.answer} />
       ))}

@@ -1,35 +1,60 @@
-/* Index.css – homepage-specific styles */
+/* Importing fonts */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Luckiest+Guy&family=Poppins:wght@400;500;700&family=Quicksand:wght@300;400;500&display=swap');
 
+/* Base Typography and Layout */
 .index-page {
   text-align: center;
   padding: 4rem 2rem;
+  font-family: 'Quicksand', sans-serif;
 }
 
 .index-page h1 {
+  font-family: 'Fredoka One', cursive;
   font-size: 3rem;
   margin-bottom: 1rem;
 }
 
+.index-page h2,
+.index-page h3 {
+  font-family: 'Poppins', sans-serif;
+}
+
 .index-page p {
+  font-family: 'Quicksand', sans-serif;
   font-size: 1.25rem;
   color: #555;
 }
 
-/* home page styling */
+/* Testimonial Card */
 .testimonial-card {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
+  padding: 1rem;
 }
 
 .testimonial-card:hover {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.testimonial-card h5 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0;
+}
+
+.testimonial-card small {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.85rem;
+  color: #777;
+}
+
 .quote {
   font-style: italic;
   font-size: 1.1rem;
+  font-family: 'Quicksand', sans-serif;
 }
 
 .testimonial-image {
@@ -37,17 +62,20 @@
   height: 40px;
   object-fit: cover;
 }
+
+/* FAQ Styles */
 .faq-item {
-  background-color: #f3ecff; /* Light purple background */
+  background-color: #f3ecff;
   border-radius: 16px;
   padding: 1rem;
   margin-bottom: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-family: 'Quicksand', sans-serif;
 }
 
 .faq-item.open {
-  background-color: #e8d9ff; /* Slightly darker purple when open */
+  background-color: #e8d9ff;
 }
 
 .faq-header {
@@ -59,6 +87,7 @@
 .faq-question {
   font-size: 1.1rem;
   font-weight: 500;
+  font-family: 'Quicksand', sans-serif;
 }
 
 .faq-toggle-icon {
@@ -74,7 +103,15 @@
 
 .faq-answer {
   margin-top: 0.5rem;
+  font-family: 'Quicksand', sans-serif;
 }
+
+.faq-answer-text {
+  font-family: 'Quicksand', sans-serif;
+  color: #555;
+}
+
+/* Pricing Card */
 .pricing-card {
   background: #fff;
   border: 1px solid #ddd;
@@ -82,6 +119,7 @@
   padding: 1rem;
   text-align: center;
   transition: box-shadow 0.3s ease;
+  font-family: 'Quicksand', sans-serif;
 }
 
 .pricing-card:hover {
@@ -89,13 +127,46 @@
 }
 
 .pricing-card.highlighted {
-  background: #333; /* or your brand color */
+  background: #333;
   color: #fff;
+}
+
+.pricing-card h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.pricing-card ul {
+  padding-left: 0;
+}
+
+.pricing-card li {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.pricing-card .btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1.25rem;
+  background-color: #57C8F4;
+  color: white;
+  font-family: 'Luckiest Guy', cursive;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.pricing-card .btn:hover {
+  background-color: #45b1da;
 }
 
 .price {
   font-size: 2rem;
   margin: 1rem 0;
+  font-family: 'Quicksand', sans-serif;
 }
 
 .price-amount {
@@ -108,9 +179,193 @@
   color: #666;
 }
 
-.ul-boxed{
+.ul-boxed {
   list-style: disc inside;
   text-align: left;
   margin: 1rem auto;
   max-width: 200px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* Button Defaults */
+button,
+.button {
+  font-family: 'Luckiest Guy', cursive;
+  background-color: #57C8F4;
+  color: white;
+}
+
+/* Featured Section */
+.featured-section {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.featured-section h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.featured-movie-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.featured-movie-card {
+  flex: 1 1 calc(25% - 1rem);
+  min-width: 200px;
+  max-width: 250px;
+}
+
+/* FAQ Section */
+.faq-section {
+  padding: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.faq-section h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Landing Header */
+.landing-header {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.landing-header .logo h2 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2rem;
+  margin: 0;
+  color: #333;
+}
+
+.landing-header .btn-outline-primary {
+  font-family: 'Luckiest Guy', cursive;
+  border: 2px solid #57C8F4;
+  background-color: transparent;
+  color: #57C8F4;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.landing-header .btn-outline-primary:hover {
+  background-color: #57C8F4;
+  color: white;
+}
+
+/* Landing Hero */
+.landing-hero {
+  background-color: #f8f9fa;
+  padding: 5rem 2rem;
+  text-align: center;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.landing-hero h1 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.landing-hero p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  color: #555;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.landing-hero .btn-primary {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 1.25rem;
+  background-color: #57C8F4;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.landing-hero .btn-primary:hover {
+  background-color: #45b1da;
+}
+
+/* Pricing Section */
+.pricing-section {
+  padding: 4rem 2rem;
+  font-family: 'Quicksand', sans-serif;
+  text-align: center;
+}
+
+.billing-toggle {
+  margin-bottom: 2rem;
+}
+
+.billing-toggle .btn {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 1rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  border: 2px solid #57C8F4;
+  background-color: transparent;
+  color: #57C8F4;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.billing-toggle .btn:hover {
+  background-color: #57C8F4;
+  color: white;
+}
+
+.billing-toggle .btn-primary {
+  background-color: #57C8F4;
+  color: white;
+}
+
+.billing-toggle .btn-primary:hover {
+  background-color: #45b1da;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.testimonials-section h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.testimonials-section p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  font-family: 'Quicksand', sans-serif;
 }

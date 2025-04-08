@@ -16,13 +16,12 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
       <div className="faq-header">
         <h5 className="faq-question mb-0">{question}</h5>
         <div className={`faq-toggle-icon ${isOpen ? 'rotated' : ''}`}>
-          {/* This could be a simple caret or arrow icon */}
-          <span>&#9662;</span>
+          <span style={{ color: '#57C8F4' }}>&#9662;</span>
         </div>
       </div>
       {isOpen && (
         <div className="faq-answer mt-2">
-          <p>{answer}</p>
+          <p className="faq-answer-text">{answer}</p>
         </div>
       )}
     </div>

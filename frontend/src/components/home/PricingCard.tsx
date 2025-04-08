@@ -6,8 +6,8 @@ interface PricingCardProps {
   price: number;
   features: string[];
   buttonText: string;
-  isHighlighted?: boolean; // e.g., for a "featured" plan
-  planId: string; // e.g., "free", "plus", "premium"
+  isHighlighted?: boolean;
+  planId: string;
 }
 
 const PricingCard: React.FC<PricingCardProps> = ({
@@ -18,7 +18,6 @@ const PricingCard: React.FC<PricingCardProps> = ({
   isHighlighted = false,
   planId,
 }) => {
-  // Decide how to style the highlighted plan
   const cardClass = isHighlighted ? 'pricing-card highlighted' : 'pricing-card';
 
   return (
@@ -28,12 +27,11 @@ const PricingCard: React.FC<PricingCardProps> = ({
         <span className="price-amount">${price}</span>
         <span className="price-unit">/mo</span>
       </p>
-      <ul className='ul-boxed'>
+      <ul className="ul-boxed">
         {features.map((feature, idx) => (
           <li key={idx}>{feature}</li>
         ))}
       </ul>
-      {/* Link to register with a query param for the plan */}
       <Link to={`/register?plan=${planId}`} className="btn btn-dark">
         {buttonText}
       </Link>
