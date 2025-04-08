@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using INTEX.API.Data;
+using System.ComponentModel.DataAnnotations.Schema;
+using INTEX.API.Data.RecommenderModels;
 
 namespace INTEX.API.Controllers;
 
@@ -22,54 +24,47 @@ public class RecommenderController : ControllerBase
     [HttpGet("content_recs1")]
     public IActionResult GetContentRecs1([FromQuery] string showId)
     {
-        // Path to the SQLite database
-        var dbPath = "../backend/INTEX2025.API/recommender.db";
+        var propertyName = showId?.Trim();
+        if (string.IsNullOrEmpty(propertyName))
+            return BadRequest("showId cannot be null or empty.");
 
-        // Collect all valid column names in the 'content_similarity' table
-        var validColumns = new HashSet<string>();
-        using (var schemaConn = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
+        // Get all property names from ContentRecs1 model
+        var validColumns = typeof(ContentRecs1).GetProperties()
+            .Select(p => p.GetCustomAttributes(typeof(ColumnAttribute), false)
+                          .Cast<ColumnAttribute>()
+                          .FirstOrDefault()?.Name ?? p.Name.ToLower())
+            .ToHashSet();
+
+        Console.WriteLine("Valid columns: " + string.Join(", ", validColumns));
+        Console.WriteLine("Requested showId: " + propertyName);
+
+        if (!validColumns.Contains(propertyName.ToLower()))
         {
-            schemaConn.Open();
-            var schemaCmd = schemaConn.CreateCommand();
-            schemaCmd.CommandText = "PRAGMA table_info(content_similarity);";
+            return BadRequest($"Invalid showId: '{propertyName}'");
+        }
 
-            using (var reader = schemaCmd.ExecuteReader())
+        var prop = typeof(ContentRecs1).GetProperties()
+            .FirstOrDefault(p =>
+                (p.GetCustomAttributes(typeof(ColumnAttribute), false)
+                   .Cast<ColumnAttribute>()
+                   .FirstOrDefault()?.Name ?? p.Name.ToLower()) == propertyName.ToLower());
+
+        if (prop == null)
+            return BadRequest($"Property for showId '{propertyName}' not found.");
+
+        var topResults = _context.ContentRecs1
+            .AsEnumerable() // switch to in-memory for dynamic property access
+            .Where(r => r.ShowId != propertyName)
+            .Select(r => new
             {
-                while (reader.Read())
-                {
-                    var colName = reader.GetString(1); // Column name is at index 1
-                    validColumns.Add(colName);
-                }
-            }
-        }
+                r.ShowId,
+                Score = prop.GetValue(r) as float? ?? 0f
+            })
+            .OrderByDescending(r => r.Score)
+            .Take(10)
+            .ToList();
 
-        // Check if the provided showId is a valid column
-        if (!validColumns.Contains(showId))
-        {
-            return BadRequest("Invalid showId.");
-        }
-
-        var results = new List<string>();
-
-        // Query for top 10 shows similar to the input showId
-        using (var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={dbPath}"))
-        {
-            connection.Open();
-            var cmd = connection.CreateCommand();
-            // Dynamically use the valid showId column in the ORDER BY clause
-            cmd.CommandText = $"SELECT show_id, title, \"{showId}\" FROM content_similarity WHERE show_id != @showId ORDER BY \"{showId}\" DESC LIMIT 10";
-            cmd.Parameters.AddWithValue("@showId", showId);
-
-            using (var reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    results.Add($"{reader.GetString(0)} - {reader.GetString(1)}"); // Format: show_id - title
-                }
-            }
-        }
-
-        return Ok(results); // Return a list of recommended show_id and title strings
+        return Ok(topResults);
     }
 
     // Endpoint: /api/recommender/genre_recommendations
