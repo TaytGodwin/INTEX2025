@@ -32,7 +32,7 @@ public class RecommenderController : ControllerBase
                 type = m.type,
                 director = m.director,
                 cast = m.cast,
-                countery = m.country,
+                country = m.country,
                 release_year = m.release_year,
                 rating = m.rating,
                 duration = m.duration,
