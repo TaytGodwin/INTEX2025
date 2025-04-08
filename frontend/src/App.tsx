@@ -11,6 +11,7 @@ import MovieDetailPage from './pages/MovieDetailPage'
 import { AuthProvider } from './context/AuthContext';
 import AuthorizeView from './components/authentication/AuthorizeView';
 import MoviePage from './pages/MoviePage';
+import SearchPage from './pages/SearchPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/movieDetails" element={<MovieDetailPage/>} />
           <Route path="/movies" element={<MoviePage/>} />
+          <Route path="search" element={<SearchPage/>} />
           {/* Protected Routes */}
           <Route element={<AuthorizeView children={undefined} />}>
             <Route path="/admin" element={<AdminPage />} />
