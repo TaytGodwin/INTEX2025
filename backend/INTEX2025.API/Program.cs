@@ -21,7 +21,7 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnection")));
 
 builder.Services.AddDbContext<RecommenderDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("RecommenderConnection")));
 
 builder.Services.AddAuthorization();
 
