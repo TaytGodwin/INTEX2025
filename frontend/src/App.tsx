@@ -12,6 +12,7 @@ import AuthorizeView from './components/authentication/AuthorizeView';
 import MoviePage from './pages/MoviePage';
 import SearchPage from './pages/SearchPage';
 import AdminDatabasePage from './pages/AdminDatabasePage';
+import Logout from './components/authentication/Logout';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/movieDetails" element={<MovieDetailPage/>} />
+            <Route path="/logout" element={<Logout/>} />
             <Route path="/movies" element={<MoviePage/>} />
             <Route path="search" element={<SearchPage/>} />
             <Route path="/admin" element={<AdminDatabasePage />} />

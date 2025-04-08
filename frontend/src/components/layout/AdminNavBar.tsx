@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import '../../css/theme.css'; // For custom tweaks
+import Logout from '../authentication/Logout';
 
 const AdminNavbar = () => {
   return (
@@ -27,6 +28,10 @@ const AdminNavbar = () => {
             <li className="nav-item">
               <Link to="/AdminUsers" className="nav-link">Users</Link>
             </li>
+            <li className="nav-item my-3 text-center">
+            <Logout />
+            </li>
+
             {/* Add more links here if needed */}
           </ul>
         </div>
