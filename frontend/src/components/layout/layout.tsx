@@ -6,6 +6,7 @@ import AdminNavBar from './AdminNavBar';
 import Footer from './Footer';
 import TopHeader from './TopHeader';
 
+
 const Layout = () => {
   const location = useLocation();
   const { user } = useAuth();
@@ -32,7 +33,7 @@ const Layout = () => {
   }
 
   // If the user is logged in as a regular user, use a vertical sidebar layout
-  if (user && user.role === 'user') {
+  if (user && user.roles.includes('User')) {
     return (
       <div className="layout d-flex">
         <aside className="side-navbar">
@@ -50,10 +51,9 @@ const Layout = () => {
   let NavBar;
   if (!user) {
     NavBar = GuestNavBar;
-  } else if (user.role === 'admin') {
+  } else if (user.roles.includes('Administrator')) {
     NavBar = AdminNavBar;
   } else {
-    // Although we covered 'user' above, you can still have a fallback
     NavBar = UserNavBar;
   }
 
