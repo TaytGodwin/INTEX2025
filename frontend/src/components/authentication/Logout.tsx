@@ -1,24 +1,29 @@
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../api/IdentityAPI';
-function Logout(props: { children: React.ReactNode }) {
+import { logout as apiLogout } from '../../api/IdentityAPI';
+import { useAuth } from '../../context/AuthContext';
+
+function Logout() {
   const navigate = useNavigate();
-  const handleLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    try {
-      const loggedOut = await logout();
-      if (loggedOut) {
-        navigate('/login');
-      } else {
-        console.error('Logout failed');
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    // Call your backend logout endpoint
+    const result = await apiLogout();
+    if (result) {
+      // Clear the AuthContext
+      logout();
+      // Navigate to the login page or home
+      navigate('/login');
+    } else {
+      console.error('Logout failed');
     }
   };
+
   return (
-    <a className="logout" href="#" onClick={handleLogout}>
-      {props.children}
-    </a>
+    <button onClick={handleLogout} className="btn btn-secondary">
+      Logout
+    </button>
   );
 }
+
 export default Logout;

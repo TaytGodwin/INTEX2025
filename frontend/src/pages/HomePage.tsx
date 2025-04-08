@@ -8,6 +8,8 @@ import FAQSection from '../components/home/FAQSection';
 import PricingSection from '../components/home/PricingSection';
 import { Link } from 'react-router-dom';
 
+// This is the page that doesn't have info
+
 function HomePage() {
   return (
     <div>
