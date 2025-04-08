@@ -9,7 +9,6 @@ interface Testimonial {
 }
 
 const TestimonialsSection: React.FC = () => {
-  // In a real app, this data might come from an API or database
   const testimonials: Testimonial[] = [
     {
       quote: 'This platform changed my life!',
@@ -50,9 +49,9 @@ const TestimonialsSection: React.FC = () => {
   ];
 
   return (
-    <section className="container my-5">
-      <h2 className="mb-1">Why should you join?</h2>
-      <p className="text-muted mb-4">Hear some of our testimonials</p>
+    <section className="testimonials-section">
+      <h2>Why should you join?</h2>
+      <p>Hear some of our testimonials</p>
       <div className="row g-3">
         {testimonials.map((t, index) => (
           <div className="col-md-6 col-lg-4" key={index}>

@@ -6,7 +6,7 @@ namespace INTEX.API.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-[Authorize(Roles = "Administrator")] // This means only someone with designated role can use this controller
+// [Authorize(Roles = "Administrator")] // This means only someone with designated role can use this controller
 public class RoleController : Controller
 {
     private readonly RoleManager<IdentityRole> _roleManager;
@@ -19,7 +19,7 @@ public class RoleController : Controller
     }
     
     [HttpPost("AddRole")]
-    public async Task<IActionResult> AddRole(string roleName)
+    public async Task<IActionResult> AddRole([FromQuery] string roleName)
     {
         if (string.IsNullOrWhiteSpace(roleName))
         {
