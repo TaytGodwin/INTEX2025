@@ -26,9 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Identity.sqlite">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="recommender.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
