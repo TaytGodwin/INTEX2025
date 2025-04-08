@@ -8,3 +8,5 @@ function AdminUsers() {
     </AuthorizeView>
   );
 }
+
+export default AdminUsers;

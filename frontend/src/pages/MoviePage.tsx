@@ -1,40 +1,38 @@
 import AuthorizeView from '../components/authentication/AuthorizeView';
 import React, { useEffect, useState } from 'react';
 import MovieRow from '../components/movieCards/MovieRow';
+import TopBar from '../components/layout/TopBar';
 
 interface Movie {
   id: number;
   title: string;
   imageUrl: string;
-  // any other properties (director, rating, etc.)
 }
 
 function MoviePage() {
   const [topPicks, setTopPicks] = useState<Movie[]>([]);
-  const [recentlyAdded, setRecentlyAdded] = useState<Movie[]>([]);
-  const [recommended, setRecommended] = useState<Movie[]>([]);
 
   useEffect(() => {
-    // Fetch or mock data for each category
-    // Example: setTopPicks(await fetchTopPicks());
-    // For now, let's just mock them:
+    // Replace with your API call or database fetch later
     const mockMovies: Movie[] = [
       { id: 1, title: 'Movie One', imageUrl: '/images/movie1.jpg' },
       { id: 2, title: 'Movie Two', imageUrl: '/images/movie2.jpg' },
       { id: 3, title: 'Movie Three', imageUrl: '/images/movie3.jpg' },
-      // ...
+      { id: 4, title: 'Movie Four', imageUrl: '/images/movie4.jpg' },
+      { id: 5, title: 'Movie Five', imageUrl: '/images/movie5.jpg' },
+      { id: 6, title: 'Movie Six', imageUrl: '/images/movie6.jpg' },
+      { id: 7, title: 'Movie Seven', imageUrl: '/images/movie7.jpg' },
+      { id: 8, title: 'Movie Eight', imageUrl: '/images/movie8.jpg' },
+      { id: 9, title: 'Movie Nine', imageUrl: '/images/movie9.jpg' },
+      { id: 10, title: 'Movie Ten', imageUrl: '/images/movie10.jpg' },
+      // More movies as needed...
     ];
     setTopPicks(mockMovies);
-    setRecentlyAdded(mockMovies);
-    setRecommended(mockMovies);
   }, []);
 
   return (
-    <div className="container my-5">
-      <h1>Welcome, User Name</h1>
+    <div className="movie-page">
       <MovieRow categoryName="Top Picks" movies={topPicks} />
-      <MovieRow categoryName="Recently Added" movies={recentlyAdded} />
-      <MovieRow categoryName="Recommended for You" movies={recommended} />
     </div>
   );
 }

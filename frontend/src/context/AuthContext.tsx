@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, FC } from 'react';
 
 export interface LoggedInUser {
   email: string;
+  roles: string[];
   // add additional properties if needed
 }
 
