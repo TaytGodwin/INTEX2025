@@ -23,8 +23,6 @@ function FeaturedSection() {
 
 
 
-
-
   return (
     <section className="featured-section">
       <h2>Featured on MyFlix</h2>
