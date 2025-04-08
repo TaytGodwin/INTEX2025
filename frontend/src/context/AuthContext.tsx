@@ -1,6 +1,7 @@
 
 // AuthContext.tsx
-import React, { createContext, useContext, useState, FC } from 'react';
+import React, { createContext, useContext, useState, FC, useEffect } from 'react';
+import { pingAuth } from '../api/IdentityAPI';
 
 export interface LoggedInUser {
   email: string;
@@ -18,6 +19,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<LoggedInUser | null>(null);
+
+// On mount, attempt to restore session via pingAuth
+  useEffect(() => {
+    const restoreSession = async () => {
+      const userData = await pingAuth();
+      if (userData) {
+        setUser(userData);
+      }
+    };
+    restoreSession();
+  }, []);
 
   const login = (userData: LoggedInUser) => {
     setUser(userData);

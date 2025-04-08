@@ -41,6 +41,11 @@ function UserNavbar() {
             <i className="bi bi-plus fs-2"></i>
           </Link>
         </li>
+        <li className="nav-item my-3 text-center">
+          <Link to="/logout" className="nav-link text-white">
+            <i className="bi bi-arrow-repeat fs-2"></i>
+          </Link>
+        </li>
       </ul>
     </nav>
   );
