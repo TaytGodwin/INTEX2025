@@ -242,3 +242,67 @@ button:hover {
   font-size: 1.25rem;
   color: var(--color-muted);
 }
+
+.movie-row {
+  margin-bottom: 2rem;
+}
+
+.category-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.movie-row-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem; /* spacing between posters */
+  scroll-behavior: smooth; /* optional smooth scroll */
+}
+
+.movie-row-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.movie-row-scroll::-webkit-scrollbar-thumb {
+  background-color: #888; /* or style as you prefer */
+  border-radius: 4px;
+}
+.side-navbar {
+  width: 80px; /* Adjust as needed */
+  min-height: 100vh; /* Full vertical height */
+  position: fixed;   /* Sticks to the left side */
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  z-index: 999;      /* Keep on top if needed */
+}
+
+.side-navbar .sidebar-logo {
+  font-size: 1.2rem;
+  border-bottom: 1px solid #444;
+}
+
+.side-navbar .nav-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.side-navbar .nav-link:hover {
+  background-color: #222;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .side-navbar {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    flex-direction: row;
+    border-bottom: 1px solid #444;
+  }
+
+  .side-navbar .nav-link {
+    margin: 0 1rem;
+  }
+}
