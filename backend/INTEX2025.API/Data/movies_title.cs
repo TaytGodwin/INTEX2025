@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace INTEX.API.Data
 {
+    [Table("movies_title")]
     public class movies_title
     {
         [Key]

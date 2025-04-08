@@ -16,6 +16,8 @@ public class MovieDbContext : DbContext
     {
         modelBuilder.Entity<movie_genre>()
             .HasKey(mg => new { mg.show_id, mg.GenreID });
+        modelBuilder.Entity<movies_rating>()
+            .HasKey(mr => new { mr.show_id, mr.user_id });
 
         base.OnModelCreating(modelBuilder);
     }
