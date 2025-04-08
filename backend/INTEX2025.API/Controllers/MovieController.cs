@@ -34,7 +34,11 @@ namespace INTEX.API.Controllers
 
         [HttpGet("AllMovies")] // Get all Movies for admin user to see, but technically any authorized user could do this
         [Authorize] // Requires users to be logged in
-        public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null) // parameters
+        public IActionResult GetMovies(
+            int pageSize = 25, 
+            int pageNum = 1, 
+            string sortBy = "title", 
+            [FromQuery] List<string>? genrelist = null) // parameters
         {
             var query = _movieContext.Movies
                 .Include(m => m.MovieGenres)
@@ -89,7 +93,7 @@ namespace INTEX.API.Controllers
 
         // ✅ Get distinct genre names
         [HttpGet("GetGenres")]
-        [Authorize]
+        // [Authorize]
         public IActionResult GetGenres()
         {
             var allGenres = _movieContext.GenreNames
