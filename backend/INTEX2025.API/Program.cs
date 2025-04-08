@@ -82,7 +82,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("https://localhost:3030", "https://jolly-island-0713d9a1e.6.azurestaticapps.net") // This needs to be the right port
+            policy.WithOrigins("https://localhost:3030", "http://localhost:3030", "https://jolly-island-0713d9a1e.6.azurestaticapps.net") // This needs to be the right port
                 .AllowCredentials() // Cookies needs this
                 .AllowAnyHeader()
                 .AllowAnyMethod(); // Lets you do post, delete, put, get, etc
@@ -102,6 +102,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection(); // redirects https redirection
+
+app.UseDefaultFiles(); // Looks for index.html, default.html, etc.
+app.UseStaticFiles();  // Serves your React or Vue build output (like JS, CSS, images)
+
 
 app.UseRouting(); // ✅ Always BEFORE CORS & Auth
 
