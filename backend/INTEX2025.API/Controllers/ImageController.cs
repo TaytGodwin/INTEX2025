@@ -16,8 +16,9 @@ namespace INTEX.API.Controllers
         public ImageController(IConfiguration configuration)
         {
             // Load connection string and container name from environment variables
-            var connectionString = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__BLOB_CONNECTION");
-            var containerName = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__CONTAINERNAME");
+            var connectionString = Environment.GetEnvironmentVariable("BLOB_CONNECTION");
+            var containerName = Environment.GetEnvironmentVariable("CONTAINER_NAME");
+
 
             // If environment variables are null, throw an exception or handle appropriately
             if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(containerName))
