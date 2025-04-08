@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import '../../css/Navbar.css'; // For custom tweaks
+import '../../css/theme.css'; // For custom tweaks
 
 const UserNavbar = () => {
   return (
