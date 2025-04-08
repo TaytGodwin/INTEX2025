@@ -85,7 +85,7 @@ namespace INTEX.API.Controllers
 
         // ✅ Get distinct genre names
         [HttpGet("GetGenres")]
-        [Authorize]
+        // [Authorize]
         public IActionResult GetGenres()
         {
             var allGenres = _movieContext.GenreNames

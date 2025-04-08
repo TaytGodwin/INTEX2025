@@ -7,13 +7,17 @@ import { pingAuth } from '../../api/IdentityAPI';
 const UserContext = createContext<User | null>(null);
 interface User {
   email: string; // Stores the email of the user that microsoft will send
+  roles: string[]; // Stores the roles of the user
 }
 
-function AuthorizeView(props: { children: React.ReactNode }) {
+function AuthorizeView(props: {
+  children: React.ReactNode;
+  allowedRoles?: string[];
+}) {
   const [authorized, setAuthorized] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true); // add a loading state
 
-  let emptyuser: User = { email: '' };
+  let emptyuser: User = { email: '', roles: [] };
   const [user, setUser] = useState(emptyuser); // defaults to not logged in
 
   useEffect(() => {
@@ -22,7 +26,7 @@ function AuthorizeView(props: { children: React.ReactNode }) {
         const loggedInUser = await pingAuth(); // Uses the pingauth API call
 
         if (loggedInUser) {
-          setUser(loggedInUser); // If there is an email, it updates the user
+          setUser({ email: loggedInUser.email, roles: loggedInUser.roles }); // If there is an email, it updates the user
           setAuthorized(true); // Tells system the user can use the child components
         } else {
           throw new Error('Invalid user session');
@@ -41,6 +45,13 @@ function AuthorizeView(props: { children: React.ReactNode }) {
     return <p>Loading...</p>;
   }
   if (authorized) {
+    if (
+      props.allowedRoles &&
+      !props.allowedRoles.some((role) => user.roles.includes(role))
+    ) {
+      return <Navigate to="/unauthorized" />;
+    }
+
     return (
       <UserContext.Provider value={user}>{props.children}</UserContext.Provider>
     );

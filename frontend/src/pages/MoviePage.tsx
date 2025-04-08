@@ -1,11 +1,13 @@
-function MoviePage(){
+import AuthorizeView from '../components/authentication/AuthorizeView';
 
-
-    return(<>
-    
-    <p>This is a movie page</p>
-    
-    </>); 
+function MoviePage() {
+  return (
+    <AuthorizeView allowedRoles={['User', 'Administrator']}>
+      <>
+        <p>This is a movie page</p>
+      </>
+    </AuthorizeView>
+  );
 }
 
 export default MoviePage;

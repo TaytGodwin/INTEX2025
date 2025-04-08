@@ -7,7 +7,7 @@ import TermsOfUse from './pages/TermsOfUse';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AdminPage from './pages/Admin';
-import MovieDetailPage from './pages/MovieDetailPage'
+import MovieDetailPage from './pages/MovieDetailPage';
 import { AuthProvider } from './context/AuthContext';
 import AuthorizeView from './components/authentication/AuthorizeView';
 import MoviePage from './pages/MoviePage';
