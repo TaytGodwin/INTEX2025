@@ -34,6 +34,7 @@ obj/
 *.tlog
 
 secrets.json
+.env
 
 # This is what I have used to change the database
 databaseManagement/

@@ -25,9 +25,11 @@ const UserNavbar = () => {
               <Link to="/menu" className="nav-link">Home</Link>
             </li>
             <li className="nav-item">
-              <Link to="/movieDetails" className="nav-link">My Favorites</Link>
+              <Link to="/admin" className="nav-link">My Favorites</Link>
             </li>
-            {/* Add more links here if needed */}
+            <li className="nav-item">
+              <Link to="/search" className="nav-link">Search</Link>
+            </li>
           </ul>
         </div>
       </div>

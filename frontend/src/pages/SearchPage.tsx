@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import MoviePoster from '../components/movieCards/MoviePoster';
+import { getAllMovies } from '../api/AllMoviesAPI'; 
+import { Movie } from '../types/Movie';
 import '../css/theme.css';
-
-interface Movie {
-  id: number;
-  title: string;
-  imageUrl: string;
-}
 
 const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -14,13 +10,13 @@ const SearchPage: React.FC = () => {
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
-    // Simulating API call to fetch all movies (replace with real endpoint)
-    fetch('/api/movies') // Update this to your actual endpoint
-      .then(res => res.json())
-      .then((data: Movie[]) => {
-        setAllMovies(data);
-        setFilteredMovies(data); // optionally empty [] if you want to hide until searched
-      });
+    const fetchMovies = async () => {
+      const data = await getAllMovies();
+      setAllMovies(data);
+      setFilteredMovies(data);
+    };
+
+    fetchMovies();
   }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +58,7 @@ const SearchPage: React.FC = () => {
       >
         {filteredMovies.length > 0 ? (
           filteredMovies.map(movie => (
-            <MoviePoster key={movie.id} title={movie.title} imageUrl={movie.imageUrl} />
+            <MoviePoster key={movie.show_id} title={movie.title} imageUrl={movie.imageUrl} />
           ))
         ) : (
           <p style={{ textAlign: 'center' }}>No movies found.</p>

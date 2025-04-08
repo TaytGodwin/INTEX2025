@@ -4,7 +4,10 @@ using INTEX.API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
+using Azure.Storage.Blobs;
 
+DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,6 +25,16 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
 
 builder.Services.AddDbContext<RecommenderDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RecommenderConnection")));
+
+// This is for images
+var blobConnectionString = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__BLOB_CONNECTION");
+var containerName = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__CONTAINERNAME");
+Console.WriteLine($"Blob Connection String: {containerName}");
+
+var blobServiceClient = new BlobServiceClient(blobConnectionString);
+var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+
 
 builder.Services.AddAuthorization();
 
@@ -101,7 +114,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection(); // redirects https redirection
+app.UseHttpsRedirection(); // redirects https redirection DON'T DELETE THIS LINE
 
 
 app.UseRouting(); // ✅ Always BEFORE CORS & Auth
