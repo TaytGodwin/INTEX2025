@@ -20,7 +20,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnection")));
 
-Console.WriteLine("🎯 IdentityConnection: " + builder.Configuration.GetConnectionString("IdentityConnection"));
 
 builder.Services.AddAuthorization();
 
@@ -38,6 +37,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 13; // This is the required length of the password
     options.Password.RequiredUniqueChars = 2; // This makes sure they don't type all the same characters
+    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); // Locks out user for 10 minutes
+    //options.Lockout.MaxFailedAccessAttempts = 5; // User  can only try to log in 5 times
+    //options.Lockout.AllowedForNewUsers = true; // Allows above rules to be the case for new users too
 
 
     options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
@@ -52,7 +54,11 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.None; // Needs to be changed after adding https in production
     options.Cookie.Name = ".AspNetCore.Identity.Application";
     options.LoginPath = "/login";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Necessary to be always for identity cookies
+
+    // ✅ Dynamically switch SecurePolicy based on environment
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+        ? CookieSecurePolicy.SameAsRequest
+        : CookieSecurePolicy.Always;
 });
 
 
@@ -66,6 +72,15 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader()
                 .AllowAnyMethod(); // Lets you do post, delete, put, get, etc
         });
+
+    // 👇 fallback CORS policy so Identity endpoints get covered too
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:3030", "https://jolly-island-0713d9a1e.6.azurestaticapps.net")
+              .AllowCredentials()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 builder.Services.AddSingleton<IEmailSender<IdentityUser>, NoOpEmailSender<IdentityUser>>();
@@ -80,14 +95,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowReactApp");
-
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+app.UseRouting(); // ✅ Always BEFORE CORS & Auth
+
+app.UseCors(); // ✅ CORS must come BEFORE Auth
+
+app.UseAuthentication(); // ✅ Then Auth
 app.UseAuthorization();
 
-app.MapControllers();
-app.MapIdentityApi<IdentityUser>();
+app.UseCookiePolicy(); // ✅ Cookie policy can be before or after Auth (before is safe)
+
+app.MapControllers(); // ✅ Map Controllers
+
+app.MapIdentityApi<IdentityUser>().RequireCors(); // ✅ This maps Identity + CORS
 
 app.Run();
+
