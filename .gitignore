@@ -37,3 +37,6 @@ secrets.json
 
 # This is what I have used to change the database
 databaseManagement/
+
+# We don't need to commit the publish folder
+publish/

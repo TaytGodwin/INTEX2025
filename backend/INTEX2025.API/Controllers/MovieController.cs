@@ -15,6 +15,12 @@ namespace INTEX.API.Controllers
         private MovieDbContext _movieContext;
         public MovieController(MovieDbContext temp) => _movieContext = temp; // Set instance
 
+        [HttpGet("Test")]
+        public IActionResult Test()
+        {
+            return Ok("I am working");
+        }
+
         [HttpGet("AllMovies")] // Get all Movies for admin user to see, but technically any authorized user could do this
         [Authorize] // Requires users to be logged in
         public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null) // parameters
