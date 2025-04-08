@@ -2,10 +2,10 @@
 
 :root {
   --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  --color-primary: #255c99;
+  --color-primary: #57C8F4;
   --color-secondary: #ffdb58;
-  --color-text: #333;
-  --color-bg: #ffffff;
+  --color-text: #ffffff;
+  --color-bg: #000000;
 
   font-family: var(--font-body);
   font-size: 16px;

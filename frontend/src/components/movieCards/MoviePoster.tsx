@@ -1,7 +1,7 @@
 // This is a component for the Movie posters for carousels, including minimum details. 
 
 import React from 'react';
-import '../../css/Navbar.css';
+import '../../css/theme.css';
 
 interface MoviePosterProps {
   imageUrl: string;

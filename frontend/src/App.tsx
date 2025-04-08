@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import './css/App.css';
+import './css/theme.css';
 import HomePage from './pages/HomePage';
 import Layout from './components/layout/layout';
 import PrivacyPolicy from './pages/PrivacyPolicy';
