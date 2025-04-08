@@ -20,7 +20,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnection")));
 
-Console.WriteLine("🎯 IdentityConnection: " + builder.Configuration.GetConnectionString("IdentityConnection"));
+builder.Services.AddDbContext<RecommenderDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnection")));
 
 builder.Services.AddAuthorization();
 
@@ -86,15 +87,6 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader()
                 .AllowAnyMethod(); // Lets you do post, delete, put, get, etc
         });
-
-    // 👇 fallback CORS policy so Identity endpoints get covered too
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("https://localhost:3030", "https://jolly-island-0713d9a1e.6.azurestaticapps.net")
-              .AllowCredentials()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
 });
 
 builder.Services.AddSingleton<IEmailSender<IdentityUser>, NoOpEmailSender<IdentityUser>>();
@@ -113,7 +105,7 @@ app.UseHttpsRedirection();
 
 app.UseRouting(); // ✅ Always BEFORE CORS & Auth
 
-app.UseCors(); // ✅ CORS must come BEFORE Auth
+app.UseCors("AllowReactApp"); // ✅ CORS must come BEFORE Auth
 
 app.UseAuthentication(); // ✅ Then Auth
 app.UseAuthorization();
@@ -122,7 +114,7 @@ app.UseCookiePolicy(); // ✅ Cookie policy can be before or after Auth (before 
 
 app.MapControllers(); // ✅ Map Controllers
 
-app.MapIdentityApi<IdentityUser>().RequireCors(); // ✅ This maps Identity + CORS
+app.MapIdentityApi<IdentityUser>().RequireCors("AllowReactApp"); // ✅ This maps Identity + CORS
 
 app.Run();
 
