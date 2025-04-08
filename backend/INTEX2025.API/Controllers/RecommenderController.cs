@@ -54,7 +54,7 @@ public class RecommenderController : ControllerBase
     // Endpoint: /api/recommender/content_recs1?showId={showId}
     // Description: Returns top 10 recommended shows based on content similarity for a given showId
     [HttpGet("content_recs1")]
-    public async IActionResult GetContentRecs1([FromQuery] string showId)
+    public async Task<IActionResult> GetContentRecs1([FromQuery] string showId)
     {
         var propertyName = showId?.Trim();
         if (string.IsNullOrEmpty(propertyName))

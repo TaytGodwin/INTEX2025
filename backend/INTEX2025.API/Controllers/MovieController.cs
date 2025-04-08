@@ -54,7 +54,7 @@ namespace INTEX.API.Controllers
                     m.type,
                     m.director,
                     m.cast,
-                    m.countery,
+                    m.country,
                     m.release_year,
                     m.rating,
                     m.duration,
@@ -103,7 +103,7 @@ namespace INTEX.API.Controllers
                 type = newMovieDto.type,
                 director = newMovieDto.director,
                 cast = newMovieDto.cast,
-                countery = newMovieDto.countery,
+                country = newMovieDto.country,
                 release_year = newMovieDto.release_year,
                 rating = newMovieDto.rating,
                 duration = newMovieDto.duration,
@@ -158,7 +158,7 @@ namespace INTEX.API.Controllers
             existingMovie.type = updatedMovie.type;
             existingMovie.director = updatedMovie.director;
             existingMovie.cast = updatedMovie.cast;
-            existingMovie.countery = updatedMovie.countery;
+            existingMovie.country = updatedMovie.country;
             existingMovie.release_year = updatedMovie.release_year;
             existingMovie.rating = updatedMovie.rating;
             existingMovie.duration = updatedMovie.duration;
