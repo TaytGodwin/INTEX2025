@@ -103,9 +103,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection(); // redirects https redirection
 
-app.UseDefaultFiles(); // Looks for index.html, default.html, etc.
-app.UseStaticFiles();  // Serves your React or Vue build output (like JS, CSS, images)
-
 
 app.UseRouting(); // ✅ Always BEFORE CORS & Auth
 
