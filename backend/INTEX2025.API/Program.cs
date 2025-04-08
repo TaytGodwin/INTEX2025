@@ -7,8 +7,16 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using Azure.Storage.Blobs;
 
-DotNetEnv.Env.Load(); // Ensure environment variables are loaded
+// DotNetEnv.Env.Load(); // Ensure environment variables are loaded in development
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();
+    logging.AddDebug();
+});
 
 // Add services to the container
 
@@ -17,13 +25,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Get Connection Strings from environment variables
-var moviesConnection = Environment.GetEnvironmentVariable("MOVIESCONNECTION");
-var blobConnectionString = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__BLOB_CONNECTION");
-var containerName = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__CONTAINERNAME");
+var moviesConnection = Environment.GetEnvironmentVariable("MOVIESCONNECTION"); 
+var blobConnectionString = Environment.GetEnvironmentVariable("BLOB_CONNECTION");
+var containerName = Environment.GetEnvironmentVariable("CONTAINER_NAME");
+var identityConnection = Environment.GetEnvironmentVariable("IdentityConnection");
+
 
 // Configure DB contexts
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
+    options.UseSqlServer(identityConnection));
 
 builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseSqlServer(moviesConnection)); // Use the movie connection string from the environment variable
@@ -105,12 +115,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // DO NOT DELETE THIS LINE
 app.UseRouting();
 app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy();
 app.MapControllers();
-app.MapIdentityApi<IdentityUser>().RequireCors("AllowReactApp");
+app.MapIdentityApi<IdentityUser>().RequireCors();
 app.Run();

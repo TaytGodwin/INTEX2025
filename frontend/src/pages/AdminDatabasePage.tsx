@@ -75,7 +75,7 @@ const AdminDatabasePage = () => {
                   <tr key={movie.show_id}>
                     <td>{movie.title}</td>
                     <td>{movie.type}</td>
-                    <td>{movie.genres.map((g) => g.genreName).join(', ')}</td>
+                    <td>{movie.genres.join(', ')}</td>
                     <td>{movie.release_year}</td>
                     <td>{movie.director}</td>
                     <td>

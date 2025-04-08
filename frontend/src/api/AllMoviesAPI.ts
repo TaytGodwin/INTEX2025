@@ -1,6 +1,7 @@
 import { Movie } from '../types/Movie';
 
-const MOVIE_API_URL = 'https://localhost:5000'; //'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
+const MOVIE_API_URL = //'https://localhost:5000';
+  'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
 
 export const getAllMovies = async (): Promise<Movie[]> => {
     try {
