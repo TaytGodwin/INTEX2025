@@ -1,4 +1,3 @@
-import React from 'react';
 import '../css/theme.css';
 import AuthorizeView from '../components/authentication/AuthorizeView';
 

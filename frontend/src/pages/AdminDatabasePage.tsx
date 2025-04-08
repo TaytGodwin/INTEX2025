@@ -1,5 +1,5 @@
 import AuthorizeView from '../components/authentication/AuthorizeView';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAllMovies } from '../api/AllMoviesAPI';
 import { Movie } from '../types/Movie';
 import '../css/theme.css'; // Your custom styles
@@ -24,7 +24,10 @@ const AdminDatabasePage = () => {
   );
 
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedMovies = filteredMovies.slice(startIndex, startIndex + pageSize);
+  const paginatedMovies = filteredMovies.slice(
+    startIndex,
+    startIndex + pageSize
+  );
   const totalPages = Math.ceil(filteredMovies.length / pageSize);
 
   return (
@@ -34,10 +37,16 @@ const AdminDatabasePage = () => {
         <aside className="admin-sidebar">
           <h4 className="admin-title">Admin Panel</h4>
           <ul>
-            <li><span>📦</span> Database</li>
-            <li><span>👥</span> Users</li>
+            <li>
+              <span>📦</span> Database
+            </li>
+            <li>
+              <span>👥</span> Users
+            </li>
           </ul>
-          <button className="logout-btn btn btn-outline-danger mt-auto">Logout</button>
+          <button className="logout-btn btn btn-outline-danger mt-auto">
+            Logout
+          </button>
         </aside>
 
         {/* Main content */}
@@ -80,9 +89,24 @@ const AdminDatabasePage = () => {
                     <td>{movie.director}</td>
                     <td>
                       <div className="d-flex gap-2">
-                        <button className="btn btn-sm btn-outline-secondary" title="View">👁</button>
-                        <button className="btn btn-sm btn-outline-primary" title="Edit">✏️</button>
-                        <button className="btn btn-sm btn-outline-danger" title="Delete">🗑</button>
+                        <button
+                          className="btn btn-sm btn-outline-secondary"
+                          title="View"
+                        >
+                          👁
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-primary"
+                          title="Edit"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          title="Delete"
+                        >
+                          🗑
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -107,7 +131,12 @@ const AdminDatabasePage = () => {
             </div>
 
             <div className="page-buttons d-flex gap-1">
-              <button className="btn btn-outline-secondary" onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>Previous</button>
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              >
+                Previous
+              </button>
               {Array.from({ length: totalPages }, (_, i) => (
                 <button
                   key={i}
@@ -117,7 +146,14 @@ const AdminDatabasePage = () => {
                   {i + 1}
                 </button>
               )).slice(0, 5)}
-              <button className="btn btn-outline-secondary" onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}>Next</button>
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(p + 1, totalPages))
+                }
+              >
+                Next
+              </button>
             </div>
           </div>
         </main>
