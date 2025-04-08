@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
+using Azure.Storage.Blobs;
 
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,15 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
 
 builder.Services.AddDbContext<RecommenderDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RecommenderConnection")));
+
+// This is for images
+var blobConnectionString = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__BLOB_CONNECTION");
+var containerName = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__CONTAINERNAME");
+Console.WriteLine($"Blob Connection String: {containerName}");
+
+var blobServiceClient = new BlobServiceClient(blobConnectionString);
+var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
 
 
 builder.Services.AddAuthorization();
