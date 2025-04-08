@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import AuthorizeView from '../components/authentication/AuthorizeView';
 import Pagination from '../components/layout/Pagination';
-import { useCurrentUser } from '../utils/useCurrentuser';
+
 
 function AdminPage() {
   //
@@ -23,7 +23,7 @@ function AdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const { userInfo, loadingUser } = useCurrentUser();
+
   // const [editingObject, setEditingObject] = useState<Object | null>(null);
 
   // useEffect(() => {
@@ -60,10 +60,7 @@ function AdminPage() {
   //     }
   //   };
 
-  if (loadingUser) return <p>Loading...</p>;
-  if (!userInfo || userInfo.role !== 'Administrator') {
-    return <p>You do not have permission to view this page.</p>;
-  }
+
   //   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (

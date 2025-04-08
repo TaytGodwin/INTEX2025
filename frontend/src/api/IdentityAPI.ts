@@ -2,34 +2,39 @@ const Identity_API_URL =
   'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
 
 interface LoggedInUser {
-  // This is what the first call will return
   email: string;
+  roles: string[];
 }
 
 // API call to ping the backend to check if the user is logged in
 export const pingAuth = async (): Promise<LoggedInUser | null> => {
   try {
-    console.log("line12");
+    console.log('line12');
     const response = await fetch(`${Identity_API_URL}/api/Identity/pingauth`, {
       method: 'GET',
       credentials: 'include',
     });
+    console.log('pingAuth status:', response.status);
     const contentType = response.headers.get('content-type');
 
-    // Ensure response is JSON
     if (!contentType || !contentType.includes('application/json')) {
+      const errorText = await response.text(); // 👈 Capture raw response
+      console.error('Invalid response format from server:', errorText); // 👈 Log it
       throw new Error('Invalid response format from server');
     }
 
     const data = await response.json();
 
-    if (data.email) {
-      return { email: data.email }; // return full object
+    if (data.email && data.roles) {
+      return { email: data.email, roles: data.roles }; // return full object
     } else {
       return null; // no email = not authenticated
     }
   } catch (error) {
-    console.error('pingAuth error:', error);
+    console.error(
+      'pingAuth error:',
+      error instanceof Error ? error.message : error
+    );
     return null; // or you could re-throw if you want the caller to handle it
   }
 };

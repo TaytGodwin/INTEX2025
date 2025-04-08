@@ -7,9 +7,10 @@ import TermsOfUse from './pages/TermsOfUse';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AdminPage from './pages/Admin';
-import MovieDetailPage from './pages/MovieDetailPage'
+import MovieDetailPage from './pages/MovieDetailPage';
 import { AuthProvider } from './context/AuthContext';
 import AuthorizeView from './components/authentication/AuthorizeView';
+import MoviePage from './pages/MoviePage';
 
 function App() {
   return (
@@ -29,8 +30,9 @@ function App() {
 
           {/* Protected Routes */}
           <Route element={<AuthorizeView children={undefined} />}>
-            <Route path="/movieDetails" element={<MovieDetailPage/>} />
+            <Route path="/movieDetails" element={<MovieDetailPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/movies" element={<MoviePage />} />
             {/* Add other protected routes here */}
           </Route>
         </Routes>
