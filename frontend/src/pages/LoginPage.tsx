@@ -151,8 +151,6 @@
 //   throw new Error('Function not implemented.');
 // }
 
-
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login as apiLogin, pingAuth } from '../api/IdentityAPI';
@@ -164,7 +162,7 @@ function LoginPage() {
   const [rememberme, setRememberme] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const navigate = useNavigate();
-  
+
   // Get the login function from AuthContext
   const { login: authLogin } = useAuth();
 
@@ -201,11 +199,12 @@ function LoginPage() {
       } else {
         // If login succeeds, call pingAuth to retrieve user details
         const userData = await pingAuth();
+        console.log(userData);
         if (userData) {
           // Update the AuthContext with the user data
           authLogin(userData);
           // Navigate to the home page (or protected area)
-          navigate('/');
+          navigate('/movies');
         } else {
           setError('Failed to retrieve user details.');
         }
