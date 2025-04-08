@@ -9,6 +9,7 @@ interface LoggedInUser {
 // API call to ping the backend to check if the user is logged in
 export const pingAuth = async (): Promise<LoggedInUser | null> => {
   try {
+    console.log("line12");
     const response = await fetch(`${Identity_API_URL}/api/Identity/pingauth`, {
       method: 'GET',
       credentials: 'include',

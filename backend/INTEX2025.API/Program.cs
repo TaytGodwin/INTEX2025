@@ -49,10 +49,22 @@ builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUser
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.None; // Needs to be changed after adding https in production
+    options.Cookie.SameSite = SameSiteMode.None; // Adjust as needed for production
     options.Cookie.Name = ".AspNetCore.Identity.Application";
     options.LoginPath = "/login";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Necessary to be always for identity cookies
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Necessary for identity cookies in production
+
+    // Prevent API calls from being redirected to the login page by returning a 401
+    options.Events.OnRedirectToLogin = context =>
+    {
+        if (context.Request.Path.StartsWithSegments("/api"))
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        }
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
 });
 
 
