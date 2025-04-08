@@ -33,7 +33,7 @@ namespace INTEX.API.Controllers
         }
 
         [HttpGet("AllMovies")] // Get all Movies for admin user to see, but technically any authorized user could do this
-        [Authorize] // Requires users to be logged in
+        // [Authorize] // Requires users to be logged in
         public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null) // parameters
         {
             var query = _movieContext.Movies
