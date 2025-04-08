@@ -7,5 +7,5 @@ public class genre_name
 
     public string GenreName { get; set; }
 
-    public ICollection<movie_genre> Genres { get; set; }
+    public ICollection<movies_genre> Genres { get; set; }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace INTEX.API.Data
 {
-    [Table("movies_title")]
+    [Table("movies_titles")]
     public class movies_title
     {
         [Key]
@@ -29,7 +29,7 @@ namespace INTEX.API.Data
         public int GenreID { get ; set; }
 
         // ✅ Many-to-many relationship via linking table
-        public ICollection<movie_genre> MovieGenres { get; set; }
+        public ICollection<movies_genre> MovieGenres { get; set; }
 
     }
 }
