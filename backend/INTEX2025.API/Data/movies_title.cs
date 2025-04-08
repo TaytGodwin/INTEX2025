@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace INTEX.API.Data
 {
+    [Table("movies_title")]
     public class movies_title
     {
         [Key]
@@ -15,7 +16,7 @@ namespace INTEX.API.Data
         
         public string director {  get; set; } // Not required
         public string cast  { get; set; } // Not required
-        public string countery { get; set; } // Not requried 
+        public string country { get; set; } // Not requried 
         [Required]
         public int release_year { get; set; }
         [Required]

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using INTEX.API.Data;
+using Azure.Storage.Blobs;
 
 namespace INTEX.API.Controllers
 {
@@ -12,8 +13,14 @@ namespace INTEX.API.Controllers
     public class MovieController : ControllerBase
     {
         // Instance of context file
-        private MovieDbContext _movieContext;
-        public MovieController(MovieDbContext temp) => _movieContext = temp; // Set instance
+        private readonly MovieDbContext _movieContext;
+
+        public MovieController(MovieDbContext context)
+        {
+            _movieContext = context;
+        }
+
+
 
         [HttpGet("Test")]
         public IActionResult Test()
@@ -22,7 +29,7 @@ namespace INTEX.API.Controllers
         }
 
         [HttpGet("AllMovies")] // Get all Movies for admin user to see, but technically any authorized user could do this
-        [Authorize] // Requires users to be logged in
+        // [Authorize] // Requires users to be logged in
         public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null) // parameters
         {
             var query = _movieContext.Movies
@@ -54,7 +61,7 @@ namespace INTEX.API.Controllers
                     m.type,
                     m.director,
                     m.cast,
-                    m.countery,
+                    m.country,
                     m.release_year,
                     m.rating,
                     m.duration,
@@ -78,7 +85,7 @@ namespace INTEX.API.Controllers
 
         // ✅ Get distinct genre names
         [HttpGet("GetGenres")]
-        [Authorize]
+        // [Authorize]
         public IActionResult GetGenres()
         {
             var allGenres = _movieContext.GenreNames
@@ -103,7 +110,7 @@ namespace INTEX.API.Controllers
                 type = newMovieDto.type,
                 director = newMovieDto.director,
                 cast = newMovieDto.cast,
-                countery = newMovieDto.countery,
+                country = newMovieDto.country,
                 release_year = newMovieDto.release_year,
                 rating = newMovieDto.rating,
                 duration = newMovieDto.duration,
@@ -158,7 +165,7 @@ namespace INTEX.API.Controllers
             existingMovie.type = updatedMovie.type;
             existingMovie.director = updatedMovie.director;
             existingMovie.cast = updatedMovie.cast;
-            existingMovie.countery = updatedMovie.countery;
+            existingMovie.country = updatedMovie.country;
             existingMovie.release_year = updatedMovie.release_year;
             existingMovie.rating = updatedMovie.rating;
             existingMovie.duration = updatedMovie.duration;
@@ -210,5 +217,6 @@ namespace INTEX.API.Controllers
 
             return NoContent();
         }
+
     }
 }

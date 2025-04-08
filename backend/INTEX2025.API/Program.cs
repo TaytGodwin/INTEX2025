@@ -4,7 +4,10 @@ using INTEX.API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
+using Azure.Storage.Blobs;
 
+DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,6 +25,16 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
 
 builder.Services.AddDbContext<RecommenderDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RecommenderConnection")));
+
+// This is for images
+var blobConnectionString = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__BLOB_CONNECTION");
+var containerName = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__CONTAINERNAME");
+Console.WriteLine($"Blob Connection String: {containerName}");
+
+var blobServiceClient = new BlobServiceClient(blobConnectionString);
+var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+
 
 builder.Services.AddAuthorization();
 
@@ -82,7 +95,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("https://localhost:3030", "https://jolly-island-0713d9a1e.6.azurestaticapps.net") // This needs to be the right port
+            policy.WithOrigins("https://localhost:3030", "http://localhost:3030", "https://jolly-island-0713d9a1e.6.azurestaticapps.net") // This needs to be the right port
                 .AllowCredentials() // Cookies needs this
                 .AllowAnyHeader()
                 .AllowAnyMethod(); // Lets you do post, delete, put, get, etc
@@ -101,7 +114,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection(); // redirects https redirection
+app.UseHttpsRedirection(); // redirects https redirection DON'T DELETE THIS LINE
+
 
 app.UseRouting(); // ✅ Always BEFORE CORS & Auth
 

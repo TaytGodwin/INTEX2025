@@ -1,0 +1,244 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Luckiest+Guy&family=Poppins:wght@400;500;700&family=Quicksand:wght@300;400;500&display=swap');
+
+/* CSS Variables */
+:root {
+  --font-body: 'Quicksand', sans-serif;
+  --font-heading: 'Poppins', sans-serif;
+  --font-brand: 'Fredoka One', cursive;
+  --font-fun: 'Luckiest Guy', cursive;
+
+  --color-primary: #57C8F4;
+  --color-secondary: #ffdb58;
+
+  --color-bg: #000;
+  --color-surface: #1a1a1a;
+  --color-border: #333;
+  --color-text: #fff;
+  --color-muted: #ccc;
+}
+
+/* Global reset */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+a:hover {
+  color: var(--color-secondary);
+}
+
+button {
+  font-family: var(--font-fun);
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+button:hover {
+  background-color: #45b1da;
+}
+
+/* Navbar */
+.navbar {
+  font-family: var(--font-body);
+  background-color: var(--color-primary) !important;
+}
+.navbar-brand {
+  font-family: var(--font-brand);
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: white !important;
+}
+.nav-link {
+  font-family: var(--font-heading);
+  color: white !important;
+  transition: color 0.2s ease-in-out;
+}
+.nav-link:hover {
+  color: var(--color-secondary) !important;
+}
+
+/* Movie Detail Page */
+.movie-detail-page {
+  padding: 1rem;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+.movie-poster-section {
+  position: relative;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.main-poster {
+  width: 300px;
+  max-width: 100%;
+  border-radius: 8px;
+}
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+}
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.action-buttons button {
+  font-size: 1.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  transition: transform 0.2s ease;
+}
+.action-buttons button:hover {
+  transform: scale(1.1);
+}
+.description {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.related-section {
+  padding: 0 1rem;
+}
+.related-section h3 {
+  font-family: var(--font-heading);
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+.related-card {
+  text-align: center;
+}
+.related-card img {
+  width: 100%;
+  border-radius: 6px;
+}
+.related-title {
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+/* Sections */
+.index-page, .faq-section, .pricing-section, .testimonials-section, .featured-section {
+  padding: 2rem;
+  font-family: var(--font-body);
+  color: var(--color-text);
+}
+.index-page h1 {
+  font-family: var(--font-brand);
+  font-size: 3rem;
+}
+.index-page h2, .index-page h3 {
+  font-family: var(--font-heading);
+}
+.index-page p {
+  font-size: 1.25rem;
+  color: var(--color-muted);
+}
+
+/* Cards */
+.testimonial-card, .pricing-card, .faq-item {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.testimonial-card h5,
+.faq-question,
+.related-title {
+  color: var(--color-text);
+}
+.testimonial-card small,
+.faq-answer-text,
+.price-unit {
+  color: var(--color-muted);
+}
+.testimonial-card:hover,
+.pricing-card:hover {
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+}
+.quote {
+  font-style: italic;
+  color: var(--color-muted);
+}
+
+/* Buttons inside pricing */
+.pricing-card .btn,
+.landing-header .btn-outline-primary,
+.landing-hero .btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+.pricing-card .btn:hover,
+.landing-header .btn-outline-primary:hover,
+.landing-hero .btn-primary:hover {
+  background-color: #45b1da;
+}
+
+/* Landing Sections */
+.landing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.landing-header .logo h2 {
+  font-family: var(--font-brand);
+  font-size: 2rem;
+  margin: 0;
+  color: var(--color-text);
+}
+.landing-header .btn-outline-primary {
+  font-family: var(--font-fun);
+  border: 2px solid var(--color-primary);
+  background-color: transparent;
+  color: var(--color-primary);
+}
+.landing-hero {
+  background-color: #111;
+  text-align: center;
+  padding: 5rem 2rem;
+}
+.landing-hero h1 {
+  font-family: var(--font-brand);
+  font-size: 3rem;
+  color: var(--color-text);
+}
+.landing-hero p {
+  font-size: 1.25rem;
+  color: var(--color-muted);
+}
