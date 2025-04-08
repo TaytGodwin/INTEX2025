@@ -25,17 +25,17 @@ namespace INTEX.API.Controllers
             public bool RememberMe { get; set; }
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
-        {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (user == null) return Unauthorized("Invalid credentials");
-
-            var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, loginDto.RememberMe, false);
-            if (!result.Succeeded) return Unauthorized("Invalid credentials");
-
-            return Ok(new { message = "Login successful" });
-        }
+        // [HttpPost("login")]
+        // public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        // {
+        //     var user = await _userManager.FindByEmailAsync(loginDto.Email);
+        //     if (user == null) return Unauthorized("Invalid credentials");
+        //
+        //     var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, loginDto.RememberMe, false);
+        //     if (!result.Succeeded) return Unauthorized("Invalid credentials");
+        //
+        //     return Ok(new { message = "Login successful" });
+        //}
 
         [HttpPost("logout")]
         [Authorize]
