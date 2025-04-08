@@ -7,6 +7,7 @@ import TermsOfUse from './pages/TermsOfUse';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AdminPage from './pages/Admin';
+import MovieDetailPage from './pages/MovieDetailPage'
 import { AuthProvider } from './context/AuthContext';
 import AuthorizeView from './components/authentication/AuthorizeView';
 
@@ -28,6 +29,7 @@ function App() {
 
           {/* Protected Routes */}
           <Route element={<AuthorizeView children={undefined} />}>
+            <Route path="/movieDetails" element={<MovieDetailPage/>} />
             <Route path="/admin" element={<AdminPage />} />
             {/* Add other protected routes here */}
           </Route>
