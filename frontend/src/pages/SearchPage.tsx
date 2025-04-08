@@ -3,40 +3,91 @@ import MoviePoster from '../components/movieCards/MoviePoster';
 import { getAllMovies } from '../api/AllMoviesAPI'; 
 import { Movie } from '../types/Movie';
 import '../css/theme.css';
+import { getImage } from '../api/ImageAPI';
+
+function sanitizeTitle(title: string): string {
+  // Remove these characters: -, ?, #, (, )
+  return title.replace(/[-?#()]/g, '');
+}
+function isAscii(str: string): boolean {
+  // This regex returns true if all characters are within the ASCII range (0-127)
+  return /^[\x00-\x7F]*$/.test(str);
+}
 
 const SearchPage: React.FC = () => {
-  const [query, setQuery] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
-
+  const [loading, setLoading] = useState<boolean>(true);
+  
+  
   useEffect(() => {
-    const fetchMovies = async () => {
-      const data = await getAllMovies();
-      setAllMovies(data);
-      setFilteredMovies(data);
+    const fetchData = async () => {
+      try {
+        const moviesData = await getAllMovies();
+        // Filter out movies whose title is not all ASCII
+        const asciiMovies = moviesData.filter(movie => isAscii(movie.title));
+        
+        setAllMovies(asciiMovies);
+        setFilteredMovies(asciiMovies);
+      } catch (error) {
+        console.error('Failed to fetch movies:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-
-    fetchMovies();
+    fetchData();
   }, []);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value.toLowerCase();
-    setQuery(searchTerm);
+  useEffect(() => {
+    const fetchMoviesWithImages = async () => {
+      try {
+        const moviesData = await getAllMovies();
+        // For each movie, fetch the image using the sanitized title
+        const imagePromises = moviesData.map(async (movie) => {
+          // Remove any leading '#' and encode the title
+          const sanitizedTitle = sanitizeTitle(movie.title);
+          const encodedTitle = encodeURIComponent(sanitizedTitle);
+          const blob = await getImage(encodedTitle);
+          if (blob) {
+            return { ...movie, imageUrl: URL.createObjectURL(blob) };
+          } else {
+            // Use a default image if fetching fails
+            return { ...movie, imageUrl: '/images/default.jpg' };
+          }
+        });
+        const moviesWithImages = await Promise.all(imagePromises);
+        setAllMovies(moviesWithImages);
+        setFilteredMovies(moviesWithImages);
+      } catch (error) {
+        console.error('Failed to fetch movies with images:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchMoviesWithImages();
+  }, []);
 
+  useEffect(() => {
     const results = allMovies.filter(movie =>
-      movie.title.toLowerCase().includes(searchTerm)
+      movie.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredMovies(results);
-  };
+  }, [searchTerm, allMovies]);
+
+  if (loading) return <div>Loading movies...</div>;
 
   return (
     <div className="search-page" style={{ padding: '2rem', minHeight: '100vh' }}>
+      {/* Search Bar */}
       <div className="search-bar-container" style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <input
           type="text"
+          className="form-control"
           placeholder="Search movies..."
-          value={query}
-          onChange={handleSearch}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           style={{
             padding: '0.75rem 1rem',
             width: '100%',
@@ -48,6 +99,7 @@ const SearchPage: React.FC = () => {
         />
       </div>
 
+      {/* Movies Grid */}
       <div
         className="search-results-grid"
         style={{
