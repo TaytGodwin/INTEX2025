@@ -28,60 +28,54 @@ namespace INTEX.API.Controllers
             return Ok("I am working");
         }
 
-        [HttpGet("AllMovies")] // Get all Movies for admin user to see, but technically any authorized user could do this
-        // [Authorize] // Requires users to be logged in
-        public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null) // parameters
+        [HttpGet("AllMovies")]
+        public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null)
         {
             var query = _movieContext.Movies
                 .Include(m => m.MovieGenres)
-                .ThenInclude(mg => mg.Genre) // Links the genre table to this query
+                .ThenInclude(mg => mg.Genre)
                 .AsQueryable();
 
             if (genrelist != null && genrelist.Any())
             {
-                // Step 1: Get matching GenreIDs
-                // Get matching GenreIDs based on updated entity name: genre_name
                 var genreIDs = _movieContext.GenreNames
                     .Where(g => genrelist.Contains(g.GenreName))
                     .Select(g => g.GenreID)
                     .ToList();
 
-                // Filter movies
                 query = query.Where(m => m.MovieGenres.Any(mg => genreIDs.Contains(mg.GenreID)));
             }
 
-            var AllMovies = query // Narrowed down, filtered list
-                .OrderBy(sortBy) // Uses using System.Linq.Dynamic.Core; to sort by the preference that the user gave
-                .Skip((pageNum - 1) * pageSize) // Skips the page size amount until it gets to the page you are on
-                .Take(pageSize) // Sends how many the user selected
-                .Select(m => new // What columns will be selected
+            var allowedSortFields = new[] { "title", "release_year", "rating", "duration" };
+            if (!allowedSortFields.Contains(sortBy))
+            {
+                sortBy = "title";
+            }
+
+            var AllMovies = query
+                .OrderBy(sortBy)
+                .Skip((pageNum - 1) * pageSize)
+                .Take(pageSize)
+                .Select(m => new
                 {
                     m.show_id,
-                    m.title,
-                    m.type,
-                    m.director,
-                    m.cast,
-                    m.country,
-                    m.release_year,
-                    m.rating,
-                    m.duration,
-                    m.description,
-                    Genres = m.MovieGenres.Select(mg => mg.Genre.GenreName).ToList()
+                    title = m.title ?? "",
+                    type = m.type ?? "",
+                    director = m.director ?? "",
+                    cast = m.cast ?? "",
+                    country = m.country ?? "",
+                    release_year = m.release_year,
+                    rating = m.rating ?? "",
+                    duration = m.duration ?? "",
+                    description = m.description ?? "",
+                    Genres = m.MovieGenres.Select(mg => mg.Genre.GenreName ?? "").ToList()
                 })
                 .ToList();
 
             var totalNumMovies = query.Count();
 
-            var TotalObject = new
-            {
-                Movies = AllMovies,
-                totalNumMovies
-
-            };
-
-            return Ok(TotalObject);
+            return Ok(new {Movies = AllMovies, totalNumMovies});
         }
-
 
         // ✅ Get distinct genre names
         [HttpGet("GetGenres")]
@@ -131,7 +125,7 @@ namespace INTEX.API.Controllers
 
                 foreach (var genreID in genreIDs)
                 {
-                    _movieContext.MovieGenres.Add(new movie_genre
+                    _movieContext.MovieGenres.Add(new movies_genre
                     {
                         show_id = newMovie.show_id,
                         GenreID = genreID
@@ -170,14 +164,14 @@ namespace INTEX.API.Controllers
             existingMovie.rating = updatedMovie.rating;
             existingMovie.duration = updatedMovie.duration;
             existingMovie.description = updatedMovie.description;
-
+            
+            // Remove old links
+            var existingGenres = _movieContext.MovieGenres.Where(mg => mg.show_id == show_id);
+            _movieContext.MovieGenres.RemoveRange(existingGenres);
+            
             // ✅ Update genres
             if (updatedMovie.Genres != null)
             {
-                // Remove old links
-                var existingGenres = _movieContext.MovieGenres.Where(mg => mg.show_id == show_id);
-                _movieContext.MovieGenres.RemoveRange(existingGenres);
-
                 // Add new ones
                 var newGenreIDs = _movieContext.GenreNames
                     .Where(g => updatedMovie.Genres.Contains(g.GenreName))
@@ -186,7 +180,7 @@ namespace INTEX.API.Controllers
 
                 foreach (var genreID in newGenreIDs)
                 {
-                    _movieContext.MovieGenres.Add(new movie_genre
+                    _movieContext.MovieGenres.Add(new movies_genre
                     {
                         show_id = show_id,
                         GenreID = genreID
