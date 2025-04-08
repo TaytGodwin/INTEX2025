@@ -59,7 +59,7 @@ function MoviePage() {
 
   return (
     <div className="movie-page">
-      <MovieRow categoryName="Top Picks" movies={topPicks} />
+      <MovieRow />
     </div>
   );
 }

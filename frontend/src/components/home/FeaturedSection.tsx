@@ -28,7 +28,9 @@ function FeaturedSection() {
 
           // For each movie, fetch its image using the movie title
           const imagePromises = topTenMovies.map(async (movie) => {
-            const blob = await getImage(movie.title);
+            
+            const sanitizedTitle = movie.title.replace(/^#/, '');
+            const blob = await getImage(sanitizedTitle);
             if (blob) {
               return { title: movie.title, url: URL.createObjectURL(blob) };
             } else {
