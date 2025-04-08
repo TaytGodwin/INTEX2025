@@ -156,6 +156,11 @@ import { useNavigate } from 'react-router-dom';
 import { login as apiLogin, pingAuth } from '../api/IdentityAPI';
 import { useAuth } from '../context/AuthContext';
 
+type UserData = {
+  email: string;
+  roles: string[];
+};
+
 function LoginPage() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -198,13 +203,24 @@ function LoginPage() {
         setError('Invalid email or password.');
       } else {
         // If login succeeds, call pingAuth to retrieve user details
-        const userData = await pingAuth();
+        const userData: UserData | null = await pingAuth();
         console.log(userData);
         if (userData) {
-          // Update the AuthContext with the user data
           authLogin(userData);
-          // Navigate to the home page (or protected area)
-          navigate('/movies');
+
+          // Navigate based on user role
+          switch (userData.roles[0]) {
+            case 'Administrator':
+              navigate('/admin');
+              break;
+            case 'User':
+              navigate('/movies');
+              break;
+            case null:
+            default:
+              navigate('/');
+              break;
+          }
         } else {
           setError('Failed to retrieve user details.');
         }
