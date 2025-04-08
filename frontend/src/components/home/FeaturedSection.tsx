@@ -1,8 +1,6 @@
-
 import MoviePoster from '../movieCards/MoviePoster';
 
 function FeaturedSection() {
-  // Example data - in your application, you might fetch this from your backend
   const featuredMovies = [
     { imageUrl: 'https://example.com/movie1.jpg', title: 'Movie One' },
     { imageUrl: 'https://example.com/movie2.jpg', title: 'Movie Two' },
@@ -11,11 +9,11 @@ function FeaturedSection() {
   ];
 
   return (
-    <section className="container my-5">
-      <h2 className="mb-4">Featured on MyFlix</h2>
-      <div className="row">
+    <section className="featured-section">
+      <h2>Featured on MyFlix</h2>
+      <div className="featured-movie-grid">
         {featuredMovies.map((movie, index) => (
-          <div key={index} className="col-md-3 mb-3">
+          <div key={index} className="featured-movie-card">
             <MoviePoster imageUrl={movie.imageUrl} title={movie.title} />
           </div>
         ))}
