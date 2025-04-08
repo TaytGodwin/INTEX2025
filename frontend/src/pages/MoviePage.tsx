@@ -3,7 +3,7 @@ function MoviePage(){
 
     return(<>
     
-    <p>This is a movie Detail page</p>
+    <p>This is a movie page</p>
     
     </>); 
 }

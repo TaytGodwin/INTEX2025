@@ -10,6 +10,7 @@ import AdminPage from './pages/Admin';
 import MovieDetailPage from './pages/MovieDetailPage'
 import { AuthProvider } from './context/AuthContext';
 import AuthorizeView from './components/authentication/AuthorizeView';
+import MoviePage from './pages/MoviePage';
 
 function App() {
   return (
@@ -26,10 +27,10 @@ function App() {
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-
+          <Route path="/movieDetails" element={<MovieDetailPage/>} />
+          <Route path="/movies" element={<MoviePage/>} />
           {/* Protected Routes */}
           <Route element={<AuthorizeView children={undefined} />}>
-            <Route path="/movieDetails" element={<MovieDetailPage/>} />
             <Route path="/admin" element={<AdminPage />} />
             {/* Add other protected routes here */}
           </Route>
