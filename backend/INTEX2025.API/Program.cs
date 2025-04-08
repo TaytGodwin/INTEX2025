@@ -29,7 +29,6 @@ builder.Services.AddDbContext<RecommenderDbContext>(options =>
 // This is for images
 var blobConnectionString = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__BLOB_CONNECTION");
 var containerName = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__CONTAINERNAME");
-Console.WriteLine($"Blob Connection String: {containerName}");
 
 var blobServiceClient = new BlobServiceClient(blobConnectionString);
 var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);

@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using DotNetEnv;
 
 namespace INTEX.API.Controllers
 {
@@ -13,10 +14,19 @@ namespace INTEX.API.Controllers
 
         public ImageController(IConfiguration configuration)
         {
-            // Initialize BlobServiceClient using configuration
-            var connectionString = configuration["ConnectionStrings:AzureBlobStorage:ConnectionString"];
+            // Load connection string and container name from environment variables
+            var connectionString = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__BLOB_CONNECTION");
+            var containerName = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__CONTAINERNAME");
+
+            // If environment variables are null, throw an exception or handle appropriately
+            if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(containerName))
+            {
+                throw new InvalidOperationException("Blob connection string or container name is missing.");
+            }
+
+            // Initialize BlobServiceClient using the connection string
             _blobServiceClient = new BlobServiceClient(connectionString);
-            _containerName = configuration["ConnectionStrings:AzureBlobStorage:ContainerName"];
+            _containerName = containerName;
         }
 
         // Get image from blob storage
