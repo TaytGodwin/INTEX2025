@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom';
+import logo from '../../assets/Website_Logo.png'
 import '../../css/theme.css'; // For custom tweaks
 import Logout from '../authentication/Logout';
 
 const AdminNavbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'transparent' }}>
       <div className="container-fluid">
-        <Link to="/Admin" className="navbar-brand">Admin Page</Link>
+      <Link to="/" className="navbar-brand">
+          <img src={logo} alt="My Logo" style={{ width: '50px', height: 'auto' }} />
+        </Link>
+        <Link to="/admin" className="navbar-brand">Admin Home</Link>
 
         <button
           className="navbar-toggler"
@@ -22,11 +26,15 @@ const AdminNavbar = () => {
 
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link to="/AdminDatabasePage" className="nav-link">Database Page</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/AdminUsers" className="nav-link">Users</Link>
+            <li className="nav-item my-3 text-center">
+              <Link to="/admin" className="nav-link"
+              style={{
+                fontSize: '1rem',
+                borderRadius: '50px',
+                padding: '0.5rem 1.5rem',
+              }}
+              
+              >Movie Database</Link>
             </li>
             <li className="nav-item my-3 text-center">
             <Logout />
