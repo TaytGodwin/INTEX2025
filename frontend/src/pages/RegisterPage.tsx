@@ -148,6 +148,9 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
       peacock,
     };
 
+    // Console log the profileData to inspect the values
+    console.log("Profile data being sent:", profileData);
+
     try {
       // 1. Send auth data to authentication API
       const authResponse = await fetch(`${identityApiUrl}/register`, {
