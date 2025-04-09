@@ -53,13 +53,13 @@ const LandingHero: React.FC = () => {
         <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>
           Stream your favorite shows and movies anytime, anywhere.
         </p>
-        <Link to="/login" className="nav-link sign-in-button" style={{
-                  fontSize: '2rem',
-                  borderRadius: '50px',
-                  padding: '0.5rem 1.5rem',
-                }}>
-                Get Started
-              </Link>
+        <Link 
+          to="/register" 
+          className="btn-primary" 
+          style={{ fontSize: '1.5rem', padding: '0.75rem 1.5rem' }}
+        >
+          Get Started
+        </Link>
       </div>
       <Slider {...sliderSettings}>
         {slides.map((slide, index) => (
