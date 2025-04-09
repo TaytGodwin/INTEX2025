@@ -153,13 +153,12 @@ public class RecommenderController : ControllerBase
     // 2. Parse the recommended showIds
     // 3. Fetch their movie details and return
     [HttpGet("top5_showIds")]
-    public async Task<IActionResult> GetTop5ShowIds([FromQuery] long showId)
+    public async Task<IActionResult> GetTop5ShowIds([FromQuery] long showId, [FromQuery] string showGenre)
     {
         var rec = _context.Top5ShowIds
             .Where(r => r.ShowId == showId)
             .Select(r => new
             {
-                r.IfYouLike,
                 r.Recommendation1,
                 r.Recommendation2,
                 r.Recommendation3,
@@ -168,21 +167,34 @@ public class RecommenderController : ControllerBase
             })
             .FirstOrDefault();
 
-        if (rec == null)
-            return NotFound("No recommendations found for that showId.");
+        List<long> showIds;
 
-        var showIds = new List<long>
+        if (rec != null)
         {
-            showId,
-            long.Parse(rec.Recommendation1),
-            long.Parse(rec.Recommendation2),
-            long.Parse(rec.Recommendation3),
-            long.Parse(rec.Recommendation4),
-            long.Parse(rec.Recommendation5)
-        };
+            showIds = new List<long>
+            {
+                long.Parse(rec.Recommendation1),
+                long.Parse(rec.Recommendation2),
+                long.Parse(rec.Recommendation3),
+                long.Parse(rec.Recommendation4),
+                long.Parse(rec.Recommendation5)
+            };
+        }
+        else
+        {
+            showIds = _context.GenreRecommendations
+                .Where(gr => gr.Genre.ToLower().Contains(showGenre.ToLower()))
+                .OrderByDescending(gr => gr.Score)
+                .Take(5)
+                .Select(gr => gr.RecommendedId)
+                .Distinct()
+                .ToList();
+
+            if (!showIds.Any())
+                return NotFound($"No recommended shows found for genre '{showGenre}'.");
+        }
 
         var movieDetails = await GetMovieDetailsByShowIds(showIds);
-
         return Ok(movieDetails);
     }
 }
