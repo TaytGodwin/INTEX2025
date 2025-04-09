@@ -28,6 +28,7 @@ const GuestNavbar = () => {
                   fontSize: '2rem',
                   borderRadius: '50px',
                   padding: '0.5rem 1.5rem',
+                  
                 }}>
                 Sign in
               </Link>
