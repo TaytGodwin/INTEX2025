@@ -50,7 +50,7 @@ export const getGenres = async (): Promise<string[]> => {
 export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
   try {
     const response = await fetch(`${MOVIE_API_URL}/api/Movie/AddMovie`, {
-      method: 'GET',
+      method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
