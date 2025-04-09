@@ -4,7 +4,7 @@ using INTEX.API.Data;
 [Table("movies_genres")]
 public class movies_genre
 {
-    public string show_id { get; set; }
+    public int show_id { get; set; }
     public int GenreID { get; set; }
 
     [ForeignKey("show_id")]

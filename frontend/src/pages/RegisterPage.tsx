@@ -6,7 +6,8 @@ function RegisterPage() {
   // state variables for email and passwords
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [age, setAge] = useState('');
+  const [FullName, setFullName] = useState('');
+  const [age, setAge] = useState(18);
   const [gender, setGender] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
@@ -55,6 +56,7 @@ function RegisterPage() {
       const success = await register(email, password);
 
       if (success) {
+        // If successful, set the rest of the data in the users table
         setError('✅ Successfully registered! Redirecting to login...');
         setTimeout(() => navigate('/login'), 1500);
       } else {
@@ -80,50 +82,30 @@ function RegisterPage() {
               </button>
             </div>
             <form onSubmit={handleSubmit}>
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={email}
-                  onChange={handleChange}
-                />
-                <label htmlFor="email">Email address</label>
-              </div>
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={password}
-                  onChange={handleChange}
-                />
-                <label htmlFor="password">Password</label>
-              </div>
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={confirmPassword}
-                  onChange={handleChange}
-                />
-                <label htmlFor="confirmPassword">Confirm Password</label>
-              </div>
-
-              {/* Additional Columns for User information */}
+              {/* Columns for User information */}
 
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
-                  type="age"
+                  type="text"
+                  id="FullName"
+                  name="FullName"
+                  value={FullName}
+                  onChange={(e) => setFullName(e.target.value)} // Correctly pass a function reference
+                />
+                <label htmlFor="FullName">Full Name</label>
+              </div>
+
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="number"
+                  min={18}
+                  max={120}
                   id="age"
                   name="age"
                   value={age}
-                  onChange={handleChange}
+                  onChange={(e) => setAge(Number(e.target.value))} // Correctly pass a function reference
                 />
                 <label htmlFor="age">Age</label>
               </div>
@@ -283,6 +265,39 @@ function RegisterPage() {
                   </div>
                   Register
                 </button>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={email}
+                  onChange={handleChange}
+                />
+                <label htmlFor="email">Email address</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={handleChange}
+                />
+                <label htmlFor="password">Password</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  onChange={handleChange}
+                />
+                <label htmlFor="confirmPassword">Confirm Password</label>
               </div>
               <div className="d-grid mb-2">
                 <button
