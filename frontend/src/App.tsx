@@ -27,7 +27,7 @@ function App() {
             <Route path="menu" element={<HomePage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
-            <Route path="movies" element={<MoviePage />} />
+            
           </Route>
 
           {/* Protected Routes for all authenticated users (User and Administrator) */}
@@ -35,7 +35,7 @@ function App() {
             element={<AuthorizeView allowedRoles={['Administrator', 'User']} />}
           >
             <Route element={<Layout />}>
-              
+              <Route path="movies" element={<MoviePage />} />
               <Route path="movieDetails" element={<MovieDetailPage />} />
               <Route path="search" element={<SearchPage />} />
               <Route path="logout" element={<Logout />} />
