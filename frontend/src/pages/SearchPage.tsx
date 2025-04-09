@@ -4,7 +4,6 @@ import { getGenres, searchMovies } from '../api/MoviesAPI';
 import { getImage } from '../api/ImageAPI';
 import { Movie } from '../types/Movie';
 
-
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!]/g, '');
 }
@@ -32,6 +31,7 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     const fetchGenres = async () => {
       const fetchedGenres = await getGenres();
+      console.log('Fetched genres:', fetchedGenres)
       setGenres(fetchedGenres);
     };
     fetchGenres();
@@ -44,7 +44,7 @@ const SearchPage: React.FC = () => {
       try {
         // Pass selectedGenre as an array if one is chosen, otherwise an empty array.
         const genreList = selectedGenres.length > 0 ? selectedGenres : [];
-        const newMovies = await searchMovies(searchTerm, 25, page, genreList);
+        const newMovies = await searchMovies(searchTerm || '', 25, page, genreList);
         setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
         setHasMore(newMovies.length > 0);
       } catch (error) {
@@ -172,13 +172,20 @@ const SearchPage: React.FC = () => {
     );
   })}
 </div>
-      <div style={{ marginTop: '1rem' }}>
-        {selectedGenres.length > 0 && (
-          <p>Filtering by: {selectedGenres.join(', ')}</p>
-        )}
-      </div>
-      </div>
+</div>
+      {searchTerm === '' && selectedGenres.length === 0 && (
+        <p style={{ color: '#ccc' }}>Showing all movies...</p>
+      )}
 
+      {searchTerm === '' && selectedGenres.length > 0 && (
+        <p style={{ color: '#ccc' }}>Showing all movies in genre(s): {selectedGenres.join(', ')}</p>
+      )}
+
+      {searchTerm !== '' && (
+        <p style={{ color: '#ccc' }}>
+          Searching for: "<strong>{searchTerm}</strong>"{selectedGenres.length > 0 ? ` in genre(s): ${selectedGenres.join(', ')}` : ''}
+        </p>
+      )}
       {/* Movies Grid */}
       <div
           className="search-results-grid"
