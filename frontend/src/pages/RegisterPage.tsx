@@ -28,11 +28,6 @@ function RegisterPage() {
 
   const handleLoginClick = () => {
     navigate('/login');
-    setAge('');
-    setCity('');
-    setState('');
-    setZip('');
-    setGender('');
   };
 
   // handle change events for input fields
