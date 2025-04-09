@@ -138,17 +138,18 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
       city,
       state: stateValue,
       zip,
-      subscriptions: {
-        netflix,
-        amazonPrime,
-        disneyPlus,
-        paramountPlus,
-        max,
-        hulu,
-        appleTVPlus,
-        peacock,
-      },
+      netflix,
+      amazonPrime,
+      disneyPlus,
+      paramountPlus,
+      max,
+      hulu,
+      appleTVPlus,
+      peacock,
     };
+
+    // Console log the profileData to inspect the values
+    console.log("Profile data being sent:", profileData);
 
     try {
       // 1. Send auth data to authentication API
@@ -164,7 +165,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
 
       // 2. Send profile data to profile API
       const profileResponse = await fetch(
-        `${identityApiUrl}/api/user/CreateUser`,
+        `${identityApiUrl}/api/User/CreateUser`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

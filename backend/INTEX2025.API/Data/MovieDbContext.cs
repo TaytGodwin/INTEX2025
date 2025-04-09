@@ -8,14 +8,15 @@ public class MovieDbContext : DbContext
 
     public DbSet<movies_rating> Ratings { get; set; }     // Ratings table
     public DbSet<movies_title> Movies { get; set; }       // Movies table
-    public DbSet<movies_user> Users { get; set; }         // Users table
+    public DbSet<movies_user> MovieUsers { get; set; }         // Users table
     public DbSet<genre_name> GenreNames { get; set; }              // Genres table
     public DbSet<movies_genre> MovieGenres { get; set; }  // linking table
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<genre_name>().ToTable("genre_names"); // 👈 This line
-
+        modelBuilder.Entity<movies_user>().ToTable("movies_users");
+        
         modelBuilder.Entity<movies_genre>()
             .HasKey(mg => new { mg.show_id, mg.GenreID });
         modelBuilder.Entity<movies_rating>()
