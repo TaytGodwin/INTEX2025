@@ -9,7 +9,7 @@ public class UsersController : ControllerBase
         _context = context;
     }
 
-    [HttpPost]
+    [HttpPost("CreateUser")]
     public async Task<IActionResult> PostUser([FromBody] userDto userDto)
     {
         var user = new User
