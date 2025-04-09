@@ -39,14 +39,14 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     setNewMovie({ ...newMovie, [name]: value });
   };
 
-  const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // Sets the list of genres
-    const selectedGenres = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setNewMovie({ ...newMovie, genres: selectedGenres });
-  };
+  // const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   // Sets the list of genres
+  //   const selectedGenres = Array.from(
+  //     e.target.selectedOptions,
+  //     (option) => option.value
+  //   );
+  //   setNewMovie({ ...newMovie, genres: selectedGenres });
+  // };
 
   const handleSubmit = async () => {
     try {

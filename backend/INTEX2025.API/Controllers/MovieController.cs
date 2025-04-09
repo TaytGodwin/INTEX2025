@@ -96,6 +96,20 @@ namespace INTEX.API.Controllers
         [Authorize] // Requires users to be logged in
         public IActionResult AddMovie([FromBody] MovieUpdateDto newMovieDto)
         {
+            Console.WriteLine(newMovieDto.Genres);
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
             // 1. Create a new movie instance from the DTO
             var newMovie = new movies_title
             {
