@@ -1,6 +1,6 @@
 import AuthorizeView from '../components/authentication/AuthorizeView';
 import { useState, useEffect } from 'react';
-import { getAllMovies } from '../api/MoviesAPI';
+import { deleteMovie, getAllMovies } from '../api/MoviesAPI';
 import { getGenres } from '../api/MoviesAPI';
 import { Movie } from '../types/Movie';
 // import EditMovieModal from '../components/EditMovieModal';
@@ -28,6 +28,27 @@ const AdminDatabasePage = () => {
 
     fetchData();
   }, []);
+
+  const handleDelete = async (show_id: number) => {
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this movie? It will also delete all ratings associated with this movie'
+    );
+    if (!confirmDelete) return; // exit this if they no longer want to delete
+
+    try {
+      // Call delete API
+      const success = await deleteMovie(show_id);
+
+      if (success) {
+        // Remove the deleted movie from the local state
+        setMovies(movies.filter((m) => m.show_id !== show_id)); // Updates the UI
+      } else {
+        alert('Failed to delete the movie. Please try again.');
+      }
+    } catch (error) {
+      alert('An error occurred. Please try again later.');
+    }
+  };
 
   const filteredMovies = movies.filter((m) =>
     m.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -110,13 +131,14 @@ const AdminDatabasePage = () => {
                           title="Edit"
                           // onClick={() => handleOpenEdit(movie)}
                         >
-                          ✏️
+                          ✏️ Edit
                         </button>
                         <button
                           className="btn btn-sm btn-outline-danger"
                           title="Delete"
+                          onClick={() => handleDelete(movie.show_id)} // Pass a function reference
                         >
-                          🗑
+                          <span style={{ color: 'black' }}>🗑</span> Delete
                         </button>
                       </div>
                     </td>
@@ -171,7 +193,10 @@ const AdminDatabasePage = () => {
         {showAddModal && (
           <AddMovieModal
             genres={genres}
-            onClose={() => setShowAddModal(false)}
+            onClose={() => {
+              console.log('Closing modal...');
+              setShowAddModal(false);
+            }}
             onMovieAdded={(updatedMovies) => setMovies(updatedMovies)}
           />
         )}

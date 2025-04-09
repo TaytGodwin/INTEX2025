@@ -15,6 +15,9 @@ public class MovieDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<genre_name>().ToTable("genre_names"); // 👈 This line
+        // Map the 'movies_rating' entity to the correct table in the database
+        modelBuilder.Entity<movies_rating>()
+            .ToTable("movies_ratings"); // Map to dbo.movies_ratings table
 
         modelBuilder.Entity<movies_genre>()
             .HasKey(mg => new { mg.show_id, mg.GenreID });

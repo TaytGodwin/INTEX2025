@@ -67,3 +67,27 @@ export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
     return false;
   }
 };
+
+// This will delete a movie
+export const deleteMovie = async (ShowIdToDelete: number): Promise<boolean> => {
+  try {
+    const response = await fetch(`${MOVIE_API_URL}/api/Movie/DeleteMovie`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ShowIdToDelete),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    // Return true if the movie was successfully deleted
+    return true;
+  } catch (error) {
+    console.error('Error deleting movie:', error);
+    return false;
+  }
+};

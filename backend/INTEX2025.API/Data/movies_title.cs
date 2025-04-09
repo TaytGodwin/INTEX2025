@@ -8,6 +8,7 @@ namespace INTEX.API.Data
     {
         [Key]
         [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int show_id { get; set; }
         [Required]
         public string type { get; set; }
