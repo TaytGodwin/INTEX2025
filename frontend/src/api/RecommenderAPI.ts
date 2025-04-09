@@ -5,7 +5,7 @@ const Recommender_API_URL = 'https://localhost:5000'
 
 // This API call is for the main page. It does not require authorization
 // Should return a list of 10 movies
-export const getComedyMovies = async (): Promise<Movie[] | null> => {
+export const getGenreMovies = async (): Promise<Movie[] | null> => {
   try {
     const response = await fetch(
       `${Recommender_API_URL}/api/Recommender/genre_recommendations`,
