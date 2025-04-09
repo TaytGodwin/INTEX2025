@@ -7,6 +7,11 @@ import { Movie } from '../../types/Movie';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+function sanitizeTitle(title: string): string {
+  // Remove these characters: -, ?, #, (, )
+  return title.replace(/[-?#()]/g, '');
+}
+
 function FeaturedSection() {
   const [movies, setMovies] = useState<Movie[]>([]);
   // Using the movie title as the key to store the fetched image URL
@@ -29,7 +34,7 @@ function FeaturedSection() {
           // For each movie, fetch its image using the movie title
           const imagePromises = topTenMovies.map(async (movie) => {
             
-            const sanitizedTitle = movie.title.replace(/^#/, '');
+            const sanitizedTitle = sanitizeTitle(movie.title);
             const blob = await getImage(sanitizedTitle);
             if (blob) {
               return { title: movie.title, url: URL.createObjectURL(blob) };
@@ -56,10 +61,14 @@ function FeaturedSection() {
 
   const sliderSettings = {
     dots: true,           // Show navigation dots
-    infinite: false,      // Do not loop infinitely; change to true if desired
-    speed: 500,           // Transition speed in milliseconds
+    infinite: true,      // Do not loop infinitely; change to true if desired
     slidesToShow: 5,      // Number of movie posters to show at once
-    slidesToScroll: 5,    // Number of posters to scroll at a time
+    slidesToScroll: 5,          // Loop continuously
+    autoplay: true,          // Enable auto scrolling
+    autoplaySpeed: 0,        // No pause between transitions
+    speed: 200000,            // Transition duration (20 seconds); adjust to control speed
+    cssEase: 'linear',       // Linear easing for a continuous scroll effect       // Scroll one slide at a time
+    pauseOnHover: false,    // Number of posters to scroll at a time
     responsive: [
       {
         breakpoint: 1024,
@@ -83,9 +92,10 @@ function FeaturedSection() {
   return (
     <section className="featured-section">
       <h2>Featured on MyFlix</h2>
+      <br />
       <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
-          <div key={index} className="carousel-item" style={{ padding: '0 5px' }}>
+          <div key={index} className="carousel-item" style={{ padding: '0 10px' }}>
             <MoviePoster
               imageUrl={movieImages[movie.title] || defaultImageUrl}
               title={movie.title}
