@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using Azure.Storage.Blobs;
 
-DotNetEnv.Env.Load(); // Ensure environment variables are loaded in development
+// DotNetEnv.Env.Load(); // Ensure environment variables are loaded in development
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -121,5 +121,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy();
 app.MapControllers();
-app.MapIdentityApi<IdentityUser>().RequireCors();
+app.MapIdentityApi<IdentityUser>().RequireCors("AllowReactApp");
 app.Run();
