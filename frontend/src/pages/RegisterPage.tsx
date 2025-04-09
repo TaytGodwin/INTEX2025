@@ -6,7 +6,7 @@ function RegisterPage() {
   // state variables for email and passwords
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [FullName, setFullName] = useState('');
+  const [name, setName] = useState('');
   const [age, setAge] = useState(18);
   const [gender, setGender] = useState('');
   const [city, setCity] = useState('');
@@ -88,12 +88,12 @@ function RegisterPage() {
                 <input
                   className="form-control"
                   type="text"
-                  id="FullName"
-                  name="FullName"
-                  value={FullName}
-                  onChange={(e) => setFullName(e.target.value)} // Correctly pass a function reference
+                  id="name"
+                  name="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)} // Correctly pass a function reference
                 />
-                <label htmlFor="FullName">Full Name</label>
+                <label htmlFor="name">Full Name</label>
               </div>
 
               <div className="form-floating mb-3">
@@ -102,12 +102,12 @@ function RegisterPage() {
                   type="number"
                   min={18}
                   max={120}
-                  id="age"
-                  name="age"
+                  id="phone"
+                  name="phone"
                   value={age}
                   onChange={(e) => setAge(Number(e.target.value))} // Correctly pass a function reference
                 />
-                <label htmlFor="age">Age</label>
+                <label htmlFor="phone">Phone Number</label>
               </div>
 
               <div className="form-floating mb-3">
