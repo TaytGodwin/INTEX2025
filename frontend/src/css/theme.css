@@ -516,3 +516,7 @@ html, body {
 .layout main {
   flex: 1; /* Main content grows to fill available space */
 }
+::placeholder {
+  color: #ccc;
+  opacity: 1; /* Ensures it's not faded */
+}
