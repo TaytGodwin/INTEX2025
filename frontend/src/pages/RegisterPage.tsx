@@ -138,16 +138,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
       city,
       state: stateValue,
       zip,
-      subscriptions: {
-        netflix,
-        amazonPrime,
-        disneyPlus,
-        paramountPlus,
-        max,
-        hulu,
-        appleTVPlus,
-        peacock,
-      },
+      netflix,
+      amazonPrime,
+      disneyPlus,
+      paramountPlus,
+      max,
+      hulu,
+      appleTVPlus,
+      peacock,
     };
 
     try {
