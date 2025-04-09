@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace INTEX.API.Controllers;
 
+public class RoleAssignmentDto
+{
+    public string UserEmail { get; set; }
+    public string RoleName { get; set; }
+}
 [Route("[controller]")]
 [ApiController]
 // [Authorize(Roles = "Administrator")] // This means only someone with designated role can use this controller
@@ -42,31 +47,27 @@ public class RoleController : Controller
     }
 
     [HttpPost("AssignRoleToUser")]
-    public async Task<IActionResult> AssignRoleToUser(string userEmail, string roleName)
+    public async Task<IActionResult> AssignRoleToUser([FromBody] RoleAssignmentDto dto)
     {
-        if (string.IsNullOrWhiteSpace(userEmail) || string.IsNullOrWhiteSpace(roleName))
+        if (string.IsNullOrWhiteSpace(dto.UserEmail) || string.IsNullOrWhiteSpace(dto.RoleName))
         {
             return BadRequest("User email and role name are required.");
         }
-
-        var user = await _userManager.FindByEmailAsync(userEmail);
+        var user = await _userManager.FindByEmailAsync(dto.UserEmail);
         if (user == null)
         {
             return NotFound("User not found.");
         }
-
-        var roleExists = await _roleManager.RoleExistsAsync(roleName);
+        var roleExists = await _roleManager.RoleExistsAsync(dto.RoleName);
         if (!roleExists)
         {
             return NotFound("Role does not exist.");
         }
-
-        var result = await _userManager.AddToRoleAsync(user, roleName);
+        var result = await _userManager.AddToRoleAsync(user, dto.RoleName);
         if (result.Succeeded)
         {
-            return Ok($"Role '{roleName}' assigned to user '{userEmail}'.");
+            return Ok($"Role '{dto.RoleName}' assigned to user '{dto.UserEmail}'.");
         }
-
         return StatusCode(500, "An error occurred while assigning the role.");
     }
 }
