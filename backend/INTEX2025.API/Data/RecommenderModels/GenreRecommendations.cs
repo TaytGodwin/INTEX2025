@@ -5,10 +5,10 @@ namespace INTEX.API.Data.RecommenderModels;
 public class GenreRecommendations
 {
     [Column("show_id")]
-    public string ShowId { get; set; }
+    public long ShowId { get; set; }
 
     [Column("recommended_id")]
-    public string RecommendedId { get; set; }
+    public long RecommendedId { get; set; }
 
     [Column("genre")]
     public string Genre { get; set; }
