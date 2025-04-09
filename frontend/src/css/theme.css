@@ -3,7 +3,7 @@
 /* CSS Variables */
 :root {
   --font-body: 'Quicksand', sans-serif;
-  --font-heading: 'Poppins', sans-serif;
+  --font-heading: 'Fredoka One', cursive;
   --font-brand: 'Fredoka One', cursive;
   --font-fun: 'Luckiest Guy', cursive;
 
@@ -81,6 +81,20 @@ button:hover {
   color: white !important;
   transition: color 0.2s ease-in-out;
 }
+.sign-in-button{
+  font-size: 2rem;              /* Increase font size */
+  border-radius: 50px;          /* Make it round/bubble-like */
+  padding: 0.5rem 1.5rem;       /* Add some padding */
+  color: #fff;                  /* Text color */
+  background-color: #45b1da;/* Transparent background */
+  border: 2px solid #fff;       /* White border */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.sign-in-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  text-decoration: none;        /* Remove underline on hover */
+}
+
 .nav-link:hover {
   color: var(--color-secondary) !important;
 }
