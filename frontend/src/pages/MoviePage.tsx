@@ -26,6 +26,7 @@ function MoviePage() {
       // More movies as needed...
     ];
     setTopPicks(mockMovies);
+    console.log(topPicks);
   }, []);
 
   // useEffect(() => {

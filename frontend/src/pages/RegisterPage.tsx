@@ -6,11 +6,11 @@ function RegisterPage() {
   // state variables for email and passwords
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [age, setAge] = useState('')
-  const [gender, setGender] = useState('')
-  const [city, setCity] = useState('')
-  const [state, setState] = useState('')
-  const [zip, setZip] = useState('')
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zip, setZip] = useState('');
   const [netflix, setNetflix] = useState(false);
   const [amazonPrime, setAmazonPrime] = useState(false);
   const [disneyPlus, setDisneyPlus] = useState(false);
@@ -28,6 +28,11 @@ function RegisterPage() {
 
   const handleLoginClick = () => {
     navigate('/login');
+    setAge('');
+    setCity('');
+    setState('');
+    setZip('');
+    setGender('');
   };
 
   // handle change events for input fields
@@ -72,14 +77,13 @@ function RegisterPage() {
               Register
             </h5>
             <div className="d-grid mb-2">
-                <button
-                  className="btn btn-primary btn-login text-uppercase fw-bold"
-                  onClick={handleLoginClick}
-                >
-                  I already have a login
-                </button>
-                
-              </div>
+              <button
+                className="btn btn-primary btn-login text-uppercase fw-bold"
+                onClick={handleLoginClick}
+              >
+                I already have a login
+              </button>
+            </div>
             <form onSubmit={handleSubmit}>
               <div className="form-floating mb-3">
                 <input
@@ -128,7 +132,7 @@ function RegisterPage() {
                 />
                 <label htmlFor="age">Age</label>
               </div>
-          
+
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
@@ -179,107 +183,109 @@ function RegisterPage() {
                   className="btn btn-primary btn-login text-uppercase fw-bold"
                   type="submit"
                 >
+                  <div className="mb-3">
+                    <h6>Select Your Current Subscriptions:</h6>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="netflix"
+                        checked={netflix}
+                        onChange={(e) => setNetflix(e.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="netflix">
+                        Netflix
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="amazonPrime"
+                        checked={amazonPrime}
+                        onChange={(e) => setAmazonPrime(e.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="amazonPrime">
+                        Amazon Prime
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="disneyPlus"
+                        checked={disneyPlus}
+                        onChange={(e) => setDisneyPlus(e.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="disneyPlus">
+                        Disney+
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="paramountPlus"
+                        checked={paramountPlus}
+                        onChange={(e) => setParamountPlus(e.target.checked)}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="paramountPlus"
+                      >
+                        Paramount+
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="max"
+                        checked={max}
+                        onChange={(e) => setMax(e.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="max">
+                        Max
+                      </label>
+                    </div>
 
-<div className="mb-3">
-  <h6>Select Your Current Subscriptions:</h6>
-  <div className="form-check">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      id="netflix"
-      checked={netflix}
-      onChange={(e) => setNetflix(e.target.checked)}
-    />
-    <label className="form-check-label" htmlFor="netflix">
-      Netflix
-    </label>
-  </div>
-  <div className="form-check">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      id="amazonPrime"
-      checked={amazonPrime}
-      onChange={(e) => setAmazonPrime(e.target.checked)}
-    />
-    <label className="form-check-label" htmlFor="amazonPrime">
-      Amazon Prime
-    </label>
-  </div>
-  <div className="form-check">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      id="disneyPlus"
-      checked={disneyPlus}
-      onChange={(e) => setDisneyPlus(e.target.checked)}
-    />
-    <label className="form-check-label" htmlFor="disneyPlus">
-      Disney+
-    </label>
-  </div>
-  <div className="form-check">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      id="paramountPlus"
-      checked={paramountPlus}
-      onChange={(e) => setParamountPlus(e.target.checked)}
-    />
-    <label className="form-check-label" htmlFor="paramountPlus">
-      Paramount+
-    </label>
-  </div>
-  <div className="form-check">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      id="max"
-      checked={max}
-      onChange={(e) => setMax(e.target.checked)}
-    />
-                <label className="form-check-label" htmlFor="max">
-                  Max
-                </label>
-              </div>
-              
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="hulu"
-                  checked={hulu}
-                  onChange={(e) => setHulu(e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="hulu">
-                  Hulu
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="appleTVPlus"
-                  checked={appleTVPlus}
-                  onChange={(e) => setAppleTVPlus(e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="appleTVPlus">
-                  Apple TV+
-                </label>
-              </div>
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="peacock"
-                  checked={peacock}
-                  onChange={(e) => setPeacock(e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="peacock">
-                  Peacock
-                </label>
-              </div>
-            </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="hulu"
+                        checked={hulu}
+                        onChange={(e) => setHulu(e.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="hulu">
+                        Hulu
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="appleTVPlus"
+                        checked={appleTVPlus}
+                        onChange={(e) => setAppleTVPlus(e.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="appleTVPlus">
+                        Apple TV+
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="peacock"
+                        checked={peacock}
+                        onChange={(e) => setPeacock(e.target.checked)}
+                      />
+                      <label className="form-check-label" htmlFor="peacock">
+                        Peacock
+                      </label>
+                    </div>
+                  </div>
                   Register
                 </button>
               </div>
@@ -290,7 +296,6 @@ function RegisterPage() {
                 >
                   Go to Login
                 </button>
-                
               </div>
             </form>
             <strong>{error && <p className="error">{error}</p>}</strong>
