@@ -15,7 +15,9 @@ public class MovieDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<genre_name>().ToTable("genre_names"); // 👈 This line
-        modelBuilder.Entity<movies_user>().ToTable("movies_users");
+        modelBuilder.Entity<movies_user>()
+            .Property(u => u.UserId)
+            .ValueGeneratedOnAdd();
         
         modelBuilder.Entity<movies_genre>()
             .HasKey(mg => new { mg.show_id, mg.GenreID });
