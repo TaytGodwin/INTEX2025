@@ -41,8 +41,8 @@ const AdminDatabasePage = () => {
   const totalPages = Math.ceil(filteredMovies.length / pageSize);
 
   // const handleOpenEdit = (movie: Movie) => {
-  // setMovieToEdit(movie);
-  // setShowEditModal(true);
+  //   setMovieToEdit(movie);
+  //   setShowEditModal(true);
   // };
 
   return (
@@ -108,7 +108,7 @@ const AdminDatabasePage = () => {
                         <button
                           className="btn btn-sm btn-outline-primary"
                           title="Edit"
-                          onClick={() => handleOpenEdit(movie)}
+                          // onClick={() => handleOpenEdit(movie)}
                         >
                           ✏️
                         </button>
@@ -176,7 +176,7 @@ const AdminDatabasePage = () => {
           />
         )}
 
-        {showEditModal && movieToEdit && (
+        {/* {showEditModal && movieToEdit && (
           <EditMovieModal
             movie={movieToEdit}
             genres={genres}
@@ -186,7 +186,7 @@ const AdminDatabasePage = () => {
             }}
             onMovieUpdated={(updatedMovies) => setMovies(updatedMovies)}
           />
-        )}
+        )} */}
       </div>
     </AuthorizeView>
   );

@@ -1,6 +1,5 @@
-const Identity_API_URL =
-  'https://localhost:5000';
-  //'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
+const Identity_API_URL = 'https://localhost:5000';
+//'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
 
 interface LoggedInUser {
   email: string;
@@ -10,7 +9,6 @@ interface LoggedInUser {
 // API call to ping the backend to check if the user is logged in
 export const pingAuth = async (): Promise<LoggedInUser | null> => {
   try {
-    console.log('line12');
     const response = await fetch(`${Identity_API_URL}/api/Identity/pingauth`, {
       method: 'GET',
       credentials: 'include',
