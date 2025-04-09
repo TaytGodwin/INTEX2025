@@ -1,7 +1,7 @@
 // GenreRec.tsx
 
 import { useState, useEffect } from 'react';
-import { getGenreMovies } from './mockAPI';  // Import the mock API call
+import { getGenreMovies } from '../../api/RecommenderAPI';  // Import the mock API call
 import MoviePoster from '../movieCards/MoviePoster';  // Assuming you have a MoviePoster component for displaying images
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
