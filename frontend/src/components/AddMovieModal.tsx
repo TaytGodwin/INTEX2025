@@ -78,11 +78,24 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ genres, onClose, onMovieA
             </select>
             <input className="form-control mb-2" name="duration" placeholder="Duration" value={newMovie.duration} onChange={handleChange} />
             <textarea className="form-control mb-2" name="description" placeholder="Description" value={newMovie.description} onChange={handleChange} />
-            <select className="form-select" multiple value={newMovie.genres} onChange={handleGenreChange}>
-              {genres.map(genre => (
-                <option key={genre} value={genre}>{genre}</option>
+            <label className="form-label">Select Genres</label>
+            <select
+              className="form-select mb-2"
+              multiple
+              value={newMovie.genres}
+              onChange={handleGenreChange}
+            >
+              {newMovie.genres.length === 0 && (
+                <option disabled value="">Select genres...</option>
+              )}
+              {genres.map((genre) => (
+                <option key={genre} value={genre}>
+                  {genre}
+                </option>
               ))}
             </select>
+<small className="text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple genres</small>
+
           </div>
           <div className="modal-footer">
             <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
