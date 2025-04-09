@@ -35,7 +35,7 @@ const AdminDatabasePage = () => {
           <h4 className="admin-title">Admin Panel</h4>
           <ul>
             <li><span>📦</span> Database</li>
-            <li><span>👥</span> Users</li>
+            {/* <li><span>👥</span> Users</li> */}
           </ul>
           <button className="logout-btn btn btn-outline-danger mt-auto">Logout</button>
         </aside>
