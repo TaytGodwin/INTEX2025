@@ -7,7 +7,7 @@ namespace INTEX.API.Data
         [Required]
         public int user_id { get; set; } = default!;
         [Required]
-        public string show_id { get; set; } = default!;
+        public int show_id { get; set; } = default!;
         [Required]
         public int rating { get; set; }
     }
