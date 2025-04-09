@@ -122,5 +122,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy();
 app.MapControllers();
-app.MapIdentityApi<IdentityUser>().RequireCors();
+app.MapIdentityApi<IdentityUser>().RequireCors("AllowReactApp");
 app.Run();
