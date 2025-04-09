@@ -13,12 +13,13 @@ namespace INTEX.API.Data
         }
 
         // DbSet for your custom User model
-        public DbSet<movies_user> Movies_Users { get; set; }
 
+        public DbSet<movies_user> Movies_Users { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // Important to call this if you're inheriting from IdentityDbContext
-
+            base.OnModelCreating(modelBuilder); // keep this
+            modelBuilder.Entity<movies_user>().ToTable("movies_users");
         }
     }
 }
