@@ -99,7 +99,6 @@ namespace INTEX.API.Controllers
             // 1. Create a new movie instance from the DTO
             var newMovie = new movies_title
             {
-                show_id = Guid.NewGuid().ToString(), // Or however you generate a unique ID
                 title = newMovieDto.title,
                 type = newMovieDto.type,
                 director = newMovieDto.director,
@@ -143,7 +142,7 @@ namespace INTEX.API.Controllers
         // ✅ Update a movie
         [HttpPut("UpdateMovie/{show_id}")]
         [Authorize] // Requires users to be logged in
-        public IActionResult UpdateMovie(string show_id, [FromBody] MovieUpdateDto updatedMovie)
+        public IActionResult UpdateMovie(int show_id, [FromBody] MovieUpdateDto updatedMovie)
         {
             var existingMovie = _movieContext.Movies
                 .Include(m => m.MovieGenres)

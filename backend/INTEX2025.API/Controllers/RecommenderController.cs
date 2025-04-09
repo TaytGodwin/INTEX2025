@@ -26,11 +26,11 @@ public class RecommenderController : ControllerBase
 
     // Given a list of showIds, this method fetches full movie details including genres.
     // It's used to return human-readable movie info instead of just IDs.
+    // This function will return movie details when given a list of showIds
     private async Task<List<MovieUpdateDto>> GetMovieDetailsByShowIds(List<long> showIds)
     {
-        var stringIds = showIds.Select(id => id.ToString()).ToList();
         var movieDtos = await _movieDb.Movies
-            .Where(m => stringIds.Contains(m.show_id))
+            .Where(m => showIds.Contains(m.show_id))
             .Select(m => new MovieUpdateDto
             {
                 show_id = m.show_id,
@@ -46,13 +46,12 @@ public class RecommenderController : ControllerBase
                 Genres = _movieDb.MovieGenres
                     .Where(mg => mg.show_id == m.show_id)
                     .Join(_movieDb.GenreNames,
-                          mg => mg.GenreID,
-                          gn => gn.GenreID,
-                          (mg, gn) => gn.GenreName)
+                        mg => mg.GenreID,
+                        gn => gn.GenreID,
+                        (mg, gn) => gn.GenreName)
                     .ToList()
             })
             .ToListAsync();
-
         return movieDtos;
     }
 
