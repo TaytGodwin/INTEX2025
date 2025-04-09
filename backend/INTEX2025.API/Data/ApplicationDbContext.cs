@@ -17,7 +17,7 @@ namespace INTEX.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);  // Important to call this if you're inheriting from IdentityDbContext
+            base.OnModelCreating(modelBuilder); // Important to call this if you're inheriting from IdentityDbContext
 
         }
     }
