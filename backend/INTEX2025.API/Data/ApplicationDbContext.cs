@@ -13,7 +13,7 @@ namespace INTEX.API.Data
         }
 
         // DbSet for your custom User model
-        public DbSet<movies_user> Movies_Users { get; set; }
+        public DbSet<movies_users> Movies_Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
