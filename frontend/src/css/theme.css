@@ -83,6 +83,9 @@ button:hover {
 .nav-link:hover {
   color: var(--color-secondary) !important;
 }
+.card-body {
+  color: white;
+}
 
 /* Movie Detail Page */
 .movie-detail-page {
@@ -475,4 +478,20 @@ button:hover {
 .modal-content {
   width: 90%;
   max-width: 600px;
+}
+
+/* In your global CSS file (e.g., theme.css) or in a Layout component's CSS */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
+}
+
+.layout main {
+  flex: 1; /* Main content grows to fill available space */
 }
