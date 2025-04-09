@@ -1,12 +1,12 @@
 import AuthorizeView from '../components/authentication/AuthorizeView';
 import { useState, useEffect } from 'react';
-import { getAllMovies } from '../api/AllMoviesAPI';
-import { getGenres } from '../api/AllMoviesAPI';
+import { getAllMovies } from '../api/MoviesAPI';
+import { getGenres } from '../api/MoviesAPI';
 import { Movie } from '../types/Movie';
-import AddMovieModal from '../components/AddMovieModal';
 // import EditMovieModal from '../components/EditMovieModal';
 import '../css/theme.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AddMovieModal from '../components/admin/AddMovieModal';
 
 const AdminDatabasePage = () => {
   const [movies, setMovies] = useState<Movie[]>([]);

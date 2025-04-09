@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MoviePoster from '../components/movieCards/MoviePoster';
-import { getAllMovies } from '../api/AllMoviesAPI';
+import { getAllMovies } from '../api/MoviesAPI';
 import { getImage } from '../api/ImageAPI';
 import { Movie } from '../types/Movie';
 import '../css/theme.css';
