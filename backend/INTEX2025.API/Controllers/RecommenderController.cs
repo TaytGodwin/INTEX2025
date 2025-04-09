@@ -22,7 +22,7 @@ public class RecommenderController : ControllerBase
     }
 
     // This function will return movie details when given a list of showIds
-    private async Task<List<MovieUpdateDto>> GetMovieDetailsByShowIds(List<string> showIds)
+    private async Task<List<MovieUpdateDto>> GetMovieDetailsByShowIds(List<int> showIds)
     {
         var movieDtos = await _movieDb.Movies
             .Where(m => showIds.Contains(m.show_id))
@@ -110,11 +110,13 @@ public class RecommenderController : ControllerBase
     // Endpoint: /api/recommender/content_recs1?showId={showId}
     // Description: Returns top 10 recommended shows based on content similarity for a given showId
     [HttpGet("content_recs1")]
-    public async Task<IActionResult> GetContentRecs1([FromQuery] string showId)
+    public async Task<IActionResult> GetContentRecs1([FromQuery] int showId)
     {
-        var propertyName = showId?.Trim();
-        if (string.IsNullOrEmpty(propertyName))
+        // Ensure that showId is a valid positive integer
+        if (showId <= 0)
             return BadRequest("showId cannot be null or empty.");
+
+        var propertyName = showId;
 
         // Get all property names from ContentRecs1 model
         var validColumns = typeof(ContentRecs1).GetProperties()
@@ -126,7 +128,7 @@ public class RecommenderController : ControllerBase
         Console.WriteLine("Valid columns: " + string.Join(", ", validColumns));
         Console.WriteLine("Requested showId: " + propertyName);
 
-        if (!validColumns.Contains(propertyName.ToLower()))
+        if (!validColumns.Contains(propertyName))
         {
             return BadRequest($"Invalid showId: '{propertyName}'");
         }
@@ -163,7 +165,7 @@ public class RecommenderController : ControllerBase
     // Endpoint: /api/recommender/top10_movietitle?showId={showId}
     // Description: Returns top 10 recommended show IDs based on movie title similarity
     [HttpGet("top10_movietitle")]
-    public async Task<IActionResult> GetTop10MovieTitles([FromQuery] string showId)
+    public async Task<IActionResult> GetTop10MovieTitles([FromQuery] int showId)
     {
         // Query for top 10 recommended show IDs based on the provided showId
         var recommendations = _context.Top10MovieTitles
@@ -199,7 +201,7 @@ public class RecommenderController : ControllerBase
     // Endpoint: /api/recommender/top5_showIds?showId={showId}
     // Description: Returns top 5 hand-picked recommendations for a specific show
     [HttpGet("top5_showIds")]
-    public async Task<IActionResult> GetTop5ShowIds([FromQuery] string showId)
+    public async Task<IActionResult> GetTop5ShowIds([FromQuery] int showId)
     {
         // Step 1: Query the hand-picked recommendations based on the provided showId
         var rec = _context.Top5ShowIds
@@ -220,7 +222,7 @@ public class RecommenderController : ControllerBase
             return NotFound("No recommendations found for that showId.");
 
         // Step 3: Gather the recommended showIds into a list
-        var showIds = new List<string>
+        var showIds = new List<int>
     {
         rec.IfYouLike,
         rec.Recommendation1,
