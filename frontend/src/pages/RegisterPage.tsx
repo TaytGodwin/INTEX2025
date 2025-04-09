@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { register } from '../api/IdentityAPI';
 
 function RegisterPage() {
-  // state variables for email and passwords
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // state variables for form
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [age, setAge] = useState(18);
   const [gender, setGender] = useState('');
   const [city, setCity] = useState('');
@@ -20,7 +19,8 @@ function RegisterPage() {
   const [hulu, setHulu] = useState(false);
   const [appleTVPlus, setAppleTVPlus] = useState(false);
   const [peacock, setPeacock] = useState(false);
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
@@ -34,6 +34,13 @@ function RegisterPage() {
   // handle change events for input fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === 'name') setName(value);
+    if (name === 'phone') setPhone(value);
+    if (name === 'gender') setGender(value);
+    if (name === 'city') setCity(value);
+    if (name === 'state') setState(value);
+    if (name === 'zip') setZip(value);
+    if (name === 'city') setCity(value);
     if (name === 'email') setEmail(value);
     if (name === 'password') setPassword(value);
     if (name === 'confirmPassword') setConfirmPassword(value);
@@ -73,6 +80,8 @@ function RegisterPage() {
             <h5 className="card-title text-center mb-5 fw-light fs-5">
               Register
             </h5>
+
+            {/* ALREADY HAVE ACCOUNT */}
             <div className="d-grid mb-2">
               <button
                 className="btn btn-primary btn-login text-uppercase fw-bold"
@@ -81,9 +90,10 @@ function RegisterPage() {
                 I already have a login
               </button>
             </div>
-            <form onSubmit={handleSubmit}>
-              {/* Columns for User information */}
 
+            {/* FORM */}
+            <form onSubmit={handleSubmit}>
+              {/* NAME TEXT BOX */}
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
@@ -96,31 +106,76 @@ function RegisterPage() {
                 <label htmlFor="name">Full Name</label>
               </div>
 
+              {/* PHONE NUMBER TEXT BOX */}
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
                   type="number"
-                  min={18}
-                  max={120}
                   id="phone"
                   name="phone"
-                  value={age}
-                  onChange={(e) => setAge(Number(e.target.value))} // Correctly pass a function reference
+                  value={phone}
+                  onChange={(e) => setPhone((e.target.value))} // Correctly pass a function reference
                 />
                 <label htmlFor="phone">Phone Number</label>
               </div>
 
+              {/* AGE */}
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
-                  type="gender"
-                  id="gender"
-                  name="gender"
-                  value={gender}
-                  onChange={handleChange}
+                  type="number"
+                  id="age"
+                  min={18}
+                  max={120}
+                  name="age"
+                  value={age}
+                  onChange={(e) => setAge(Number(e.target.value))} // Correctly pass a function reference
                 />
-                <label htmlFor="gender">Gender</label>
+                <label htmlFor="age">Age</label>
               </div>
+
+              {/* GENDER RADIO BUTTONS */}
+              <label className="form-label d-block">Gender</label>
+              <div className="form-floating mb-3">
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="genderMale"
+                    value="Male"
+                    checked={gender === 'Male'}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label" htmlFor="genderMale">Male</label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="genderFemale"
+                    value="Female"
+                    checked={gender === 'Female'}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label" htmlFor="genderFemale">Female</label>
+                </div>
+              <div className="form-check form-check-inline">
+                <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="genderOther"
+                    value="Other"
+                    checked={gender === 'Other'}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label" htmlFor="genderOther">Other</label>
+              </div>
+              </div>
+
+              {/* CITY TEXT BOX */}
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
@@ -132,6 +187,8 @@ function RegisterPage() {
                 />
                 <label htmlFor="city">City</label>
               </div>
+
+              {/* STATE TEXT BOX */}
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
@@ -143,6 +200,8 @@ function RegisterPage() {
                 />
                 <label htmlFor="state">State</label>
               </div>
+
+              {/* ZIP TEXT BOX */}
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
@@ -155,13 +214,11 @@ function RegisterPage() {
                 <label htmlFor="zip">Zip</label>
               </div>
 
-              <div className="d-grid mb-2">
-                <button
-                  className="btn btn-primary btn-login text-uppercase fw-bold"
-                  type="submit"
-                >
-                  <div className="mb-3">
-                    <h6>Select Your Current Subscriptions:</h6>
+              {/* SUBSCRIPTIONS MULTI-SELECT */}
+             <h6 className="form-label d-block">Select Your Current Subscriptions:</h6>
+             <div className="mb-3">
+                <div className="row">
+                  <div className="col-3">
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -174,6 +231,8 @@ function RegisterPage() {
                         Netflix
                       </label>
                     </div>
+                  </div>
+                  <div className="col-3">
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -186,6 +245,8 @@ function RegisterPage() {
                         Amazon Prime
                       </label>
                     </div>
+                  </div>
+                  <div className="col-3">
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -198,6 +259,8 @@ function RegisterPage() {
                         Disney+
                       </label>
                     </div>
+                  </div>
+                  <div className="col-3">
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -206,13 +269,13 @@ function RegisterPage() {
                         checked={paramountPlus}
                         onChange={(e) => setParamountPlus(e.target.checked)}
                       />
-                      <label
-                        className="form-check-label"
-                        htmlFor="paramountPlus"
-                      >
+                      <label className="form-check-label" htmlFor="paramountPlus">
                         Paramount+
                       </label>
                     </div>
+                  </div>
+
+                  <div className="col-3 mt-2">
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -225,7 +288,8 @@ function RegisterPage() {
                         Max
                       </label>
                     </div>
-
+                  </div>
+                  <div className="col-3 mt-2">
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -238,6 +302,8 @@ function RegisterPage() {
                         Hulu
                       </label>
                     </div>
+                  </div>
+                  <div className="col-3 mt-2">
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -250,6 +316,8 @@ function RegisterPage() {
                         Apple TV+
                       </label>
                     </div>
+                  </div>
+                  <div className="col-3 mt-2">
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -263,9 +331,11 @@ function RegisterPage() {
                       </label>
                     </div>
                   </div>
-                  Register
-                </button>
+                </div>
               </div>
+
+
+              {/* EMAIL TEXT BOX */}
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
@@ -277,6 +347,8 @@ function RegisterPage() {
                 />
                 <label htmlFor="email">Email address</label>
               </div>
+
+              {/* PASSWORD TEXT BOX */}
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
@@ -288,6 +360,8 @@ function RegisterPage() {
                 />
                 <label htmlFor="password">Password</label>
               </div>
+
+              {/* CONFIRM PASSWORD TEXT BOX */}
               <div className="form-floating mb-3">
                 <input
                   className="form-control"
@@ -299,12 +373,17 @@ function RegisterPage() {
                 />
                 <label htmlFor="confirmPassword">Confirm Password</label>
               </div>
+
+              {/* SUBMIT FORM */}
+
+
+              {/* REGISTER */}
               <div className="d-grid mb-2">
                 <button
                   className="btn btn-primary btn-login text-uppercase fw-bold"
-                  onClick={handleLoginClick}
+                  type='submit'
                 >
-                  Go to Login
+                  Register
                 </button>
               </div>
             </form>
