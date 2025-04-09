@@ -24,20 +24,22 @@ export const getAllMovies = async (): Promise<Movie[]> => {
     return [];
   }
 };
+
+// This call gets all movies and works with pagination
 export const getTotalMovies = async (
   pageSize: number = 25,
   pageNum: number = 1,
-  sortBy: string = "title",
+  sortBy: string = 'title',
   genrelist?: string[]
-): Promise<Movie[]> => {
+): Promise<{ movies: Movie[]; totalNumMovies: number }> => {
   try {
     let url = `${MOVIE_API_URL}/api/Movie/AllMovies?pageSize=${pageSize}&pageNum=${pageNum}&sortBy=${sortBy}`;
     if (genrelist && genrelist.length > 0) {
-      genrelist.forEach(genre => {
+      genrelist.forEach((genre) => {
         url += `&genrelist=${encodeURIComponent(genre)}`;
       });
     }
-    
+
     const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -49,10 +51,13 @@ export const getTotalMovies = async (
     }
 
     const data = await response.json();
-    return data.movies; // Now matching the backend property
+    return {
+      movies: data.movies,
+      totalNumMovies: data.totalNumMovies,
+    };
   } catch (error) {
     console.error('Error fetching movies:', error);
-    return [];
+    return { movies: [], totalNumMovies: 0 };
   }
 };
 
@@ -67,12 +72,12 @@ export const searchMovies = async (
       method: 'GET',
       credentials: 'include',
     });
-    
+
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       throw new Error('Invalid response format from server');
     }
-    
+
     const data = await response.json();
     return data.movies; // Make sure this matches the backend ("Movies" with a capital M)
   } catch (error) {

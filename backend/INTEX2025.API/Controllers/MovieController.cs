@@ -68,7 +68,7 @@ namespace INTEX.API.Controllers
             return Ok(new { Movies = movies });
         }
         [HttpGet("AllMovies")]
-        public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null)
+        public IActionResult AllMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null)
         {
             var query = _movieContext.Movies
                 .Include(m => m.MovieGenres)
