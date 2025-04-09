@@ -479,6 +479,7 @@ button:hover {
   text-align: center;
   font-size: 1rem;
   font-weight: bold;
+  color: white;
 }
 
 .modal-overlay {

@@ -167,63 +167,207 @@
 // export default SearchPage;
 
 
+// import React, { useState, useEffect, useRef, useCallback } from 'react';
+// import MoviePoster from '../components/movieCards/MoviePoster';
+// import { getTotalMovies, searchMovies } from '../api/MoviesAPI';
+// import { getImage } from '../api/ImageAPI';
+// import { Movie } from '../types/Movie';
+// import '../css/theme.css';
+
+// // Helper to sanitize a title (removes problematic characters)
+// function sanitizeTitle(title: string): string {
+//   return title.replace(/[-?#()]/g, '');
+// }
+
+// const SearchPage: React.FC = () => {
+//   // Search term state (for client-side filtering)
+//   const [searchTerm, setSearchTerm] = useState('');
+//   // Movies loaded from API
+//   const [movies, setMovies] = useState<Movie[]>([]);
+//   // State for infinite scrolling
+//   const [page, setPage] = useState<number>(1);
+//   const [hasMore, setHasMore] = useState<boolean>(true);
+//   const [loading, setLoading] = useState<boolean>(false);
+//   // Mapping of movie titles to their fetched image URLs
+//   const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
+
+//   // Reset movies and pagination when search term changes
+//   useEffect(() => {
+//     setMovies([]);
+//     setPage(1);
+//     setHasMore(true);
+//   }, [searchTerm]);
+
+//   // Fetch movies whenever the search term or page changes.
+//   useEffect(() => {
+//     const fetchMovies = async () => {
+//       setLoading(true);
+//       try {
+//         // Call the searchMovies API with the current search term, page, and pageSize.
+//         const newMovies = await searchMovies(searchTerm, 25, page);
+//         // For page 1, replace the list; for later pages, append to it.
+//         setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
+//         setHasMore(newMovies.length > 0);
+//       } catch (error) {
+//         console.error('Error fetching search results:', error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchMovies();
+//   }, [searchTerm, page]);
+
+//   // Set up infinite scrolling with an IntersectionObserver
+//   const observer = useRef<IntersectionObserver | null>(null);
+//   const lastMovieElementRef = useCallback(
+//     (node: HTMLDivElement | null) => {
+//       if (loading) return;
+//       if (observer.current) observer.current.disconnect();
+//       observer.current = new IntersectionObserver((entries) => {
+//         if (entries[0].isIntersecting && hasMore) {
+//           setPage((prevPage) => prevPage + 1);
+//         }
+//       });
+//       if (node) observer.current.observe(node);
+//     },
+//     [loading, hasMore]
+//   );
+
+//   // Fetch images for movies whenever the movies array changes
+//   useEffect(() => {
+//     const fetchImages = async () => {
+//       const imagePromises = movies.map(async (movie) => {
+//         const sanitizedTitle = sanitizeTitle(movie.title);
+//         const encodedTitle = encodeURIComponent(sanitizedTitle);
+//         const blob = await getImage(encodedTitle);
+//         if (blob) {
+//           return { title: movie.title, url: URL.createObjectURL(blob) };
+//         } else {
+//           return { title: movie.title, url: '/images/default.jpg' };
+//         }
+//       });
+//       const images = await Promise.all(imagePromises);
+//       const imageMap: { [title: string]: string } = {};
+//       images.forEach((img) => {
+//         imageMap[img.title] = img.url;
+//       });
+//       setMovieImages(imageMap);
+//     };
+
+//     if (movies.length > 0) {
+//       fetchImages();
+//     }
+//   }, [movies]);
+
+//   if (loading) 
+//     return <div style={{ background: '#fff', minHeight: '100vh', padding: '2rem' }}>Loading...</div>;
+
+
+//   return (
+//     <div className="search-page" style={{ padding: '2rem', minHeight: '100vh' }}>
+//       {/* Search Bar */}
+//       <div className="search-bar-container" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+//         <input
+//           type="text"
+//           className="form-control"
+//           placeholder="Search movies..."
+//           value={searchTerm}
+//           onChange={(e) => setSearchTerm(e.target.value)}
+//           style={{
+//             padding: '0.75rem 1rem',
+//             width: '100%',
+//             maxWidth: '500px',
+//             borderRadius: '8px',
+//             fontSize: '1rem',
+//             border: 'none',
+//           }}
+//         />
+//       </div>
+
+//       {/* Movies Grid */}
+//       <div
+//         className="search-results-grid"
+//         style={{
+//           display: 'grid',
+//           gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+//           gap: '1.5rem',
+//         }}
+//       >
+//         {movies.map((movie, index) => {
+//           if (movies.length === index + 1) {
+//             // Attach the observer to the last element
+//             return (
+//               <div key={movie.show_id} ref={lastMovieElementRef} style={{ padding: '0 10px' }}>
+//                 <MoviePoster
+//                   title={movie.title}
+//                   imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+//                 />
+//               </div>
+//             );
+//           } else {
+//             return (
+//               <div key={movie.show_id} style={{ padding: '0 10px' }}>
+//                 <MoviePoster
+//                   title={movie.title}
+//                   imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+//                 />
+//               </div>
+//             );
+//           }
+//         })}
+//       </div>
+//       {loading && <div>Loading...</div>}
+//     </div>
+//   );
+// };
+
+// export default SearchPage;
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MoviePoster from '../components/movieCards/MoviePoster';
-import { getTotalMovies } from '../api/MoviesAPI';
+import { searchMovies } from '../api/MoviesAPI';
 import { getImage } from '../api/ImageAPI';
 import { Movie } from '../types/Movie';
 import '../css/theme.css';
 
-// Helper to sanitize a title (removes problematic characters)
 function sanitizeTitle(title: string): string {
-  return title.replace(/[-?#()]/g, '');
+  return title.replace(/[-?#()'":’‘“”.]/g, '');
 }
 
 const SearchPage: React.FC = () => {
-  // Search term state (for client-side filtering)
   const [searchTerm, setSearchTerm] = useState('');
-  // Movies loaded from API
   const [movies, setMovies] = useState<Movie[]>([]);
-  // State for infinite scrolling
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
-  // Mapping of movie titles to their fetched image URLs
   const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
 
-  // Reset movies and pagination when search term changes
+  // Reset the movie list and pagination when the search term changes.
   useEffect(() => {
     setMovies([]);
     setPage(1);
     setHasMore(true);
   }, [searchTerm]);
 
-  // Fetch movies based on the current page and search term
+  // Fetch movies whenever the search term or page changes.
   useEffect(() => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
-        // Call getTotalMovies with current pagination parameters.
-        // Since we can't change the backend, we assume it always returns 25 movies per page.
-        const newMovies = await getTotalMovies(25, page, 'title');
-        // For search, filter client-side:
-        const filteredNewMovies = newMovies.filter((movie) =>
-          movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        // For page 1, replace the movie list; for later pages, append to it.
-        setMovies((prev) => (page === 1 ? filteredNewMovies : [...prev, ...filteredNewMovies]));
-        setHasMore(filteredNewMovies.length > 0);
+        // Call the searchMovies API with the current search term, page, and pageSize.
+        const newMovies = await searchMovies(searchTerm, 25, page);
+        // For page 1, replace the list; for later pages, append to it.
+        setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
+        setHasMore(newMovies.length > 0);
       } catch (error) {
         console.error('Error fetching search results:', error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchMovies();
-  }, [page, searchTerm]);
+  }, [searchTerm, page]);
 
-  // Set up infinite scrolling with an IntersectionObserver
+  // Infinite scrolling: attach an observer to the last movie element.
   const observer = useRef<IntersectionObserver | null>(null);
   const lastMovieElementRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -239,27 +383,34 @@ const SearchPage: React.FC = () => {
     [loading, hasMore]
   );
 
-  // Fetch images for movies whenever the movies array changes
+  // Fetch images for the movies when the movies array changes.
   useEffect(() => {
     const fetchImages = async () => {
+      // Copy current images so we don't overwrite existing ones
+      const imageMap = { ...movieImages };
+  
       const imagePromises = movies.map(async (movie) => {
-        const sanitizedTitle = sanitizeTitle(movie.title);
-        const encodedTitle = encodeURIComponent(sanitizedTitle);
-        const blob = await getImage(encodedTitle);
-        if (blob) {
-          return { title: movie.title, url: URL.createObjectURL(blob) };
-        } else {
-          return { title: movie.title, url: '/images/default.jpg' };
+        // Use a stable unique key; movie.show_id is preferable if available.
+        if (!imageMap[movie.title]) { 
+          const sanitizedTitle = sanitizeTitle(movie.title);
+          const encodedTitle = encodeURIComponent(sanitizedTitle);
+          try {
+            const blob = await getImage(encodedTitle);
+            if (blob) {
+              imageMap[movie.title] = URL.createObjectURL(blob);
+            } else {
+              imageMap[movie.title] = '/images/default.jpg';
+            }
+          } catch (error) {
+            console.error(`Error fetching image for ${movie.title}:`, error);
+            imageMap[movie.title] = '/images/default.jpg';
+          }
         }
       });
-      const images = await Promise.all(imagePromises);
-      const imageMap: { [title: string]: string } = {};
-      images.forEach((img) => {
-        imageMap[img.title] = img.url;
-      });
+      await Promise.all(imagePromises);
       setMovieImages(imageMap);
     };
-
+  
     if (movies.length > 0) {
       fetchImages();
     }
@@ -281,43 +432,43 @@ const SearchPage: React.FC = () => {
             maxWidth: '500px',
             borderRadius: '8px',
             fontSize: '1rem',
-            border: 'none',
+            border: 'none'
           }}
         />
       </div>
 
       {/* Movies Grid */}
       <div
-        className="search-results-grid"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-          gap: '1.5rem',
-        }}
-      >
-        {movies.map((movie, index) => {
-          if (movies.length === index + 1) {
-            // Attach the observer to the last element
-            return (
-              <div key={movie.show_id} ref={lastMovieElementRef} style={{ padding: '0 10px' }}>
-                <MoviePoster
-                  title={movie.title}
-                  imageUrl={movieImages[movie.title] || '/images/default.jpg'}
-                />
-              </div>
-            );
-          } else {
-            return (
-              <div key={movie.show_id} style={{ padding: '0 10px' }}>
-                <MoviePoster
-                  title={movie.title}
-                  imageUrl={movieImages[movie.title] || '/images/default.jpg'}
-                />
-              </div>
-            );
-          }
-        })}
-      </div>
+          className="search-results-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+            gap: '3rem'
+          }}
+        >
+          {movies.map((movie, index) => {
+            // Use movie.show_id as the key if it's unique.
+            if (movies.length === index + 1) {
+              return (
+                <div key={movie.show_id} ref={lastMovieElementRef} style={{ padding: '0 10px' }}>
+                  <MoviePoster
+                    title={movie.title}
+                    imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+                  />
+                </div>
+              );
+            } else {
+              return (
+                <div key={movie.show_id} style={{ padding: '0 10px' }}>
+                  <MoviePoster
+                    title={movie.title}
+                    imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+                  />
+                </div>
+              );
+            }
+          })}
+        </div>
       {loading && <div>Loading...</div>}
     </div>
   );
