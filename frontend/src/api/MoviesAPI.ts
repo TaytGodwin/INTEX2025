@@ -1,3 +1,4 @@
+import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
 import { NewMovie } from '../types/NewMovie';
 
@@ -116,7 +117,7 @@ export const searchMovies = async (
 
 // GenreAPI.ts
 
-export const getGenres = async (): Promise<string[]> => {
+export const getGenres = async (): Promise<Genre[]> => {
   try {
     const response = await fetch(`${MOVIE_API_URL}/api/Movie/getgenres`, {
       method: 'GET',
@@ -155,6 +156,54 @@ export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
     return true;
   } catch (error) {
     console.error('Error fetching genres:', error);
+    return false;
+  }
+};
+
+// This will delete a movie
+export const deleteMovie = async (ShowIdToDelete: number): Promise<boolean> => {
+  try {
+    const response = await fetch(`${MOVIE_API_URL}/api/Movie/DeleteMovie`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ShowIdToDelete),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    // Return true if the movie was successfully deleted
+    return true;
+  } catch (error) {
+    console.error('Error deleting movie:', error);
+    return false;
+  }
+};
+
+// This will publish edits to a movie
+export const updateMovie = async (movieToEdit: Movie): Promise<boolean> => {
+  try {
+    const response = await fetch(`${MOVIE_API_URL}/api/Movie/UpdateMovie`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(movieToEdit),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    // Return true if the movie was successfully updated
+    return true;
+  } catch (error) {
+    console.error('Error updating movie:', error);
     return false;
   }
 };

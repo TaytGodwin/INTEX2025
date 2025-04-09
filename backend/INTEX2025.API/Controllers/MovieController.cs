@@ -149,20 +149,6 @@ namespace INTEX.API.Controllers
         [Authorize] // Requires users to be logged in
         public IActionResult AddMovie([FromBody] MovieUpdateDto newMovieDto)
         {
-            Console.WriteLine(newMovieDto.Genres);
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
             // 1. Create a new movie instance from the DTO
             var newMovie = new movies_title
             {
@@ -201,19 +187,19 @@ namespace INTEX.API.Controllers
                 _movieContext.SaveChanges();
             }
 
-            return Ok(newMovie);
+            return Ok();
         }
 
 
 
         // ✅ Update a movie
-        [HttpPut("UpdateMovie/{show_id}")]
+        [HttpPut("UpdateMovie")]
         [Authorize] // Requires users to be logged in
-        public IActionResult UpdateMovie(int show_id, [FromBody] MovieUpdateDto updatedMovie)
+        public IActionResult UpdateMovie([FromBody] MovieUpdateDto updatedMovie)
         {
             var existingMovie = _movieContext.Movies
                 .Include(m => m.MovieGenres)
-                .FirstOrDefault(m => m.show_id == show_id);
+                .FirstOrDefault(m => m.show_id == updatedMovie.show_id);
 
             if (existingMovie == null)
             {
@@ -232,7 +218,7 @@ namespace INTEX.API.Controllers
             existingMovie.description = updatedMovie.description;
             
             // Remove old links
-            var existingGenres = _movieContext.MovieGenres.Where(mg => mg.show_id == show_id);
+            var existingGenres = _movieContext.MovieGenres.Where(mg => mg.show_id == updatedMovie.show_id);
             _movieContext.MovieGenres.RemoveRange(existingGenres);
             
             // ✅ Update genres
@@ -248,7 +234,7 @@ namespace INTEX.API.Controllers
                 {
                     _movieContext.MovieGenres.Add(new movies_genre
                     {
-                        show_id = show_id,
+                        show_id = updatedMovie.show_id,
                         GenreID = genreID
                     });
                 }
@@ -256,27 +242,41 @@ namespace INTEX.API.Controllers
 
             _movieContext.SaveChanges();
 
-            return Ok(existingMovie);
+            return Ok();
         }
 
 
         // ✅ Delete a movie
-        [HttpDelete("DeleteMovie/{show_id}")]
         [Authorize] // Requires users to be logged in
-        public IActionResult DeleteMovie(string show_id)
+        [HttpDelete("DeleteMovie")]
+        public async Task<IActionResult> DeleteMovie([FromBody] int showIdToDelete)
         {
-            var movie = _movieContext.Movies.Find(show_id);
+            // Find the movie by its show_id
+            var movie = await _movieContext.Movies.FindAsync(showIdToDelete);
 
             if (movie == null)
             {
                 return NotFound(new { message = "Movie not found" });
             }
 
-            _movieContext.Movies.Remove(movie);
-            _movieContext.SaveChanges();
+            // Delete associated ratings in the movies_ratings table
+            var ratings = _movieContext.Ratings.Where(r => r.show_id == showIdToDelete);
+            _movieContext.Ratings.RemoveRange(ratings);
 
-            return NoContent();
+            // Delete associated genres in the movies_genres table
+            var genres = _movieContext.MovieGenres.Where(g => g.show_id == showIdToDelete);
+            _movieContext.MovieGenres.RemoveRange(genres);
+
+            // Delete the movie itself from the movies_titles table
+            _movieContext.Movies.Remove(movie);
+
+            // Save all changes to the database in one transaction
+            await _movieContext.SaveChangesAsync();
+
+            return Ok(new { message = "Movie and associated data deleted successfully" });
         }
+
+
 
     }
 }

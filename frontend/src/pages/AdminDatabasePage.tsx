@@ -1,33 +1,55 @@
 import AuthorizeView from '../components/authentication/AuthorizeView';
 import { useState, useEffect } from 'react';
-import { getAllMovies } from '../api/MoviesAPI';
+import { deleteMovie, getAllMovies } from '../api/MoviesAPI';
 import { getGenres } from '../api/MoviesAPI';
 import { Movie } from '../types/Movie';
-// import EditMovieModal from '../components/EditMovieModal';
 import '../css/theme.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddMovieModal from '../components/admin/AddMovieModal';
+import EditMovieModal from '../components/admin/EditMovieModal';
+import { Genre } from '../types/Genre';
 
 const AdminDatabasePage = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [genres, setGenres] = useState<string[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
-  // const [showEditModal, setShowEditModal] = useState(false);
-  // const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const movieData = await getAllMovies();
-      const genreData: string[] = await getGenres();
+      const genreData: Genre[] = await getGenres();
       setGenres(genreData);
       setMovies(movieData);
     };
 
     fetchData();
   }, []);
+
+  const handleDelete = async (show_id: number) => {
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this movie? It will also delete all ratings associated with this movie'
+    );
+    if (!confirmDelete) return; // exit this if they no longer want to delete
+
+    try {
+      // Call delete API
+      const success = await deleteMovie(show_id);
+
+      if (success) {
+        // Remove the deleted movie from the local state
+        setMovies(movies.filter((m) => m.show_id !== show_id)); // Updates the UI
+      } else {
+        alert('Failed to delete the movie. Please try again.');
+      }
+    } catch (error) {
+      alert('An error occurred. Please try again later.');
+    }
+  };
 
   const filteredMovies = movies.filter((m) =>
     m.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,10 +62,11 @@ const AdminDatabasePage = () => {
   );
   const totalPages = Math.ceil(filteredMovies.length / pageSize);
 
-  // const handleOpenEdit = (movie: Movie) => {
-  //   setMovieToEdit(movie);
-  //   setShowEditModal(true);
-  // };
+  const handleOpenEdit = (movie: Movie) => {
+    setMovieToEdit(movie);
+    setShowEditModal(true);
+    console.log(movie);
+  };
 
   return (
     <AuthorizeView allowedRoles={['Administrator']}>
@@ -108,15 +131,16 @@ const AdminDatabasePage = () => {
                         <button
                           className="btn btn-sm btn-outline-primary"
                           title="Edit"
-                          // onClick={() => handleOpenEdit(movie)}
+                          onClick={() => handleOpenEdit(movie)}
                         >
-                          ✏️
+                          ✏️ Edit
                         </button>
                         <button
                           className="btn btn-sm btn-outline-danger"
                           title="Delete"
+                          onClick={() => handleDelete(movie.show_id)} // Pass a function reference
                         >
-                          🗑
+                          <span style={{ color: 'black' }}>🗑</span> Delete
                         </button>
                       </div>
                     </td>
@@ -171,12 +195,15 @@ const AdminDatabasePage = () => {
         {showAddModal && (
           <AddMovieModal
             genres={genres}
-            onClose={() => setShowAddModal(false)}
+            onClose={() => {
+              console.log('Closing modal...');
+              setShowAddModal(false);
+            }}
             onMovieAdded={(updatedMovies) => setMovies(updatedMovies)}
           />
         )}
 
-        {/* {showEditModal && movieToEdit && (
+        {showEditModal && movieToEdit && (
           <EditMovieModal
             movie={movieToEdit}
             genres={genres}
@@ -186,7 +213,7 @@ const AdminDatabasePage = () => {
             }}
             onMovieUpdated={(updatedMovies) => setMovies(updatedMovies)}
           />
-        )} */}
+        )}
       </div>
     </AuthorizeView>
   );
