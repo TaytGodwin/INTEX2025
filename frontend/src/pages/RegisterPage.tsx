@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+interface RegisterPageProps {
+    identityApiUrl: string;
+  }
+  
 
-
-function RegisterPage() {
+const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
   const navigate = useNavigate();
 
   // Form step: 1 for initial info (email, password, confirm password), 2 for additional info
@@ -120,10 +123,15 @@ function RegisterPage() {
   // Final form submission for Step 2
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Combine all form data into one object
-    const formData = {
+
+    // Prepare the two sets of data
+    const authData = {
       email,
       password,
+    };
+
+    const profileData = {
+      email,
       name,
       phone,
       age,
@@ -143,13 +151,34 @@ function RegisterPage() {
       },
     };
 
-    console.log(formData);
-    // Optionally, you could call the register API here:
-    // const success = await register(email, password);
-    // if (success) { ... }
+    try {
+      // 1. Send auth data to authentication API
+      const authResponse = await fetch(`${identityApiUrl}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(authData),
+      });
 
-    // After successful registration, navigate to login or home
-    navigate('/');
+      if (!authResponse.ok) {
+        throw new Error('Authentication registration failed.');
+      }
+
+      // 2. Send profile data to profile API
+      const profileResponse = await fetch('/api/users/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(profileData),
+      });
+
+      if (!profileResponse.ok) {
+        throw new Error('Profile creation failed.');
+      }
+
+      // Navigate after both succeed
+      navigate('/');
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong. Please try again.');
+    }
   };
   const inputStyle = {
     width: '100%',
