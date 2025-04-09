@@ -22,3 +22,24 @@ export const getAllMovies = async (): Promise<Movie[]> => {
     return [];
   }
 };
+
+export const getGenres = async (): Promise<string[]> => {
+  try {
+    const response = await fetch(`${API_URL}/api/Movie/getgenres`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    const data = await response.json();
+    // Assuming your API returns an array of strings (genres)
+    return data;
+  } catch (error) {
+    console.error('Error fetching genres:', error);
+    return [];
+  }
+};
