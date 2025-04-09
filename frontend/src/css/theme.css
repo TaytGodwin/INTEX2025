@@ -25,7 +25,7 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background-color: #858585; 
+  background-color: #151515; 
   /* Change this to #151515 */
   font-family: var(--font-body);
 }
