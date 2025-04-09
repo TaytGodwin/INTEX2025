@@ -32,7 +32,6 @@ const AdminDatabasePage = () => {
       const movieData = await getAllMovies();
       const genreData = await getGenres();
       setMovies(movieData);
-      setGenres(genreData);
     };
     fetchData();
   }, []);
