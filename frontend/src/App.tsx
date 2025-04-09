@@ -6,7 +6,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import MovieDetailPage from './components/MovieDetailPage';
+import MovieDetailPage from './pages/MovieDetailPage';
 import { AuthProvider } from './context/AuthContext';
 import AuthorizeView from './components/authentication/AuthorizeView';
 import MoviePage from './pages/MoviePage';
@@ -22,27 +22,34 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-use" element={<TermsOfUse />} />
-            <Route path="/menu" element={<HomePage />} />
-            <Route path="*" element={<Navigate to="/menu" />} />
+            <Route path="privacy" element={<PrivacyPolicy />} />
+            <Route path="terms-of-use" element={<TermsOfUse />} />
+            <Route path="menu" element={<HomePage />} />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
           </Route>
-          <Route path="/" element={<Layout />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/movieDetails" element={<MovieDetailPage/>} />
-            <Route path="/logout" element={<Logout/>} />
-            <Route path="/movies" element={<MoviePage/>} />
-            <Route path="search" element={<SearchPage/>} />
-            <Route path="/admin" element={<AdminDatabasePage />} />
-          
+
+          {/* Protected Routes for all authenticated users (User and Administrator) */}
+          <Route
+            element={<AuthorizeView allowedRoles={['Administrator', 'User']} />}
+          >
+            <Route element={<Layout />}>
+              <Route path="movies" element={<MoviePage />} />
+              <Route path="movieDetails" element={<MovieDetailPage />} />
+              <Route path="search" element={<SearchPage />} />
+              <Route path="logout" element={<Logout />} />
+            </Route>
           </Route>
-          
-          {/* Protected Routes */}
-          <Route element={<AuthorizeView children={undefined} />}>
-            
-            {/* Add other protected routes here */}
+
+          {/* Protected Routes only for administrators */}
+          <Route element={<AuthorizeView allowedRoles={['Administrator']} />}>
+            <Route element={<Layout />}>
+              <Route path="admin" element={<AdminDatabasePage />} />
+            </Route>
           </Route>
+
+          {/* Fallback route */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

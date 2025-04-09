@@ -12,11 +12,13 @@ namespace INTEX.API.Controllers
         private readonly BlobServiceClient _blobServiceClient;
         private readonly string _containerName;
 
+        // This will simply show the images for each movie (needs to be called each time)
         public ImageController(IConfiguration configuration)
         {
             // Load connection string and container name from environment variables
-            var connectionString = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__BLOB_CONNECTION");
-            var containerName = Environment.GetEnvironmentVariable("AZUREBLOBSTORAGE__CONTAINERNAME");
+            var connectionString = Environment.GetEnvironmentVariable("BLOB_CONNECTION");
+            var containerName = Environment.GetEnvironmentVariable("CONTAINER_NAME");
+
 
             // If environment variables are null, throw an exception or handle appropriately
             if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(containerName))
@@ -30,7 +32,7 @@ namespace INTEX.API.Controllers
         }
 
         // Get image from blob storage
-        [HttpGet("{imageName}")]
+        [HttpGet("GetImage/{imageName}")]
         public async Task<IActionResult> GetImage(string imageName)
         {
             // Append the folder name correctly (no URL encoding here)
@@ -55,6 +57,57 @@ namespace INTEX.API.Controllers
             var contentType = "image/jpeg"; // You can improve this by checking file extension
 
             return File(blobDownloadInfo.Value.Content, contentType);
+        }
+
+
+        // Update image under same name
+        [HttpPost("AddImage/{imageName}")]
+        public async Task<IActionResult> UploadImage(string imageName, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            // Append the folder name correctly (no URL encoding here)
+            string imagePath = "Movie Posters/" + imageName;
+
+            // Get the container client
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+            // Get the blob client for the requested image (this will overwrite an existing image with the same name)
+            var blobClient = containerClient.GetBlobClient(imagePath);
+
+            // Upload the new image and overwrite the existing one
+            await blobClient.UploadAsync(file.OpenReadStream(), overwrite: true);
+
+            return Ok(new { message = "Image uploaded successfully." });
+        }
+
+
+        // Deletes an image
+        [HttpDelete("DeleteImage/{imageName}")]
+        public async Task<IActionResult> DeleteImage(string imageName)
+        {
+            // Append the folder name correctly (no URL encoding here)
+            string imagePath = "Movie Posters/" + imageName;
+
+            // Get the container client
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+            // Get the blob client for the requested image
+            var blobClient = containerClient.GetBlobClient(imagePath);
+
+            // Check if the blob exists
+            if (!await blobClient.ExistsAsync())
+            {
+                return NotFound(); // Return 404 if not found
+            }
+
+            // Delete the blob (image)
+            await blobClient.DeleteIfExistsAsync();
+
+            return Ok(new { message = "Image deleted successfully." });
         }
 
     }

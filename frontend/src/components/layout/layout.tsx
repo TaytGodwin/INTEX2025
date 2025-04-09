@@ -53,8 +53,10 @@ const Layout = () => {
     NavBar = GuestNavBar;
   } else if (user.roles.includes('Administrator')) {
     NavBar = AdminNavBar;
-  } else {
+  } else if (user.roles.includes('User')){
     NavBar = UserNavBar;
+  }else {
+    NavBar = GuestNavBar; 
   }
 
   return (

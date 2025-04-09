@@ -10,11 +10,13 @@ public class MovieDbContext : DbContext
     public DbSet<movies_title> Movies { get; set; }       // Movies table
     public DbSet<movies_user> Users { get; set; }         // Users table
     public DbSet<genre_name> GenreNames { get; set; }              // Genres table
-    public DbSet<movie_genre> MovieGenres { get; set; }  // linking table
+    public DbSet<movies_genre> MovieGenres { get; set; }  // linking table
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<movie_genre>()
+        modelBuilder.Entity<genre_name>().ToTable("genre_names"); // 👈 This line
+
+        modelBuilder.Entity<movies_genre>()
             .HasKey(mg => new { mg.show_id, mg.GenreID });
         modelBuilder.Entity<movies_rating>()
             .HasKey(mr => new { mr.show_id, mr.user_id });

@@ -1,8 +1,9 @@
 import AuthorizeView from '../components/authentication/AuthorizeView';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAllMovies } from '../api/AllMoviesAPI';
 import { Movie } from '../types/Movie';
-import '../css/theme.css'; // For consistent styling
+import '../css/theme.css'; // Your custom styles
+import 'bootstrap/dist/css/bootstrap.min.css'; // Optional: Bootstrap utilities
 
 const AdminDatabasePage = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -34,7 +35,7 @@ const AdminDatabasePage = () => {
       <div className="admin-page">
         {/* Sidebar */}
         <aside className="admin-sidebar">
-          <h4 className="admin-title">Admin Home</h4>
+          <h4 className="admin-title">Admin Panel</h4>
           <ul>
             <li>
               <span>📦</span> Database
@@ -43,58 +44,83 @@ const AdminDatabasePage = () => {
               <span>👥</span> Users
             </li>
           </ul>
-          <button className="logout-btn">Logout</button>
+          <button className="logout-btn btn btn-outline-danger mt-auto">
+            Logout
+          </button>
         </aside>
 
         {/* Main content */}
         <main className="admin-content">
-          <h2>Database</h2>
+          <h2 className="mb-4">🎬 Movie Database</h2>
 
-          {/* Search */}
-          <div className="search-controls">
+          {/* Search Controls */}
+          <div className="search-controls d-flex align-items-center gap-2 mb-3">
             <input
               type="text"
+              className="form-control"
               placeholder="Search by title..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button>Search</button>
-            <button className="add-movie-btn">+ Add Movie</button>
+            <button className="btn btn-primary">Search</button>
+            <button className="btn btn-success ms-auto">+ Add Movie</button>
           </div>
 
-          {/* Table */}
-          <table className="movie-table">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Genre</th>
-                <th>Year</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedMovies.map((movie) => (
-                <tr key={movie.show_id}>
-                  <td>{movie.title}</td>
-                  <td>
-                    {movie.genres.map((genre) => genre.genreName).join(', ')}
-                  </td>
-                  <td>{movie.release_year}</td>
-                  <td>
-                    <button title="View">👁</button>
-                    <button title="Edit">✏️</button>
-                    <button title="Delete">🗑</button>
-                  </td>
+          {/* Movie Table */}
+          <div className="table-responsive">
+            <table className="movie-table table table-bordered table-striped table-hover">
+              <thead className="table-light">
+                <tr>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Genres</th>
+                  <th>Year</th>
+                  <th>Director</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {paginatedMovies.map((movie) => (
+                  <tr key={movie.show_id}>
+                    <td>{movie.title}</td>
+                    <td>{movie.type}</td>
+                    <td>{movie.genres.join(', ')}</td>
+                    <td>{movie.release_year}</td>
+                    <td>{movie.director}</td>
+                    <td>
+                      <div className="d-flex gap-2">
+                        <button
+                          className="btn btn-sm btn-outline-secondary"
+                          title="View"
+                        >
+                          👁
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-primary"
+                          title="Edit"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          title="Delete"
+                        >
+                          🗑
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {/* Pagination */}
-          <div className="pagination-controls">
-            <label>
-              Page Size:
+          <div className="pagination-controls d-flex align-items-center justify-content-between mt-3">
+            <div>
+              <label className="me-2">Page Size:</label>
               <select
+                className="form-select d-inline-block w-auto"
                 value={pageSize}
                 onChange={(e) => setPageSize(Number(e.target.value))}
               >
@@ -102,22 +128,26 @@ const AdminDatabasePage = () => {
                   <option key={size}>{size}</option>
                 ))}
               </select>
-            </label>
+            </div>
 
-            <div className="page-buttons">
-              <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>
+            <div className="page-buttons d-flex gap-1">
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              >
                 Previous
               </button>
               {Array.from({ length: totalPages }, (_, i) => (
                 <button
                   key={i}
-                  className={currentPage === i + 1 ? 'active' : ''}
+                  className={`btn ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline-secondary'}`}
                   onClick={() => setCurrentPage(i + 1)}
                 >
                   {i + 1}
                 </button>
               )).slice(0, 5)}
               <button
+                className="btn btn-outline-secondary"
                 onClick={() =>
                   setCurrentPage((p) => Math.min(p + 1, totalPages))
                 }

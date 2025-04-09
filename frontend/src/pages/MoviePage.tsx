@@ -1,7 +1,5 @@
-import AuthorizeView from '../components/authentication/AuthorizeView';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import MovieRow from '../components/movieCards/MovieRow';
-import TopBar from '../components/layout/TopBar';
 
 interface Movie {
   id: number;
@@ -30,9 +28,36 @@ function MoviePage() {
     setTopPicks(mockMovies);
   }, []);
 
+  // useEffect(() => {
+  //   // Replace with our actual API URL
+  //   const API_URL = 'AZURE LINK';
+
+  //   const fetchMovies = async () => {
+  //     try {
+  //       const response = await fetch(API_URL, {
+  //         method: 'GET',
+  //         // If your API requires credentials (e.g., a session cookie),
+  //         // include: credentials: 'include'
+  //       });
+  //       if (!response.ok) {
+  //         throw new Error(`Error: ${response.status} ${response.statusText}`);
+  //       }
+  //       const data = await response.json();
+  //       // Assuming your API returns an array of movies
+  //       setTopPicks(data);
+  //     } catch (err: any) {
+  //       setError(err.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchMovies();
+  // }, []);
+
   return (
     <div className="movie-page">
-      <MovieRow categoryName="Top Picks" movies={topPicks} />
+      <MovieRow />
     </div>
   );
 }
