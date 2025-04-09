@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using Azure.Storage.Blobs;
 
-// DotNetEnv.Env.Load(); // Ensure environment variables are loaded in development
+DotNetEnv.Env.Load(); // Ensure environment variables are loaded in development
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +28,7 @@ builder.Services.AddSwaggerGen();
 var moviesConnection = Environment.GetEnvironmentVariable("MOVIESCONNECTION"); 
 var blobConnectionString = Environment.GetEnvironmentVariable("BLOB_CONNECTION");
 var containerName = Environment.GetEnvironmentVariable("CONTAINER_NAME");
-var identityConnection = Environment.GetEnvironmentVariable("IdentityConnection");
+var identityConnection = Environment.GetEnvironmentVariable("IDENTITYCONNECTION");
 
 
 // Configure DB contexts
