@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MoviePoster from '../components/movieCards/MoviePoster';
-import { getGenres, searchMovies } from '../api/MoviesAPI';
+import { getTotalMovies, getGenres, searchMovies } from '../api/MoviesAPI';
 import { getImage } from '../api/ImageAPI';
 import { Movie } from '../types/Movie';
 
@@ -42,9 +42,17 @@ const SearchPage: React.FC = () => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
-        // Pass selectedGenre as an array if one is chosen, otherwise an empty array.
         const genreList = selectedGenres.length > 0 ? selectedGenres : [];
-        const newMovies = await searchMovies(searchTerm || '', 25, page, genreList);
+
+        let newMovies;
+        if (searchTerm.trim() === '' && genreList.length === 0) {
+          // fallback to getAllMovies
+          newMovies = await getTotalMovies(25, page);
+        } else {
+          // normal search
+          newMovies = await searchMovies(searchTerm.trim(), 25, page, genreList);
+        }
+
         setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
         setHasMore(newMovies.length > 0);
       } catch (error) {
@@ -55,8 +63,8 @@ const SearchPage: React.FC = () => {
     };
     fetchMovies();
   }, [searchTerm, selectedGenres, page]);
-
   // Infinite scrolling: attach an observer to the last movie element.
+  
   const observer = useRef<IntersectionObserver | null>(null);
   const lastMovieElementRef = useCallback(
     (node: HTMLDivElement | null) => {
