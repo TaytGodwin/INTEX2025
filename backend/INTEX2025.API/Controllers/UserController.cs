@@ -40,11 +40,11 @@ namespace INTEX.API.Controllers
                 Email = userDto.Email
             };
 
-            var result = await _userManager.CreateAsync(identityUser, userDto.Password);
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
+            // var result = await _userManager.CreateAsync(identityUser, userDto.Password);
+            // if (!result.Succeeded)
+            // {
+            //     return BadRequest(result.Errors);
+            // }
 
             // Create the user profile in the movies_users table
             var user = new movies_user()
