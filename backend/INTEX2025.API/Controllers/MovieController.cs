@@ -30,45 +30,59 @@ namespace INTEX.API.Controllers
 
         // This is a Search Route
         [HttpGet("Search")]
-        public IActionResult SearchMovies(string query, int pageSize = 25, int pageNum = 1)
-        {
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                return BadRequest("Search query cannot be empty.");
-            }
-
-            var filteredMoviesQuery = _movieContext.Movies
-                .Include(m => m.MovieGenres)
-                .ThenInclude(mg => mg.Genre)
-                .Where(m => m.title.Contains(query))
-                .AsQueryable();
-
-            // Order the results (here by title)
-            filteredMoviesQuery = filteredMoviesQuery.OrderBy(m => m.title);
-
-            var movies = filteredMoviesQuery
-                .Skip((pageNum - 1) * pageSize)
-                .Take(pageSize)
-                .Select(m => new
+            
+        public IActionResult SearchMovies(
+                [FromQuery] string query = "",
+                [FromQuery] int pageSize = 25,
+                [FromQuery] int pageNum = 1,
+                [FromQuery] List<string>? genrelist = null)
+                
                 {
-                    m.show_id,
-                    title = m.title ?? "",
-                    type = m.type ?? "",
-                    director = m.director ?? "",
-                    cast = m.cast ?? "",
-                    country = m.country ?? "",
-                    release_year = m.release_year,
-                    rating = m.rating ?? "",
-                    duration = m.duration ?? "",
-                    description = m.description ?? "",
-                    Genres = m.MovieGenres.Select(mg => mg.Genre.GenreName ?? "").ToList()
-                })
-                .ToList();
+                    var queryResult = _movieContext.Movies
+                    .Include(m => m.MovieGenres)
+                    .ThenInclude(mg => mg.Genre)
+                    .AsQueryable();
 
-            return Ok(new { Movies = movies });
-        }
+                // Filter by search query if provided
+                if (!string.IsNullOrWhiteSpace(query))
+                {
+                    queryResult = queryResult.Where(m => m.title.Contains(query));
+                }
+
+                // Filter by genre list if provided
+                if (genrelist != null && genrelist.Any())
+                {
+                    var genreIDs = _movieContext.GenreNames
+                        .Where(g => genrelist.Contains(g.GenreName))
+                        .Select(g => g.GenreID)
+                        .ToList();
+                    queryResult = queryResult.Where(m => m.MovieGenres.Any(mg => genreIDs.Contains(mg.GenreID)));
+                }
+
+                var movies = queryResult
+                    .OrderBy(m => m.title)
+                    .Skip((pageNum - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(m => new
+                    {
+                        m.show_id,
+                        title = m.title ?? "",
+                        type = m.type ?? "",
+                        director = m.director ?? "",
+                        cast = m.cast ?? "",
+                        country = m.country ?? "",
+                        release_year = m.release_year,
+                        rating = m.rating ?? "",
+                        duration = m.duration ?? "",
+                        description = m.description ?? "",
+                        Genres = m.MovieGenres.Select(mg => mg.Genre.GenreName ?? "").ToList()
+                    })
+                    .ToList();
+
+                return Ok(new { Movies = movies });
+            }
         [HttpGet("AllMovies")]
-        public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null)
+        public IActionResult AllMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null)
         {
             var query = _movieContext.Movies
                 .Include(m => m.MovieGenres)
@@ -116,15 +130,45 @@ namespace INTEX.API.Controllers
             return Ok(new {Movies = AllMovies, totalNumMovies});
         }
 
+        //    // IQueryable are built one thing at a time
+        //    var query = _bookDbContext.Books.AsQueryable();
+
+        //    if (categoryTypes != null && categoryTypes.Any()) // Check if book categories are not null
+        //    {
+        //        query = query.Where(c => categoryTypes.Contains(c.Category)); // Only get project types when they are in the list
+        //    }
+
+        //    var AllBooks = query // Narrowed down, filtered list
+        //        .OrderBy(sortBy) // Uses using System.Linq.Dynamic.Core; to sort by the preference that the user gave
+        //        .Skip((pageNum - 1) * pageSize) // Skips the page size amount until it gets to the page you are on
+        //        .Take(pageSize) // Sends how many the user selected
+        //        .ToList();
+
+        //    var totalNumBooks = query.Count();
+
+        //    var TotalObject = new
+        //    {
+        //        Books = AllBooks,
+        //        totalNumBooks
+        //    };
+
+        //    return Ok(TotalObject);
+        //}
+
+
         // ✅ Get distinct genre names
         [HttpGet("GetGenres")]
         // [Authorize]
         public IActionResult GetGenres()
         {
             var allGenres = _movieContext.GenreNames
-                .Select(g => g.GenreName)
-                .Distinct()
-                .ToList();
+                        .Select(g => new
+                        {
+                            g.GenreID,
+                            g.GenreName
+                        })
+                        .Distinct()
+                        .ToList();
 
             return Ok(allGenres);
         }

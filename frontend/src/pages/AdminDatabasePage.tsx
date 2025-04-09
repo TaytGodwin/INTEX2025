@@ -1,6 +1,6 @@
 import AuthorizeView from '../components/authentication/AuthorizeView';
 import { useState, useEffect } from 'react';
-import { deleteMovie, getAllMovies } from '../api/MoviesAPI';
+import { deleteMovie, getTotalMovies } from '../api/MoviesAPI';
 import { getGenres } from '../api/MoviesAPI';
 import { Movie } from '../types/Movie';
 import '../css/theme.css';
@@ -8,41 +8,47 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import AddMovieModal from '../components/admin/AddMovieModal';
 import EditMovieModal from '../components/admin/EditMovieModal';
 import { Genre } from '../types/Genre';
+import AdminPagination from '../components/admin/AdminPagination';
 
 const AdminDatabasePage = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [allMovies, setMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [sortByPreference, setSortByPreference] = useState('title');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const movieData = await getAllMovies();
+      const { movies, totalNumMovies } = await getTotalMovies(
+        pageSize,
+        currentPage,
+        sortByPreference
+      );
       const genreData: Genre[] = await getGenres();
       setGenres(genreData);
-      setMovies(movieData);
+      setMovies(movies);
+      setTotalPages(Math.ceil(totalNumMovies / pageSize));
     };
 
     fetchData();
-  }, []);
+  }, [pageSize, currentPage, sortByPreference]);
 
   const handleDelete = async (show_id: number) => {
     const confirmDelete = window.confirm(
       'Are you sure you want to delete this movie? It will also delete all ratings associated with this movie'
     );
-    if (!confirmDelete) return; // exit this if they no longer want to delete
+    if (!confirmDelete) return;
 
     try {
-      // Call delete API
       const success = await deleteMovie(show_id);
 
       if (success) {
-        // Remove the deleted movie from the local state
-        setMovies(movies.filter((m) => m.show_id !== show_id)); // Updates the UI
+        setMovies(allMovies.filter((m) => m.show_id !== show_id));
       } else {
         alert('Failed to delete the movie. Please try again.');
       }
@@ -50,17 +56,6 @@ const AdminDatabasePage = () => {
       alert('An error occurred. Please try again later.');
     }
   };
-
-  const filteredMovies = movies.filter((m) =>
-    m.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const startIndex = (currentPage - 1) * pageSize;
-  const paginatedMovies = filteredMovies.slice(
-    startIndex,
-    startIndex + pageSize
-  );
-  const totalPages = Math.ceil(filteredMovies.length / pageSize);
 
   const handleOpenEdit = (movie: Movie) => {
     setMovieToEdit(movie);
@@ -95,7 +90,10 @@ const AdminDatabasePage = () => {
               className="form-control"
               placeholder="Search by title..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
             <button className="btn btn-primary">Search</button>
             <button
@@ -119,7 +117,7 @@ const AdminDatabasePage = () => {
                 </tr>
               </thead>
               <tbody>
-                {paginatedMovies.map((movie) => (
+                {allMovies.map((movie) => (
                   <tr key={movie.show_id}>
                     <td>{movie.title}</td>
                     <td>{movie.type}</td>
@@ -138,7 +136,7 @@ const AdminDatabasePage = () => {
                         <button
                           className="btn btn-sm btn-outline-danger"
                           title="Delete"
-                          onClick={() => handleDelete(movie.show_id)} // Pass a function reference
+                          onClick={() => handleDelete(movie.show_id)}
                         >
                           <span style={{ color: 'black' }}>🗑</span> Delete
                         </button>
@@ -150,55 +148,24 @@ const AdminDatabasePage = () => {
             </table>
           </div>
 
-          <div className="pagination-controls d-flex align-items-center justify-content-between mt-3">
-            <div>
-              <label className="me-2">Page Size:</label>
-              <select
-                className="form-select d-inline-block w-auto"
-                value={pageSize}
-                onChange={(e) => setPageSize(Number(e.target.value))}
-              >
-                {[5, 10, 20, 50].map((size) => (
-                  <option key={size}>{size}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="page-buttons d-flex gap-1">
-              <button
-                className="btn btn-outline-secondary"
-                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              >
-                Previous
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  className={`btn ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline-secondary'}`}
-                  onClick={() => setCurrentPage(i + 1)}
-                >
-                  {i + 1}
-                </button>
-              )).slice(0, 5)}
-              <button
-                className="btn btn-outline-secondary"
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(p + 1, totalPages))
-                }
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          <AdminPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            sortByPreference={sortByPreference}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(newSize) => {
+              setPageSize(newSize);
+              setCurrentPage(1);
+            }}
+            setSortByPreference={setSortByPreference}
+          />
         </main>
 
         {showAddModal && (
           <AddMovieModal
             genres={genres}
-            onClose={() => {
-              console.log('Closing modal...');
-              setShowAddModal(false);
-            }}
+            onClose={() => setShowAddModal(false)}
             onMovieAdded={(updatedMovies) => setMovies(updatedMovies)}
           />
         )}
