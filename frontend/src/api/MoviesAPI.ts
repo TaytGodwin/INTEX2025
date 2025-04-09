@@ -24,16 +24,55 @@ export const getAllMovies = async (): Promise<Movie[]> => {
     return [];
   }
 };
+
+// This call gets all movies and works with pagination
 export const getTotalMovies = async (
   pageSize: number = 25,
   pageNum: number = 1,
-  sortBy: string = "title",
+  sortBy: string = 'title',
   genrelist?: string[]
-): Promise<Movie[]> => {
+): Promise<{ movies: Movie[]; totalNumMovies: number }> => {
   try {
     let url = `${MOVIE_API_URL}/api/Movie/AllMovies?pageSize=${pageSize}&pageNum=${pageNum}&sortBy=${sortBy}`;
     if (genrelist && genrelist.length > 0) {
-      genrelist.forEach(genre => {
+      genrelist.forEach((genre) => {
+        url += `&genrelist=${encodeURIComponent(genre)}`;
+      });
+    }
+
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Invalid response format from server');
+    }
+
+    const data = await response.json();
+    return {
+      movies: data.movies,
+      totalNumMovies: data.totalNumMovies,
+    };
+  } catch (error) {
+    console.error('Error fetching movies:', error);
+    return { movies: [], totalNumMovies: 0 };
+  }
+};
+
+
+export const searchMovies = async (
+  query: string,
+  pageSize: number = 25,
+  pageNum: number = 1,
+  genrelist?: string[]
+): Promise<Movie[]> => {
+  try {
+    let url = `${MOVIE_API_URL}/api/Movie/Search?query=${encodeURIComponent(query)}&pageSize=${pageSize}&pageNum=${pageNum}`;
+    if (genrelist && genrelist.length > 0) {
+      // Append each genre as a query parameter.
+      genrelist.forEach((genre) => {
         url += `&genrelist=${encodeURIComponent(genre)}`;
       });
     }
@@ -49,37 +88,15 @@ export const getTotalMovies = async (
     }
 
     const data = await response.json();
-    return data.movies; // Now matching the backend property
-  } catch (error) {
-    console.error('Error fetching movies:', error);
-    return [];
-  }
-};
-
-export const searchMovies = async (
-  query: string,
-  pageSize: number = 25,
-  pageNum: number = 1
-): Promise<Movie[]> => {
-  try {
-    const url = `${MOVIE_API_URL}/api/Movie/Search?query=${encodeURIComponent(query)}&pageSize=${pageSize}&pageNum=${pageNum}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      credentials: 'include',
-    });
-    
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Invalid response format from server');
-    }
-    
-    const data = await response.json();
-    return data.movies; // Make sure this matches the backend ("Movies" with a capital M)
+    // Make sure this matches your backend; if backend returns "Movies", change accordingly.
+    return data.movies;
   } catch (error) {
     console.error('Error searching movies:', error);
     return [];
   }
 };
+
+
 // GenreAPI.ts
 
 export const getGenres = async (): Promise<Genre[]> => {
@@ -95,7 +112,7 @@ export const getGenres = async (): Promise<Genre[]> => {
       throw new Error(`HTTP error: ${response.status}`);
     }
     const data = await response.json();
-    // Assuming your API returns an array of strings (genres)
+    // API returns an array of strings (genres)
     return data;
   } catch (error) {
     console.error('Error fetching genres:', error);
