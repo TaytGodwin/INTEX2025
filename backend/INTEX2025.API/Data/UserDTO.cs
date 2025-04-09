@@ -65,9 +65,5 @@ namespace INTEX.API.Data
 
         [Column("Peacock")] // Explicitly matching database column name "Peacock"
         public bool Peacock { get; set; }
-
-        // Navigation property (optional)
-        // Assuming you have a relationship with the "movies_user" table, no changes needed here
-        public ICollection<movies_user> MovieLinks { get; set; }
     }
 }
