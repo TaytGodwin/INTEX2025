@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace INTEX.API.Data
 {
     [Table("Users")] // Assuming the table in the database is called "Users"
-    public class userDto
+    public class UserDto
     {
         [Key]
         [Column("Id")] // Explicitly matching database column name "UserId"
@@ -45,10 +45,10 @@ namespace INTEX.API.Data
         [Column("Netflix")] // Explicitly matching database column name "Netflix"
         public bool Netflix { get; set; }
 
-        [Column("AmazonPrime")] // Explicitly matching database column name "AmazonPrime"
+        [Column("Amazon Prime")] // Explicitly matching database column name "AmazonPrime"
         public bool AmazonPrime { get; set; }
 
-        [Column("DisneyPlus")] // Explicitly matching database column name "DisneyPlus"
+        [Column("Disney+")] // Explicitly matching database column name "DisneyPlus"
         public bool DisneyPlus { get; set; }
 
         [Column("ParamountPlus")] // Explicitly matching database column name "ParamountPlus"
