@@ -1,6 +1,7 @@
 import { Genre } from './Genre';
 
 export interface Movie {
+  imageUrl: string;
   show_id: string;
   title: string;
   type: string;

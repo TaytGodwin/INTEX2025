@@ -1,6 +1,4 @@
-
 import { Link } from 'react-router-dom';
-import logo from '../../assets/Website_logo.png';
 import '../../css/theme.css'; // Custom CSS for the sidebar
 
 function UserNavbar() {
@@ -14,7 +12,6 @@ function UserNavbar() {
           <Link to="/search" className="nav-link text-white">
             <i className="bi bi-search fs-2"></i>
             {/* Optionally show a tooltip or label */}
-            
           </Link>
         </li>
         {/* Home */}
