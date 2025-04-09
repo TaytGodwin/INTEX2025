@@ -164,7 +164,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
 
       // 2. Send profile data to profile API
       const profileResponse = await fetch(
-        `${identityApiUrl}/api/user/CreateUser`,
+        `${identityApiUrl}/api/User/CreateUser`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
