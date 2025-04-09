@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { getAllMovies } from '../../api/AllMoviesAPI'; // New API call to fetch all movies
+import { getAllMovies } from '../../api/MoviesAPI'; // New API call to fetch all movies
 import { getImage } from '../../api/ImageAPI';
 import MoviePoster from '../movieCards/MoviePoster';
 import { Movie } from '../../types/Movie';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function sanitizeTitle(title: string): string {
   // Remove these characters: -, ?, #, (, )
@@ -15,7 +15,9 @@ function sanitizeTitle(title: string): string {
 function FeaturedSection() {
   const [movies, setMovies] = useState<Movie[]>([]);
   // Using the movie title as the key to store the fetched image URL
-  const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
+  const [movieImages, setMovieImages] = useState<{ [title: string]: string }>(
+    {}
+  );
   const [loading, setLoading] = useState<boolean>(true);
 
   // A default image URL in case fetching fails
@@ -33,7 +35,6 @@ function FeaturedSection() {
 
           // For each movie, fetch its image using the movie title
           const imagePromises = topTenMovies.map(async (movie) => {
-            
             const sanitizedTitle = sanitizeTitle(movie.title);
             const blob = await getImage(sanitizedTitle);
             if (blob) {
@@ -60,15 +61,15 @@ function FeaturedSection() {
   }, []);
 
   const sliderSettings = {
-    dots: true,           // Show navigation dots
-    infinite: true,      // Do not loop infinitely; change to true if desired
-    slidesToShow: 5,      // Number of movie posters to show at once
-    slidesToScroll: 5,          // Loop continuously
-    autoplay: true,          // Enable auto scrolling
-    autoplaySpeed: 0,        // No pause between transitions
-    speed: 200000,            // Transition duration (20 seconds); adjust to control speed
-    cssEase: 'linear',       // Linear easing for a continuous scroll effect       // Scroll one slide at a time
-    pauseOnHover: false,    // Number of posters to scroll at a time
+    dots: true, // Show navigation dots
+    infinite: true, // Do not loop infinitely; change to true if desired
+    slidesToShow: 5, // Number of movie posters to show at once
+    slidesToScroll: 5, // Loop continuously
+    autoplay: true, // Enable auto scrolling
+    autoplaySpeed: 0, // No pause between transitions
+    speed: 200000, // Transition duration (20 seconds); adjust to control speed
+    cssEase: 'linear', // Linear easing for a continuous scroll effect       // Scroll one slide at a time
+    pauseOnHover: false, // Number of posters to scroll at a time
     responsive: [
       {
         breakpoint: 1024,
@@ -95,7 +96,11 @@ function FeaturedSection() {
       <br />
       <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
-          <div key={index} className="carousel-item" style={{ padding: '0 10px' }}>
+          <div
+            key={index}
+            className="carousel-item"
+            style={{ padding: '0 10px' }}
+          >
             <MoviePoster
               imageUrl={movieImages[movie.title] || defaultImageUrl}
               title={movie.title}

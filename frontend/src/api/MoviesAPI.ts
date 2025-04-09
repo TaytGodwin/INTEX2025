@@ -1,7 +1,8 @@
 import { Movie } from '../types/Movie';
+import { NewMovie } from '../types/NewMovie';
 
 const MOVIE_API_URL = 'https://localhost:5000';
-  //'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
+//'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
 
 export const getAllMovies = async (): Promise<Movie[]> => {
   try {
@@ -42,5 +43,27 @@ export const getGenres = async (): Promise<string[]> => {
   } catch (error) {
     console.error('Error fetching genres:', error);
     return [];
+  }
+};
+
+// This API call adds a movie to the database
+export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
+  try {
+    const response = await fetch(`${MOVIE_API_URL}/api/Movie/AddMovie`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(MovieToAdd),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    // This returns true if the movie was successfully added
+    return true;
+  } catch (error) {
+    console.error('Error fetching genres:', error);
+    return false;
   }
 };
