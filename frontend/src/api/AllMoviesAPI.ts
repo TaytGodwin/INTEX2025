@@ -25,7 +25,7 @@ export const getAllMovies = async (): Promise<Movie[]> => {
 
 export const getGenres = async (): Promise<string[]> => {
   try {
-    const response = await fetch(`${API_URL}/api/Movie/getgenres`, {
+    const response = await fetch(`${MOVIE_API_URL}/api/Movie/getgenres`, {
       method: 'GET',
       credentials: 'include',
       headers: {
