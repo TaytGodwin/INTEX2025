@@ -116,6 +116,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
               className="form-control mb-2"
               name="release_year"
               type="number"
+              min={1888}
               placeholder="Release Year"
               value={newMovie.release_year}
               onChange={handleChange}
@@ -164,13 +165,15 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
             <label className="form-label">Select Genres</label>
             <Select
               isMulti
-              className="form-select mb-2"
+              className="mb-2" // ❌ remove Bootstrap's "form-select", it breaks react-select styles
               options={genres.map((g) => ({ value: g, label: g }))}
               value={newMovie.genres.map((g) => ({ value: g, label: g }))}
               onChange={(selectedOptions) =>
                 setNewMovie({
                   ...newMovie,
-                  genres: selectedOptions.map((opt) => opt.value),
+                  genres: selectedOptions
+                    ? selectedOptions.map((opt) => opt.value)
+                    : [],
                 })
               }
             />
