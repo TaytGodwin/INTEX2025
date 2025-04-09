@@ -14,9 +14,9 @@ namespace INTEX.API.Data
         [Required]
         public string title { get; set; }
         
-        public string director {  get; set; } // Not required
-        public string cast  { get; set; } // Not required
-        public string country { get; set; } // Not requried 
+        public string? director {  get; set; } // Not required
+        public string? cast  { get; set; } // Not required
+        public string? country { get; set; } // Not requried 
         [Required]
         public int release_year { get; set; }
         [Required]
@@ -25,8 +25,6 @@ namespace INTEX.API.Data
         public string duration { get; set; }
         [Required]
         public string description { get; set; }
-        [Required]
-        public int GenreID { get ; set; }
 
         // ✅ Many-to-many relationship via linking table
         public ICollection<movies_genre> MovieGenres { get; set; }
