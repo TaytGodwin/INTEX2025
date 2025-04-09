@@ -15,8 +15,8 @@ const AdminDatabasePage = () => {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
- // const [showEditModal, setShowEditModal] = useState(false);
- // const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
+  // const [showEditModal, setShowEditModal] = useState(false);
+  // const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,8 +41,8 @@ const AdminDatabasePage = () => {
   const totalPages = Math.ceil(filteredMovies.length / pageSize);
 
   // const handleOpenEdit = (movie: Movie) => {
-    // setMovieToEdit(movie);
-    // setShowEditModal(true);
+  // setMovieToEdit(movie);
+  // setShowEditModal(true);
   // };
 
   return (
@@ -105,9 +105,19 @@ const AdminDatabasePage = () => {
                     <td>{movie.director}</td>
                     <td>
                       <div className="d-flex gap-2">
-                        <button className="btn btn-sm btn-outline-secondary" title="View">👁</button>
-                        {/* <button className="btn btn-sm btn-outline-primary" title="Edit" onClick={() => handleOpenEdit(movie)}>✏️</button> */}
-                        <button className="btn btn-sm btn-outline-danger" title="Delete">🗑</button>
+                        <button
+                          className="btn btn-sm btn-outline-primary"
+                          title="Edit"
+                          onClick={() => handleOpenEdit(movie)}
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          title="Delete"
+                        >
+                          🗑
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -166,7 +176,6 @@ const AdminDatabasePage = () => {
           />
         )}
 
-{/*
         {showEditModal && movieToEdit && (
           <EditMovieModal
             movie={movieToEdit}
@@ -177,7 +186,7 @@ const AdminDatabasePage = () => {
             }}
             onMovieUpdated={(updatedMovies) => setMovies(updatedMovies)}
           />
-        )} */}
+        )}
       </div>
     </AuthorizeView>
   );
