@@ -9,6 +9,9 @@
 
   --color-primary: #57c8f4;
   --color-secondary: #ffdb58;
+  --bs-body-bg: #151515;
+  --bs-primary: #57c8f4;
+  --bs-btn-color: #57c8f4;
 
   --color-bg: #000;
   --color-surface: #1a1a1a;
@@ -34,12 +37,12 @@ h5,
 h6 {
   font-family: var(--font-heading);
   font-weight: 600;
-  color: var(--color-text);
+  color: white;
   margin: 0;
 }
 
 a {
-  color: #151515;
+  color: white;
   text-decoration: none;
   transition: color 0.2s ease-in-out;
 }
@@ -64,7 +67,7 @@ button:hover {
 /* Navbar */
 .navbar {
   font-family: var(--font-body);
-  background-color: var(--color-primary) !important;
+  background-color: #151515 !important;
 }
 .navbar-brand {
   font-family: var(--font-brand);
@@ -79,6 +82,9 @@ button:hover {
 }
 .nav-link:hover {
   color: var(--color-secondary) !important;
+}
+.card-body {
+  color: white;
 }
 
 /* Movie Detail Page */
@@ -176,7 +182,12 @@ button:hover {
 }
 
 /* Cards */
-.testimonial-card,
+.testimonial-card{
+  background-color: #151515;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
+}
 .pricing-card,
 .faq-item {
   background-color: var(--color-surface);
@@ -207,7 +218,7 @@ button:hover {
 .pricing-card .btn,
 .landing-header .btn-outline-primary,
 .landing-hero .btn-primary {
-  background-color: var(--color-primary);
+  background-color: #57c8f4;
   color: white;
   border-radius: 6px;
   transition: background-color 0.3s ease;
@@ -467,4 +478,20 @@ button:hover {
 .modal-content {
   width: 90%;
   max-width: 600px;
+}
+
+/* In your global CSS file (e.g., theme.css) or in a Layout component's CSS */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
+}
+
+.layout main {
+  flex: 1; /* Main content grows to fill available space */
 }

@@ -22,6 +22,7 @@ export const getAllMovies = async (): Promise<Movie[]> => {
     return [];
   }
 };
+// GenreAPI.ts
 
 export const getGenres = async (): Promise<string[]> => {
   try {
@@ -29,7 +30,7 @@ export const getGenres = async (): Promise<string[]> => {
       method: 'GET',
       credentials: 'include',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
     });
     if (!response.ok) {

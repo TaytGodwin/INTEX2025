@@ -1,5 +1,4 @@
 // TopHeader.tsx
-import React from 'react';
 import logo from '../../assets/Website_logo.png';
 
 function TopHeader() {
@@ -18,5 +17,3 @@ function TopHeader() {
 }
 
 export default TopHeader;
-
-

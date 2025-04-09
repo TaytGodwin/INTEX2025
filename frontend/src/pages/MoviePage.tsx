@@ -1,7 +1,5 @@
-import AuthorizeView from '../components/authentication/AuthorizeView';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import MovieRow from '../components/movieCards/MovieRow';
-import TopBar from '../components/layout/TopBar';
 
 interface Movie {
   id: number;
@@ -33,7 +31,7 @@ function MoviePage() {
   // useEffect(() => {
   //   // Replace with our actual API URL
   //   const API_URL = 'AZURE LINK';
-    
+
   //   const fetchMovies = async () => {
   //     try {
   //       const response = await fetch(API_URL, {

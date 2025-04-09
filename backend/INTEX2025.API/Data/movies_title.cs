@@ -8,7 +8,7 @@ namespace INTEX.API.Data
     {
         [Key]
         [Required]
-        public string show_id { get; set; }
+        public int show_id { get; set; }
         [Required]
         public string type { get; set; }
         [Required]

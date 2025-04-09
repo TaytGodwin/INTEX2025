@@ -6,7 +6,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import MovieDetailPage from './components/MovieDetailPage';
+import MovieDetailPage from './pages/MovieDetailPage';
 import { AuthProvider } from './context/AuthContext';
 import AuthorizeView from './components/authentication/AuthorizeView';
 import MoviePage from './pages/MoviePage';
@@ -27,12 +27,15 @@ function App() {
             <Route path="menu" element={<HomePage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
+            <Route path="movies" element={<MoviePage />} />
           </Route>
 
           {/* Protected Routes for all authenticated users (User and Administrator) */}
-          <Route element={<AuthorizeView allowedRoles={['Administrator', 'User']}  />}>
+          <Route
+            element={<AuthorizeView allowedRoles={['Administrator', 'User']} />}
+          >
             <Route element={<Layout />}>
-              <Route path="movies" element={<MoviePage />} />
+              
               <Route path="movieDetails" element={<MovieDetailPage />} />
               <Route path="search" element={<SearchPage />} />
               <Route path="logout" element={<Logout />} />

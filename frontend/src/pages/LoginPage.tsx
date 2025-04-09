@@ -79,7 +79,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="container">
+    <div className="container" style={{ color: 'white' }}>
       <div className="row">
         <div className="card border-0 shadow rounded-3">
           <div className="card-body p-4 p-sm-5">

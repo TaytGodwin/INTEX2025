@@ -1,5 +1,5 @@
 import AuthorizeView from '../components/authentication/AuthorizeView';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAllMovies } from '../api/AllMoviesAPI';
 import { getGenres } from '../api/AllMoviesAPI';
 import { Movie } from '../types/Movie';
@@ -34,7 +34,10 @@ const AdminDatabasePage = () => {
   );
 
   const startIndex = (currentPage - 1) * pageSize;
-  const paginatedMovies = filteredMovies.slice(startIndex, startIndex + pageSize);
+  const paginatedMovies = filteredMovies.slice(
+    startIndex,
+    startIndex + pageSize
+  );
   const totalPages = Math.ceil(filteredMovies.length / pageSize);
 
   // const handleOpenEdit = (movie: Movie) => {
@@ -48,9 +51,16 @@ const AdminDatabasePage = () => {
         <aside className="admin-sidebar">
           <h4 className="admin-title">Admin Panel</h4>
           <ul>
-            <li><span>📦</span> Database</li>
+            <li>
+              <span>📦</span> Database
+            </li>
+            <li>
+              <span>👥</span> Users
+            </li>
           </ul>
-          <button className="logout-btn btn btn-outline-danger mt-auto">Logout</button>
+          <button className="logout-btn btn btn-outline-danger mt-auto">
+            Logout
+          </button>
         </aside>
 
         <main className="admin-content">
@@ -65,7 +75,12 @@ const AdminDatabasePage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button className="btn btn-primary">Search</button>
-            <button className="btn btn-success ms-auto" onClick={() => setShowAddModal(true)}>+ Add Movie</button>
+            <button
+              className="btn btn-success ms-auto"
+              onClick={() => setShowAddModal(true)}
+            >
+              + Add Movie
+            </button>
           </div>
 
           <div className="table-responsive">
@@ -116,7 +131,12 @@ const AdminDatabasePage = () => {
             </div>
 
             <div className="page-buttons d-flex gap-1">
-              <button className="btn btn-outline-secondary" onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>Previous</button>
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              >
+                Previous
+              </button>
               {Array.from({ length: totalPages }, (_, i) => (
                 <button
                   key={i}
@@ -126,7 +146,14 @@ const AdminDatabasePage = () => {
                   {i + 1}
                 </button>
               )).slice(0, 5)}
-              <button className="btn btn-outline-secondary" onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}>Next</button>
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(p + 1, totalPages))
+                }
+              >
+                Next
+              </button>
             </div>
           </div>
         </main>
