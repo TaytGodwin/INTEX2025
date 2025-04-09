@@ -140,13 +140,13 @@ namespace INTEX.API.Controllers
 
 
         // ✅ Update a movie
-        [HttpPut("UpdateMovie/{show_id}")]
+        [HttpPut("UpdateMovie")]
         [Authorize] // Requires users to be logged in
-        public IActionResult UpdateMovie(int show_id, [FromBody] MovieUpdateDto updatedMovie)
+        public IActionResult UpdateMovie([FromBody] MovieUpdateDto updatedMovie)
         {
             var existingMovie = _movieContext.Movies
                 .Include(m => m.MovieGenres)
-                .FirstOrDefault(m => m.show_id == show_id);
+                .FirstOrDefault(m => m.show_id == updatedMovie.show_id);
 
             if (existingMovie == null)
             {
@@ -165,7 +165,7 @@ namespace INTEX.API.Controllers
             existingMovie.description = updatedMovie.description;
             
             // Remove old links
-            var existingGenres = _movieContext.MovieGenres.Where(mg => mg.show_id == show_id);
+            var existingGenres = _movieContext.MovieGenres.Where(mg => mg.show_id == updatedMovie.show_id);
             _movieContext.MovieGenres.RemoveRange(existingGenres);
             
             // ✅ Update genres
@@ -181,7 +181,7 @@ namespace INTEX.API.Controllers
                 {
                     _movieContext.MovieGenres.Add(new movies_genre
                     {
-                        show_id = show_id,
+                        show_id = updatedMovie.show_id,
                         GenreID = genreID
                     });
                 }
@@ -189,7 +189,7 @@ namespace INTEX.API.Controllers
 
             _movieContext.SaveChanges();
 
-            return Ok(existingMovie);
+            return Ok();
         }
 
 

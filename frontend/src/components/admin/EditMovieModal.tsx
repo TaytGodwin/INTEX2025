@@ -1,100 +1,177 @@
 import React, { useState } from 'react';
-import { Movie } from '../types/Movie';
-import { getAllMovies } from '../api/AllMoviesAPI'; // ✅ You were missing this import
+import { Movie } from '../../types/Movie'; // Import the Movie type for TypeScript type checking
+import { getAllMovies, updateMovie } from '../../api/MoviesAPI'; // Import API functions for fetching and updating movies
+import Select from 'react-select'; // Import react-select for multi-select dropdown
+import { Genre } from '../../types/Genre';
 
-
+// Define the EditMovieModalProps interface to type the props passed into the modal
 export interface EditMovieModalProps {
-  movie: Movie;
-  genres: string[];
-  onClose: () => void;
-  onMovieUpdated: (updatedMovies: Movie[]) => void; // ✅ Updated to expect updated movies
+  movie: Movie; // Movie object that we want to edit
+  genres: Genre[]; // List of genre names to populate the genre selection dropdown
+  onClose: () => void; // Function to close the modal
+  onMovieUpdated: (updatedMovies: Movie[]) => void; // Function to update the movie list in the parent component
 }
 
+const EditMovieModal: React.FC<EditMovieModalProps> = ({
+  movie, // The current movie that will be edited
+  genres, // The available genres
+  onClose, // Close function passed from the parent
+  onMovieUpdated, // Function to update the list of movies after editing
+}) => {
+  // Initialize state with the movie to be edited
+  const [editedMovie, setEditedMovie] = useState<Movie>(movie);
 
-const EditMovieModal: React.FC<EditMovieModalProps> = ({ movie, genres, onClose, onMovieUpdated }) => {
-  const [editedMovie, setEditedMovie] = useState({
-    ...movie,
-    genres: movie.genres.map(g => g.genreName) // string[] for editing
-  });
- 
-
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setEditedMovie({ ...editedMovie, [name]: value });
+  // Handle changes in the input fields and update the corresponding property in the edited movie state
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target; // Get the input's name and value
+    setEditedMovie({ ...editedMovie, [name]: value }); // Update the editedMovie state with the new value
   };
 
-
+  // Handle form submission to update the movie
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net/api/Movie/UpdateMovie/${movie.show_id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(editedMovie), // ✅ Correct variable name
-      });
+      const response = await updateMovie(editedMovie); // Call the API to update the movie
 
-
-      if (response.ok) {
-        const updated = await getAllMovies(); // ✅ Now this works
-        onMovieUpdated(updated); // ✅ Pass updated movie list
-        onClose();
+      if (response) {
+        // If successful, fetch the updated movie list
+        const updated = await getAllMovies(); // Get all movies after the update
+        onMovieUpdated(updated); // Update the movie list in the parent component
+        onClose(); // Close the modal
       } else {
-        console.error('Failed to update movie');
+        console.error('Failed to update movie'); // Log an error if the update failed
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error:', error); // Log any errors that occur during the update process
     }
   };
 
-
   return (
-    <div className="modal d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+    // Modal structure
+    <div
+      className="modal d-block" // Make the modal visible
+      tabIndex={-1} // Prevent the modal from receiving focus initially
+      style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }} // Add a semi-transparent black background
+    >
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Edit Movie</h5>
-            <button className="btn-close" onClick={onClose}></button>
+            <h5 className="modal-title">Edit Movie</h5>{' '}
+            {/* Title of the modal */}
+            <button className="btn-close" onClick={onClose}></button>{' '}
+            {/* Close button */}
           </div>
           <div className="modal-body">
-            <input className="form-control mb-2" name="title" value={editedMovie.title} onChange={handleChange} />
-            <input className="form-control mb-2" name="type" value={editedMovie.type} onChange={handleChange} />
-            <input className="form-control mb-2" name="director" value={editedMovie.director} onChange={handleChange} />
-            <input className="form-control mb-2" name="cast" value={editedMovie.cast} onChange={handleChange} />
-            <input className="form-control mb-2" name="country" value={editedMovie.country} onChange={handleChange} />
-            <input className="form-control mb-2" name="release_year" type="number" value={editedMovie.release_year} onChange={handleChange} />
-            <input className="form-control mb-2" name="duration" value={editedMovie.duration} onChange={handleChange} />
-            <textarea className="form-control mb-2" name="description" value={editedMovie.description} onChange={handleChange} />
-            <select className="form-select" name="rating" value={editedMovie.rating} onChange={handleChange}>
+            {/* Movie details input fields */}
+            <input
+              className="form-control mb-2"
+              name="title" // This is for the title of the movie
+              value={editedMovie.title}
+              onChange={handleChange} // Trigger handleChange to update state on input change
+            />
+            <input
+              className="form-control mb-2"
+              name="type" // This is for the type of the movie
+              value={editedMovie.type}
+              onChange={handleChange} // Trigger handleChange to update state on input change
+            />
+            <input
+              className="form-control mb-2"
+              name="director" // This is for the director's name
+              value={editedMovie.director}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control mb-2"
+              name="cast" // This is for the cast of the movie
+              value={editedMovie.cast}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control mb-2"
+              name="country" // This is for the country where the movie was made
+              value={editedMovie.country}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control mb-2"
+              name="release_year" // This is for the release year of the movie
+              type="number"
+              value={editedMovie.release_year}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control mb-2"
+              name="duration" // This is for the duration of the movie
+              value={editedMovie.duration}
+              onChange={handleChange}
+            />
+            <textarea
+              className="form-control mb-2"
+              name="description" // This is for the description of the movie
+              value={editedMovie.description}
+              onChange={handleChange}
+            />
+            {/* Rating selection */}
+            <select
+              className="form-select"
+              name="rating" // This is for the movie's rating
+              value={editedMovie.rating}
+              onChange={handleChange}
+            >
               <option value="">Select Rating</option>
-              {['G', 'PG', 'PG-13', 'R', 'NR', 'UR', 'TV-Y', 'TV-G', 'TV-PG', 'TV-14', 'TV-MA', 'TV-Y7', 'TV-Y7-FV'].map(r => (
-                <option key={r} value={r}>{r}</option>
+              {/* Movie ratings options */}
+              {[
+                'G',
+                'PG',
+                'PG-13',
+                'R',
+                'NR',
+                'UR',
+                'TV-Y',
+                'TV-G',
+                'TV-PG',
+                'TV-14',
+                'TV-MA',
+                'TV-Y7',
+                'TV-Y7-FV',
+              ].map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
               ))}
             </select>
-            <select
-              className="form-select mb-2"
-              multiple
-              value={editedMovie.genres.map(g => g.genre)} // adjust if needed
-              onChange={(e) => {
-                const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+
+            {/* Genre selection using react-select */}
+            <Select
+              isMulti // Allow multiple selections
+              className="mb-2" // Adjust styling for select dropdown
+              options={genres.map((g) => ({ value: g, label: g }))} // Map genres to options for react-select
+              required
+              value={editedMovie.genres.map((g) => ({ value: g, label: g }))} // Set the selected genres in the state
+              onChange={(selectedOptions) =>
                 setEditedMovie({
                   ...editedMovie,
-                genres: selected.map((name) => ({ genreName: name })) // adjust to your genre type
-              });
-            }}
-          >
-            {genres.map((genre) => (
-              <option key={genre} value={genre}>
-                {genre}
-              </option>
-            ))}
-          </select>
-
-
+                  genres: selectedOptions
+                    ? selectedOptions.map((opt) => opt.value) // Update genres state
+                    : [],
+                })
+              }
+            />
           </div>
+          {/* Modal footer with Cancel and Save buttons */}
           <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
-            <button className="btn btn-primary" onClick={handleSubmit}>Save Changes</button>
+            <button className="btn btn-secondary" onClick={onClose}>
+              Cancel
+            </button>{' '}
+            {/* Close the modal */}
+            <button className="btn btn-primary" onClick={handleSubmit}>
+              Save Changes
+            </button>{' '}
+            {/* Save changes and close */}
           </div>
         </div>
       </div>
@@ -102,7 +179,4 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({ movie, genres, onClose,
   );
 };
 
-
 export default EditMovieModal;
-
-

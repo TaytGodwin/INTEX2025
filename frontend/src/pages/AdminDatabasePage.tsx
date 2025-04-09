@@ -3,25 +3,26 @@ import { useState, useEffect } from 'react';
 import { deleteMovie, getAllMovies } from '../api/MoviesAPI';
 import { getGenres } from '../api/MoviesAPI';
 import { Movie } from '../types/Movie';
-// import EditMovieModal from '../components/EditMovieModal';
 import '../css/theme.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddMovieModal from '../components/admin/AddMovieModal';
+import EditMovieModal from '../components/admin/EditMovieModal';
+import { Genre } from '../types/Genre';
 
 const AdminDatabasePage = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [genres, setGenres] = useState<string[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
-  // const [showEditModal, setShowEditModal] = useState(false);
-  // const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const movieData = await getAllMovies();
-      const genreData: string[] = await getGenres();
+      const genreData: Genre[] = await getGenres();
       setGenres(genreData);
       setMovies(movieData);
     };
@@ -61,10 +62,11 @@ const AdminDatabasePage = () => {
   );
   const totalPages = Math.ceil(filteredMovies.length / pageSize);
 
-  // const handleOpenEdit = (movie: Movie) => {
-  //   setMovieToEdit(movie);
-  //   setShowEditModal(true);
-  // };
+  const handleOpenEdit = (movie: Movie) => {
+    setMovieToEdit(movie);
+    setShowEditModal(true);
+    console.log(movie);
+  };
 
   return (
     <AuthorizeView allowedRoles={['Administrator']}>
@@ -129,7 +131,7 @@ const AdminDatabasePage = () => {
                         <button
                           className="btn btn-sm btn-outline-primary"
                           title="Edit"
-                          // onClick={() => handleOpenEdit(movie)}
+                          onClick={() => handleOpenEdit(movie)}
                         >
                           ✏️ Edit
                         </button>
@@ -201,7 +203,7 @@ const AdminDatabasePage = () => {
           />
         )}
 
-        {/* {showEditModal && movieToEdit && (
+        {showEditModal && movieToEdit && (
           <EditMovieModal
             movie={movieToEdit}
             genres={genres}
@@ -211,7 +213,7 @@ const AdminDatabasePage = () => {
             }}
             onMovieUpdated={(updatedMovies) => setMovies(updatedMovies)}
           />
-        )} */}
+        )}
       </div>
     </AuthorizeView>
   );

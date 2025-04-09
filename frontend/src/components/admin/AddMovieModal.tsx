@@ -3,9 +3,10 @@ import { addMovie, getAllMovies } from '../../api/MoviesAPI';
 import { NewMovie } from '../../types/NewMovie';
 import { Movie } from '../../types/Movie';
 import Select from 'react-select';
+import { Genre } from '../../types/Genre';
 
 interface AddMovieModalProps {
-  genres: string[]; // List of genres to populate dropdown
+  genres: Genre[]; // List of genres to populate dropdown
   onClose: () => void; // Function to close model
   onMovieAdded: (updatedMovies: Movie[]) => void; // Call back to parent after update
 }
@@ -191,10 +192,15 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
             <label className="form-label">Select Genres*</label>
             <Select
               isMulti
-              className="mb-2" // ❌ remove Bootstrap's "form-select", it breaks react-select styles
-              options={genres.map((g) => ({ value: g, label: g }))}
-              required
-              value={newMovie.genres.map((g) => ({ value: g, label: g }))}
+              className="mb-2"
+              options={genres.map((g) => ({
+                value: g,
+                label: g,
+              }))}
+              value={newMovie.genres.map((g) => ({
+                value: g,
+                label: g,
+              }))}
               onChange={(selectedOptions) =>
                 setNewMovie({
                   ...newMovie,
@@ -204,6 +210,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
                 })
               }
             />
+
             <label></label>
           </div>
           {inputError && (
