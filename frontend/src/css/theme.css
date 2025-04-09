@@ -10,6 +10,8 @@
   --color-primary: #57c8f4;
   --color-secondary: #ffdb58;
   --bs-body-bg: #151515;
+  --bs-primary: #57c8f4;
+  --bs-btn-color: #57c8f4;
 
   --color-bg: #000;
   --color-surface: #1a1a1a;
@@ -178,7 +180,7 @@ button:hover {
 
 /* Cards */
 .testimonial-card{
-    background-color: var(--color-surface);
+  background-color: #151515;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1rem;
@@ -213,7 +215,7 @@ button:hover {
 .pricing-card .btn,
 .landing-header .btn-outline-primary,
 .landing-hero .btn-primary {
-  background-color: var(--color-primary);
+  background-color: #57c8f4;
   color: white;
   border-radius: 6px;
   transition: background-color 0.3s ease;
