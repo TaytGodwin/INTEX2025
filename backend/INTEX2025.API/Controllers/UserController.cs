@@ -1,3 +1,6 @@
+using INTEX.API.Data;
+using Microsoft.AspNetCore.Mvc;
+
 [ApiController]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
@@ -10,17 +13,17 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("CreateUser")]
-    public async Task<IActionResult> PostUser([FromBody] userDto userDto)
+    public async Task<IActionResult> PostUser([FromBody] UserDto userDto)
     {
-        var user = new User
+        var user = new movies_user()
         {
-            Name = userDto.Name,
-            Phone = userDto.Phone,
-            Age = userDto.Age,
-            Gender = userDto.Gender,
-            City = userDto.City,
-            State = userDto.State,
-            Zip = userDto.Zip,
+            name = userDto.Name,
+            phone = userDto.Phone,
+            age = userDto.Age,
+            gender = userDto.Gender,
+            city = userDto.City,
+            state = userDto.State,
+            zip = userDto.Zip,
             Netflix = userDto.Netflix,
             AmazonPrime = userDto.AmazonPrime,
             DisneyPlus = userDto.DisneyPlus,
@@ -29,10 +32,10 @@ public class UsersController : ControllerBase
             Hulu = userDto.Hulu,
             AppleTV = userDto.AppleTV,
             Peacock = userDto.Peacock,
-            Email = userDto.Email
+            email = userDto.Email
         };
 
-        _context.Users.Add(user);
+        _context.Movies_Users.Add(user);
         await _context.SaveChangesAsync();
 
         return Ok();
