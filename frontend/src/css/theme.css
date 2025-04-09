@@ -9,6 +9,7 @@
 
   --color-primary: #57c8f4;
   --color-secondary: #ffdb58;
+  --bs-body-bg: #151515;
 
   --color-bg: #000;
   --color-surface: #1a1a1a;
@@ -34,12 +35,12 @@ h5,
 h6 {
   font-family: var(--font-heading);
   font-weight: 600;
-  color: var(--color-text);
+  color: white;
   margin: 0;
 }
 
 a {
-  color: #151515;
+  color: white;
   text-decoration: none;
   transition: color 0.2s ease-in-out;
 }
@@ -64,7 +65,7 @@ button:hover {
 /* Navbar */
 .navbar {
   font-family: var(--font-body);
-  background-color: var(--color-primary) !important;
+  background-color: #151515 !important;
 }
 .navbar-brand {
   font-family: var(--font-brand);
@@ -176,7 +177,12 @@ button:hover {
 }
 
 /* Cards */
-.testimonial-card,
+.testimonial-card{
+    background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
+}
 .pricing-card,
 .faq-item {
   background-color: var(--color-surface);
