@@ -102,7 +102,7 @@ public class RecommenderController : ControllerBase
         var query = $@"
             SELECT show_id, [{showId}] as score
             FROM content_recs1
-            WHERE show_id != {showId}
+            WHERE show_id != @showId
             ORDER BY score DESC
             LIMIT 10;
         ";
@@ -111,6 +111,10 @@ public class RecommenderController : ControllerBase
         await connection.OpenAsync();
         var command = connection.CreateCommand();
         command.CommandText = query;
+        var parameter = command.CreateParameter();
+        parameter.ParameterName = "@showId";
+        parameter.Value = showId;
+        command.Parameters.Add(parameter);
 
         var showIds = new List<long>();
         using (var reader = await command.ExecuteReaderAsync())
@@ -129,10 +133,11 @@ public class RecommenderController : ControllerBase
 
     // Endpoint: /api/recommender/top10_userId?userId={userId}
     // This method finds the top 10 shows recommended to a user based on user similarity.
-    // It uses the 'distance' metric to rank which other users are similar.
+    // It uses the 'distance' metric to rank which movies a user would like based on past movie ratings
     [HttpGet("top10_userId")]
-    public async Task<IActionResult> GetTop10UserIds([FromQuery] int userId)
+    public async Task<IActionResult> GetTop10UserIds([FromQuery] long userId)
     {
+        // Step 1: Try to get recommendations for the requested user
         var results = _context.Top10UserIds
             .Where(u => u.UserId == userId)
             .OrderByDescending(u => u.Distance)
@@ -140,10 +145,53 @@ public class RecommenderController : ControllerBase
             .Select(u => u.ShowId)
             .ToList();
 
-        var movieDetails = await GetMovieDetailsByShowIds(results);
+        if (results.Any())
+        {
+            var movieDetails = await GetMovieDetailsByShowIds(results);
+            return Ok(movieDetails);
+        }
 
-        return Ok(movieDetails);
+        // Step 2: Fallback - find a similar user
+        var currentUser = await _movieDb.Users.FindAsync(userId);
+        if (currentUser == null)
+            return NotFound($"User ID {userId} not found.");
+
+        var similarUser = _movieDb.Users
+            .AsEnumerable() // do in memory comparison
+            .Where(u =>
+                u.user_id != userId &&
+                u.gender == currentUser.gender &&
+                Math.Abs(u.age - currentUser.age) <= 5 &&
+                (
+                    (u.Netflix && currentUser.Netflix) ||
+                    (u.AmazonPrime && currentUser.AmazonPrime) ||
+                    (u.DisneyPlus && currentUser.DisneyPlus) ||
+                    (u.ParamountPlus && currentUser.ParamountPlus) ||
+                    (u.Max && currentUser.Max) ||
+                    (u.Hulu && currentUser.Hulu) ||
+                    (u.AppleTV && currentUser.AppleTV) ||
+                    (u.Peacock && currentUser.Peacock)
+                ))
+            .FirstOrDefault();
+
+        if (similarUser == null)
+            return NotFound("No similar user found to base recommendations on.");
+
+        var fallbackResults = _context.Top10UserIds
+            .Where(u => u.UserId == similarUser.user_id)
+            .OrderByDescending(u => u.Distance)
+            .Take(10)
+            .Select(u => u.ShowId)
+            .ToList();
+
+        if (!fallbackResults.Any())
+            return NotFound($"No recommendations found for similar user ID {similarUser.user_id}.");
+
+        var fallbackMovieDetails = await GetMovieDetailsByShowIds(fallbackResults);
+        return Ok(fallbackMovieDetails);
     }
+
+
 
     // Endpoint: /api/recommender/top5_showIds?showId={showId}
     // This method returns 5 hand-picked recommendations for a show.
@@ -153,13 +201,12 @@ public class RecommenderController : ControllerBase
     // 2. Parse the recommended showIds
     // 3. Fetch their movie details and return
     [HttpGet("top5_showIds")]
-    public async Task<IActionResult> GetTop5ShowIds([FromQuery] long showId)
+    public async Task<IActionResult> GetTop5ShowIds([FromQuery] long showId, [FromQuery] string showGenre)
     {
         var rec = _context.Top5ShowIds
             .Where(r => r.ShowId == showId)
             .Select(r => new
             {
-                r.IfYouLike,
                 r.Recommendation1,
                 r.Recommendation2,
                 r.Recommendation3,
@@ -168,21 +215,34 @@ public class RecommenderController : ControllerBase
             })
             .FirstOrDefault();
 
-        if (rec == null)
-            return NotFound("No recommendations found for that showId.");
+        List<long> showIds;
 
-        var showIds = new List<long>
+        if (rec != null)
         {
-            showId,
-            long.Parse(rec.Recommendation1),
-            long.Parse(rec.Recommendation2),
-            long.Parse(rec.Recommendation3),
-            long.Parse(rec.Recommendation4),
-            long.Parse(rec.Recommendation5)
-        };
+            showIds = new List<long>
+            {
+                long.Parse(rec.Recommendation1),
+                long.Parse(rec.Recommendation2),
+                long.Parse(rec.Recommendation3),
+                long.Parse(rec.Recommendation4),
+                long.Parse(rec.Recommendation5)
+            };
+        }
+        else
+        {
+            showIds = _context.GenreRecommendations
+                .Where(gr => gr.Genre.ToLower().Contains(showGenre.ToLower()))
+                .OrderByDescending(gr => gr.Score)
+                .Take(5)
+                .Select(gr => gr.RecommendedId)
+                .Distinct()
+                .ToList();
+
+            if (!showIds.Any())
+                return NotFound($"No recommended shows found for genre '{showGenre}'.");
+        }
 
         var movieDetails = await GetMovieDetailsByShowIds(showIds);
-
         return Ok(movieDetails);
     }
 }
