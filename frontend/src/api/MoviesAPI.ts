@@ -55,13 +55,45 @@ export const getTotalMovies = async (
   }
 };
 
+// export const searchMovies = async (
+//   query: string,
+//   pageSize: number = 25,
+//   pageNum: number = 1
+// ): Promise<Movie[]> => {
+//   try {
+//     const url = `${MOVIE_API_URL}/api/Movie/Search?query=${encodeURIComponent(query)}&pageSize=${pageSize}&pageNum=${pageNum}`;
+//     const response = await fetch(url, {
+//       method: 'GET',
+//       credentials: 'include',
+//     });
+    
+//     const contentType = response.headers.get('content-type');
+//     if (!contentType || !contentType.includes('application/json')) {
+//       throw new Error('Invalid response format from server');
+//     }
+    
+//     const data = await response.json();
+//     return data.movies; // Make sure this matches the backend ("Movies" with a capital M)
+//   } catch (error) {
+//     console.error('Error searching movies:', error);
+//     return [];
+//   }
+// };
 export const searchMovies = async (
   query: string,
   pageSize: number = 25,
-  pageNum: number = 1
+  pageNum: number = 1,
+  genrelist?: string[]
 ): Promise<Movie[]> => {
   try {
-    const url = `${MOVIE_API_URL}/api/Movie/Search?query=${encodeURIComponent(query)}&pageSize=${pageSize}&pageNum=${pageNum}`;
+    let url = `${MOVIE_API_URL}/api/Movie/Search?query=${encodeURIComponent(query)}&pageSize=${pageSize}&pageNum=${pageNum}`;
+    if (genrelist && genrelist.length > 0) {
+      // Append each genre as a query parameter.
+      genrelist.forEach((genre) => {
+        url += `&genrelist=${encodeURIComponent(genre)}`;
+      });
+    }
+    
     const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -73,12 +105,15 @@ export const searchMovies = async (
     }
     
     const data = await response.json();
-    return data.movies; // Make sure this matches the backend ("Movies" with a capital M)
+    // Make sure this matches your backend; if backend returns "Movies", change accordingly.
+    return data.movies;
   } catch (error) {
     console.error('Error searching movies:', error);
     return [];
   }
 };
+
+
 // GenreAPI.ts
 
 export const getGenres = async (): Promise<string[]> => {
@@ -94,7 +129,7 @@ export const getGenres = async (): Promise<string[]> => {
       throw new Error(`HTTP error: ${response.status}`);
     }
     const data = await response.json();
-    // Assuming your API returns an array of strings (genres)
+    // API returns an array of strings (genres)
     return data;
   } catch (error) {
     console.error('Error fetching genres:', error);
