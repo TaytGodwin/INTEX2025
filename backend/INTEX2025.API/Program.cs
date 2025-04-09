@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using Azure.Storage.Blobs;
 
-// DotNetEnv.Env.Load(); // Ensure environment variables are loaded in development
+DotNetEnv.Env.Load(); // Ensure environment variables are loaded in development
 
 
 var builder = WebApplication.CreateBuilder(args);
