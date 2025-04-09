@@ -4,8 +4,8 @@ namespace INTEX.API.Data.RecommenderModels;
 
 public class Top5ShowIds
 {
-    [Column("index")]
-    public string Index { get; set; }
+    [Column("show_id")]
+    public long ShowId { get; set; }
     
     [Column("If you like")]
     public string IfYouLike { get; set; }
