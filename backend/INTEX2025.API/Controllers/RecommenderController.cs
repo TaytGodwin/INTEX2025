@@ -6,12 +6,16 @@ using INTEX.API.Data.RecommenderModels;
 
 namespace INTEX.API.Controllers;
 
+
+
 // This controller provides endpoints to get different types of movie recommendations
 // using different recommendation models and data sources.
 [Route("api/[controller]")]
 [ApiController]
 public class RecommenderController : ControllerBase
 {
+
+    //contexts
     private readonly RecommenderDbContext _context;
     private readonly MovieDbContext _movieDb;
 
@@ -60,33 +64,77 @@ public class RecommenderController : ControllerBase
     // 2. Randomly pick 2 shows from this genre
     // 3. Find top 5 recommended shows based on score for these picked shows
     // 4. Return detailed movie information for these recommendations
+    // [HttpGet("genre_recommendations")]
+    // public async Task<IActionResult> GetGenreRecommendations([FromQuery] string genreName)
+    // {
+    //     var genreShowIds = _context.GenreRecommendations
+    //         .Where(gr => gr.Genre.Contains(genreName))
+    //         .Select(gr => gr.ShowId)
+    //         .Distinct()
+    //         .ToList();
+
+    //     if (!genreShowIds.Any())
+    //         return NotFound($"No show_ids found for genre '{genreName}'.");
+
+    //     var rand = new Random();
+    //     var selectedShowIds = genreShowIds.OrderBy(x => rand.Next()).Take(2).ToList();
+
+    //     var recommendations = _context.GenreRecommendations
+    //         .Where(gr => selectedShowIds.Contains(gr.ShowId))
+    //         .OrderByDescending(gr => gr.Score)
+    //         .Take(5)
+    //         .Select(gr => gr.RecommendedId)
+    //         .Distinct()
+    //         .ToList();
+
+    //     var movieDetails = await GetMovieDetailsByShowIds(recommendations);
+
+    //     return Ok(movieDetails);
+    // }
     [HttpGet("genre_recommendations")]
-    public async Task<IActionResult> GetGenreRecommendations([FromQuery] string genreName)
-    {
-        var genreShowIds = _context.GenreRecommendations
-            .Where(gr => gr.Genre.Contains(genreName))
-            .Select(gr => gr.ShowId)
-            .Distinct()
-            .ToList();
+        public async Task<IActionResult> GetGenreRecommendations([FromQuery] string genreName)
+        {
+            if (string.IsNullOrWhiteSpace(genreName))
+                return BadRequest("Genre name is required.");
 
-        if (!genreShowIds.Any())
-            return NotFound($"No show_ids found for genre '{genreName}'.");
+            // Normalize the input
+            string normalizedGenre = genreName.Trim().ToLower();
 
-        var rand = new Random();
-        var selectedShowIds = genreShowIds.OrderBy(x => rand.Next()).Take(2).ToList();
+            // Pull all genre rows from DB
+            var allGenreRows = _context.GenreRecommendations.ToList();
 
-        var recommendations = _context.GenreRecommendations
-            .Where(gr => selectedShowIds.Contains(gr.ShowId))
-            .OrderByDescending(gr => gr.Score)
-            .Take(5)
-            .Select(gr => gr.RecommendedId)
-            .Distinct()
-            .ToList();
+            // Filter in-memory where genre column (split by commas) contains the provided genre
+            var genreShowIds = allGenreRows
+                .Where(gr => gr.Genre
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(g => g.Trim().ToLower())
+                    .Contains(normalizedGenre))
+                .Select(gr => gr.ShowId)
+                .Distinct()
+                .ToList();
 
-        var movieDetails = await GetMovieDetailsByShowIds(recommendations);
+            if (!genreShowIds.Any())
+                return NotFound($"No show_ids found for genre '{genreName}'.");
 
-        return Ok(movieDetails);
-    }
+            // Select 2 random show IDs
+            var rand = new Random();
+            var selectedShowIds = genreShowIds.OrderBy(x => rand.Next()).Take(2).ToList();
+
+            // Find recommendations for those show IDs
+            var recommendations = allGenreRows
+                .Where(gr => selectedShowIds.Contains(gr.ShowId))
+                .OrderByDescending(gr => gr.Score)
+                .Select(gr => gr.RecommendedId)
+                .Distinct()
+                .Take(5)
+                .ToList();
+
+            if (!recommendations.Any())
+                return NotFound("No recommendations found for the selected genre.");
+
+            var movieDetails = await GetMovieDetailsByShowIds(recommendations);
+            return Ok(movieDetails);
+        }
 
     // Endpoint: /api/recommender/content_recs1?showId={showId}
     // This method returns shows that are most similar to the given showId based on content similarity.

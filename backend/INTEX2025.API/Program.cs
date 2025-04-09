@@ -39,7 +39,7 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseSqlServer(moviesConnection)); // Use the movie connection string from the environment variable
 
 builder.Services.AddDbContext<RecommenderDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("RecommenderConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("RecommenderConnection")));
 
 // Set up Azure Blob storage client for the images
 if (string.IsNullOrEmpty(blobConnectionString) && string.IsNullOrEmpty(containerName))
