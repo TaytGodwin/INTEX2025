@@ -28,6 +28,45 @@ namespace INTEX.API.Controllers
             return Ok("I am working");
         }
 
+        // This is a Search Route
+        [HttpGet("Search")]
+        public IActionResult SearchMovies(string query, int pageSize = 25, int pageNum = 1)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return BadRequest("Search query cannot be empty.");
+            }
+
+            var filteredMoviesQuery = _movieContext.Movies
+                .Include(m => m.MovieGenres)
+                .ThenInclude(mg => mg.Genre)
+                .Where(m => m.title.Contains(query))
+                .AsQueryable();
+
+            // Order the results (here by title)
+            filteredMoviesQuery = filteredMoviesQuery.OrderBy(m => m.title);
+
+            var movies = filteredMoviesQuery
+                .Skip((pageNum - 1) * pageSize)
+                .Take(pageSize)
+                .Select(m => new
+                {
+                    m.show_id,
+                    title = m.title ?? "",
+                    type = m.type ?? "",
+                    director = m.director ?? "",
+                    cast = m.cast ?? "",
+                    country = m.country ?? "",
+                    release_year = m.release_year,
+                    rating = m.rating ?? "",
+                    duration = m.duration ?? "",
+                    description = m.description ?? "",
+                    Genres = m.MovieGenres.Select(mg => mg.Genre.GenreName ?? "").ToList()
+                })
+                .ToList();
+
+            return Ok(new { Movies = movies });
+        }
         [HttpGet("AllMovies")]
         public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null)
         {

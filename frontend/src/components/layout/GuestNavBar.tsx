@@ -35,6 +35,7 @@ const GuestNavbar = () => {
             </li>
             {/* Add more links here if needed */}
           </ul>
+        
         </div>
       </div>
     </nav>

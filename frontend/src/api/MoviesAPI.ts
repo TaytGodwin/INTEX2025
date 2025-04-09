@@ -24,6 +24,62 @@ export const getAllMovies = async (): Promise<Movie[]> => {
     return [];
   }
 };
+export const getTotalMovies = async (
+  pageSize: number = 25,
+  pageNum: number = 1,
+  sortBy: string = "title",
+  genrelist?: string[]
+): Promise<Movie[]> => {
+  try {
+    let url = `${MOVIE_API_URL}/api/Movie/AllMovies?pageSize=${pageSize}&pageNum=${pageNum}&sortBy=${sortBy}`;
+    if (genrelist && genrelist.length > 0) {
+      genrelist.forEach(genre => {
+        url += `&genrelist=${encodeURIComponent(genre)}`;
+      });
+    }
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Invalid response format from server');
+    }
+
+    const data = await response.json();
+    return data.movies; // Now matching the backend property
+  } catch (error) {
+    console.error('Error fetching movies:', error);
+    return [];
+  }
+};
+
+export const searchMovies = async (
+  query: string,
+  pageSize: number = 25,
+  pageNum: number = 1
+): Promise<Movie[]> => {
+  try {
+    const url = `${MOVIE_API_URL}/api/Movie/Search?query=${encodeURIComponent(query)}&pageSize=${pageSize}&pageNum=${pageNum}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Invalid response format from server');
+    }
+    
+    const data = await response.json();
+    return data.movies; // Make sure this matches the backend ("Movies" with a capital M)
+  } catch (error) {
+    console.error('Error searching movies:', error);
+    return [];
+  }
+};
 // GenreAPI.ts
 
 export const getGenres = async (): Promise<Genre[]> => {

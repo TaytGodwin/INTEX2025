@@ -13,7 +13,6 @@ public class RecommenderDbContext : DbContext
 
     // Table: genre_recommendations - Recommendations based on genre similarity
     public DbSet<GenreRecommendations> GenreRecommendations { get; set; }
-    
 
     // Table: top10_userId - Top 10 similar users based on distance metric
     public DbSet<Top10UserId> Top10UserIds { get; set; }
