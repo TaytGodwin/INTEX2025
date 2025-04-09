@@ -35,12 +35,21 @@ const Layout = () => {
   if (user && user.roles.includes('User')) {
     return (
       <div className="layout d-flex">
+        
         <aside className="side-navbar">
           <UserNavBar />
         </aside>
         <div className="main-content" style={{ marginLeft: '80px', flex: 1 }}>
+      
+        
+        <main>
           <Outlet />
+        </main>
+
+        <footer>
           <Footer />
+        </footer>
+          
         </div>
       </div>
     );
