@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import MoviePoster from '../components/movieCards/MoviePoster';
+
 import MovieDetails from '../components/movieCards/MovieDetails';
 import { getGenres, searchMovies } from '../api/MoviesAPI';
 import { getImage } from '../api/ImageAPI';

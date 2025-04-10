@@ -29,10 +29,6 @@ function LoginPage() {
     }
   };
 
-  const handleRegisterClick = () => {
-    navigate('/register');
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');

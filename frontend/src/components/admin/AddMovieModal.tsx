@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import Select from 'react-select';
 import { Genre } from '../../types/Genre';
 import { uploadImage } from '../../api/MoviesAPI';
