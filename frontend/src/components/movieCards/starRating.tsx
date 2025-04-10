@@ -32,19 +32,26 @@ const StarRating: React.FC<StarRatingProps> = ({ userId, showId }) => {
 
   // Handle a click which sets a new rating
   const handleRatingClick = async (newRating: number) => {
+    console.log(
+      'Rating clicked with values: newRate, uid, show',
+      newRating,
+      userId,
+      showId
+    );
     try {
       setRating(newRating);
       // Send the new rating to the backend
       await axios.post(
         `${Identity_API_URL}/api/movie/AddRating`,
-        JSON.stringify(newRating),
+        {}, // keep the body empty or use {}
         {
           headers: {
             'Content-Type': 'application/json',
           },
-          params: { userId, showId },
+          params: { rating: newRating, userId, showId },
         }
       );
+      console.log('Rating successfully sent');
     } catch (error) {
       console.error('Error saving rating:', error);
     }
