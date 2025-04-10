@@ -146,37 +146,89 @@ public class RecommenderController : ControllerBase
     // 2. Exclude the original show itself
     // 3. Sort by similarity score
     // 4. Return the top 10 most similar showIds and their details
+    
     [HttpGet("content_recs1")]
     [Authorize] // Used by all logged in
-    public async Task<IActionResult> GetContentRecs1([FromQuery] long showId)
+    public async Task<IActionResult> GetUserRecommendedLists([FromQuery] int userId)
     {
-        var query = $@"
-            SELECT show_id, [{showId}] as score
+        // Retrieve movies that the user rated above 3 from the movies rating table in the movies DB
+        // Assumes that _movieDb.Ratings exists and that each rating has a UserId, ShowId, and Rating property.
+        var ratings = await _movieDb.Ratings
+            .Where(r => r.user_id == userId && r.rating > 3)
+            .ToListAsync();
+
+        if (!ratings.Any())
+            return NotFound($"No ratings above 3 found for userId {userId}.");
+
+        var resultList = new List<object>();
+
+        foreach (var rating in ratings)
+        {
+            long baseShowId = rating.show_id;
+            // Build and execute the query on the content_recs1 table for each movie's recommendations
+            string query = $@"
+            SELECT show_id, [{baseShowId}] as score
             FROM content_recs1
-            WHERE show_id != {showId}
+            WHERE show_id != {baseShowId}
             ORDER BY score DESC
             LIMIT 10;
         ";
 
-        var connection = _context.Database.GetDbConnection();
-        await connection.OpenAsync();
-        var command = connection.CreateCommand();
-        command.CommandText = query;
+            var connection = _context.Database.GetDbConnection();
+            await connection.OpenAsync();
+            var command = connection.CreateCommand();
+            command.CommandText = query;
 
-        var showIds = new List<long>();
-        using (var reader = await command.ExecuteReaderAsync())
-        {
-            while (await reader.ReadAsync())
+            var recommendedShowIds = new List<long>();
+            using (var reader = await command.ExecuteReaderAsync())
             {
-                if (!reader.IsDBNull(0))
-                    showIds.Add(reader.GetInt64(0));
+                while (await reader.ReadAsync())
+                {
+                    if (!reader.IsDBNull(0))
+                        recommendedShowIds.Add(reader.GetInt64(0));
+                }
             }
+
+            var movieDetails = await GetMovieDetailsByShowIds(recommendedShowIds);
+            resultList.Add(new { BaseShowId = baseShowId, Recommendations = movieDetails });
         }
 
-        var movieDetails = await GetMovieDetailsByShowIds(showIds);
-
-        return Ok(movieDetails);
+        return Ok(resultList);
     }
+
+    
+    
+    // [HttpGet("content_recs1")]
+    // [Authorize] // Used by all logged in
+    // public async Task<IActionResult> GetContentRecs1([FromQuery] long showId)
+    // {
+    //     var query = $@"
+    //         SELECT show_id, [{showId}] as score
+    //         FROM content_recs1
+    //         WHERE show_id != {showId}
+    //         ORDER BY score DESC
+    //         LIMIT 10;
+    //     ";
+
+    //     var connection = _context.Database.GetDbConnection();
+    //     await connection.OpenAsync();
+    //     var command = connection.CreateCommand();
+    //     command.CommandText = query;
+
+    //     var showIds = new List<long>();
+    //     using (var reader = await command.ExecuteReaderAsync())
+    //     {
+    //         while (await reader.ReadAsync())
+    //         {
+    //             if (!reader.IsDBNull(0))
+    //                 showIds.Add(reader.GetInt64(0));
+    //         }
+    //     }
+
+    //     var movieDetails = await GetMovieDetailsByShowIds(showIds);
+
+    //     return Ok(movieDetails);
+    // }
 
     // Endpoint: /api/recommender/top10_userId?userId={userId}
     // This method finds the top 10 shows recommended to a user based on user similarity.
@@ -204,38 +256,52 @@ public class RecommenderController : ControllerBase
     // 1. Get the recommendation row by showId
     // 2. Parse the recommended showIds
     // 3. Fetch their movie details and return
-    [HttpGet("top5_showIds")]
-    [Authorize] // Used by all logged in
-    public async Task<IActionResult> GetTop5ShowIds([FromQuery] long showId)
+  [HttpGet("top5_showIds")]
+[Authorize]
+public async Task<IActionResult> GetTop5ShowIdsFixed([FromQuery] long showId)
+{
+    var connection = _context.Database.GetDbConnection();
+    await connection.OpenAsync();
+
+    var command = connection.CreateCommand();
+    command.CommandText = $@"
+        SELECT 
+            [Recommendation 1], 
+            [Recommendation 2], 
+            [Recommendation 3], 
+            [Recommendation 4], 
+            [Recommendation 5]
+        FROM top5_showids
+        WHERE show_id = {showId};
+    ";
+
+    var showIds = new List<long>();
+
+    using (var reader = await command.ExecuteReaderAsync())
     {
-        var rec = _context.Top5ShowIds
-            .Where(r => r.ShowId == showId)
-            .Select(r => new
-            {
-                r.IfYouLike,
-                r.Recommendation1,
-                r.Recommendation2,
-                r.Recommendation3,
-                r.Recommendation4,
-                r.Recommendation5
-            })
-            .FirstOrDefault();
-
-        if (rec == null)
-            return NotFound("No recommendations found for that showId.");
-
-        var showIds = new List<long>
+        if (!reader.HasRows)
         {
-            showId,
-            long.Parse(rec.Recommendation1),
-            long.Parse(rec.Recommendation2),
-            long.Parse(rec.Recommendation3),
-            long.Parse(rec.Recommendation4),
-            long.Parse(rec.Recommendation5)
-        };
+            return NotFound("No recommendations found for that showId.");
+        }
 
-        var movieDetails = await GetMovieDetailsByShowIds(showIds);
-
-        return Ok(movieDetails);
+        while (await reader.ReadAsync())
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                if (!reader.IsDBNull(i))
+                {
+                    // Recommendation 5 is stored as FLOAT, so convert accordingly
+                    var value = reader.GetValue(i);
+                    if (value is double dbl)
+                        showIds.Add(Convert.ToInt64(dbl));
+                    else if (value is long lng)
+                        showIds.Add(lng);
+                }
+            }
+        }
     }
+
+    var movieDetails = await GetMovieDetailsByShowIds(showIds);
+    return Ok(movieDetails);
+}
 }

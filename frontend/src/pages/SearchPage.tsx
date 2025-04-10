@@ -1,9 +1,34 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MoviePoster from '../components/movieCards/MoviePoster';
-import { getTotalMovies, getGenres, searchMovies } from '../api/MoviesAPI';
+import MovieDetails from '../components/movieCards/MovieDetails';
+import { getGenres, searchMovies } from '../api/MoviesAPI';
 import { getImage } from '../api/ImageAPI';
-import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
+import { Genre } from '../types/Genre';
+import LazyImage from '../components/movieCards/LazyImage';
+
+const Spinner = () => (
+  <div style={{ textAlign: 'center', padding: '2rem' }}>
+    <div className="spinner" />
+    <style>
+      {`
+          .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid #57C8F4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+    </style>
+  </div>
+);
 
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!]/g, '');
@@ -16,10 +41,23 @@ const SearchPage: React.FC = () => {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [selectedPosterUrl, setSelectedPosterUrl] = useState<string>('');
+      
+  // Spinner effect
+    useEffect(() => {
+      if (loading) {
+        const timeout = setTimeout(() => setShowSpinner(true), 300);
+        return () => clearTimeout(timeout);
+      } else {
+        setShowSpinner(false);
+      }
+    }, [loading]);
 
 
   // Genre dropdown state
-  const [genres, setGenres] = useState<string[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
   // Reset the movie list and pagination when the search term changes.
@@ -43,19 +81,9 @@ const SearchPage: React.FC = () => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
+        // Pass selectedGenre as an array if one is chosen, otherwise an empty array.
         const genreList = selectedGenres.length > 0 ? selectedGenres : [];
-
-        let newMovies;
-        
-        if (searchTerm.trim() === '' && genreList.length === 0) {
-          const result = await getTotalMovies(25, page);
-          newMovies = result ?? []; // Fallback if null
-        } else {
-          const result = await searchMovies(searchTerm.trim(), 25, page, genreList);
-          newMovies = result ?? []; // Fallback if null
-        }
-        
-
+        const newMovies = await searchMovies(searchTerm || '', 25, page, genreList);
         setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
         setHasMore(newMovies.length > 0);
       } catch (error) {
@@ -66,8 +94,8 @@ const SearchPage: React.FC = () => {
     };
     fetchMovies();
   }, [searchTerm, selectedGenres, page]);
+
   // Infinite scrolling: attach an observer to the last movie element.
-  
   const observer = useRef<IntersectionObserver | null>(null);
   const lastMovieElementRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -82,6 +110,7 @@ const SearchPage: React.FC = () => {
     },
     [loading, hasMore]
   );
+
 
 
 // Fetch images for the movies when the movies array changes.
@@ -150,17 +179,17 @@ const SearchPage: React.FC = () => {
               />
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
   {genres.map((genre) => {
-    const isSelected = selectedGenres.includes(genre);
+    const isSelected = selectedGenres.includes(genre.genreName);
 
     return (
       <button
-        key={genre}
+        key={genre.genreID}
         type="button"
         onClick={() => {
           if (isSelected) {
-            setSelectedGenres(selectedGenres.filter(g => g !== genre));
+            setSelectedGenres(selectedGenres.filter(g => g !== genre.genreName));
           } else {
-            setSelectedGenres([...selectedGenres, genre]);
+            setSelectedGenres([...selectedGenres, genre.genreName]);
           }
         }}
         style={{
@@ -178,24 +207,24 @@ const SearchPage: React.FC = () => {
           transition: 'all 0.3s ease',
         }}
       >
-        {genre}
+        {genre.genreName}
       </button>
     );
   })}
 </div>
 </div>
       {searchTerm === '' && selectedGenres.length === 0 && (
-        <p style={{ color: '#ccc' }}>Showing all movies...</p>
+        <h3 style={{ color: '#ccc' }}>Showing all movies...</h3>
       )}
 
       {searchTerm === '' && selectedGenres.length > 0 && (
-        <p style={{ color: '#ccc' }}>Showing all movies in genre(s): {selectedGenres.join(', ')}</p>
+        <h3 style={{ color: '#ccc' }}>Showing all movies in genre(s): {selectedGenres.join(', ')}</h3>
       )}
 
       {searchTerm !== '' && (
-        <p style={{ color: '#ccc' }}>
+        <h3 style={{ color: '#ccc' }}>
           Searching for: "<strong>{searchTerm}</strong>"{selectedGenres.length > 0 ? ` in genre(s): ${selectedGenres.join(', ')}` : ''}
-        </p>
+        </h3>
       )}
       {/* Movies Grid */}
       <div
@@ -210,28 +239,80 @@ const SearchPage: React.FC = () => {
             
             if (movies.length === index + 1) {
               return (
-                <div key={movie.title} ref={lastMovieElementRef} style={{ padding: '0 10px' }}>
-                  <MoviePoster
-                    title={movie.title}
-                    imageUrl={movieImages[movie.title] || '/images/default.jpg'} onClick={function (): void {
-                      throw new Error('Function not implemented.');
-                    } }                  />
-                </div>
+                <div
+                    key={movie.title}
+                    style={{ padding: '0 10px', cursor: 'pointer' }}
+                    ref={index === movies.length - 1 ? lastMovieElementRef : undefined}
+                    onClick={() => {
+                      setSelectedMovie(movie);
+                      setSelectedPosterUrl(movieImages[movie.title] || '/images/default.jpg');
+                    }}
+                  >
+                    <LazyImage
+                      src={movieImages[movie.title] || '/images/default.jpg'}
+                      alt={movie.title}
+                      style={{
+                        width: '100%',
+                        borderRadius: '8px',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    <h5 style={{ color: '#fff', textAlign: 'center', marginTop: '0.5rem' }}>
+                      {movie.title}
+                    </h5>
+                  </div>
               );
             } else {
               return (
-                <div key={movie.title} style={{ padding: '0 10px' }}>
-                  <MoviePoster
-                    title={movie.title}
-                    imageUrl={movieImages[movie.title] || '/images/default.jpg'} onClick={function (): void {
-                      throw new Error('Function not implemented.');
-                    } }                  />
+                <div
+                  key={movie.title}
+                  style={{ padding: '0 10px', cursor: 'pointer' }}
+                  ref={index === movies.length - 1 ? lastMovieElementRef : undefined}
+                  onClick={() => {
+                    setSelectedMovie(movie);
+                    setSelectedPosterUrl(movieImages[movie.title] || '/images/default.jpg');
+                  }}
+                >
+                  <LazyImage
+                    src={movieImages[movie.title] || '/images/default.jpg'}
+                    alt={movie.title}
+                    style={{
+                      width: '100%',
+                      borderRadius: '8px',
+                      objectFit: 'cover',
+                    }}
+                  />
+                  <h5 style={{ color: '#fff', textAlign: 'center', marginTop: '0.5rem' }}>
+                    {movie.title}
+                  </h5>
                 </div>
               );
             }
           })}
         </div>
-      {loading && <div>Loading...</div>}
+        {showSpinner && (
+          <div
+            style={{
+              gridColumn: '1 / -1',
+              textAlign: 'center',
+              padding: '2rem 0',
+              opacity: 0.8,
+              transition: 'opacity 0.3s ease-in-out'
+            }}
+          >
+            <Spinner />
+          </div>
+          )}  
+        {selectedMovie && (
+          <MovieDetails
+            movie={selectedMovie}
+            posterUrl={selectedPosterUrl}
+            onClose={() => {
+              setSelectedMovie(null);
+              setSelectedPosterUrl('');
+            }}
+          />
+        )}
     </div>
   );
 };
