@@ -1,17 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { pingAuth, login as apiLogin } from '../api/IdentityAPI';
-interface RegisterPageProps {
-  identityApiUrl: string;
-}
+import {
+  pingAuth,
+  login as apiLogin,
+  register,
+  createUserProfile,
+  assignUserRole,
+} from '../api/IdentityAPI';
 
-type UserData = {
-  email: string;
-  roles: string[];
-};
-
-const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
+function RegisterPage() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -172,55 +170,38 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
     console.log('Profile data being sent:', profileData);
 
     try {
-      // 1. Send auth data to authentication API
-      const authResponse = await fetch(`${identityApiUrl}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(authData),
-      });
+      // Register user using the existing register function
+      const authSuccess = await register(email, password);
+      if (!authSuccess) {
+        throw new Error('Authentication registration failed.');
+      }
 
-      //   if (!authResponse.ok) {
-      //     throw new Error('Authentication registration failed.');
-      //   }
+      // Log the user in (using the login function from IdentityAPI.ts)
       const loginSuccess = await apiLogin(email, password, rememberme);
+      if (!loginSuccess) {
+        throw new Error('Login failed.');
+      }
 
-      // 2. Send profile data to profile API
-      const profileResponse = await fetch(
-        `${identityApiUrl}/api/Users/CreateUser`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(profileData),
-        }
-      );
+      // Create the user profile via IdentityAPI
+      const profileSuccess = await createUserProfile(profileData);
+      if (!profileSuccess) {
+        throw new Error('Profile creation failed.');
+      }
 
-      //   if (!profileResponse.ok) {
-      //     throw new Error('Profile creation failed.');
-      //   }
+      // Assign a role to the user via IdentityAPI
+      const roleSuccess = await assignUserRole(email, 'User');
+      if (!roleSuccess) {
+        throw new Error('Role assignment failed.');
+      }
 
-      // 3. Assign role
-      console.log(
-        'Assigning role to user at:',
-        `${identityApiUrl}/Role/AssignRoleToUser`
-      );
-      const roleResponse = await fetch(
-        `${identityApiUrl}/Role/AssignRoleToUser`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userEmail: email, roleName: 'User' }),
-        }
-      );
-
-      // Give the server a second to process role assignment
+      // Give the server a moment to process role assignment
       await new Promise((res) => setTimeout(res, 300));
 
-      const userData: UserData | null = await pingAuth();
+      const userData = await pingAuth();
       console.log(userData);
       if (userData) {
         authLogin(userData);
 
-        // Navigate based on user role
         if (userData.roles.includes('Administrator')) {
           navigate('/admin');
         } else if (userData.roles.includes('User')) {
@@ -915,6 +896,6 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
   //     </div>
   //   </div>
   // </div>
-};
+}
 
 export default RegisterPage;

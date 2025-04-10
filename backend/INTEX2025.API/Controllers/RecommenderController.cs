@@ -128,7 +128,7 @@ public class RecommenderController : ControllerBase
                 .OrderByDescending(gr => gr.Score)
                 .Select(gr => gr.RecommendedId)
                 .Distinct()
-                .Take(5)
+                .Take(10)
                 .ToList();
 
             if (!recommendations.Any())

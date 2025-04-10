@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import { getAllMovies } from '../../api/MoviesAPI'; // New API call to fetch all movies
 import { getImage } from '../../api/ImageAPI';
+import defaultImageUrl from '/images/default.jpg';
 import MoviePoster from '../movieCards/MoviePoster';
 import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
@@ -12,6 +13,15 @@ function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()]/g, '');
 }
 
+
+const FeaturedSection = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
+  const [loading, setLoading] = useState<boolean>(true);
+
+
+  //Hard Coded Area for FeaturedTitles
+  const featuredTitles = ['Interstellar', 'Inception', 'The Dark Knight', 'Squid Game', 'Dear John', 'The Karate Kid', 'Attack on Titan', 'Legally Blonde','How to Train Your Dragon 2'];
 function FeaturedSection() {
   const [movies, setMovies] = useState<Movie[]>([]);
   // Using the movie title as the key to store the fetched image URL
@@ -59,6 +69,42 @@ function FeaturedSection() {
 
     fetchMovies();
   }, []);
+  // useEffect(() => {
+  //   const fetchFeaturedMovies = async () => {
+  //     try {
+  //       const result = await getAllMovies();
+  //       if (result) {
+  //         const filtered = result.filter((movie) =>
+  //           featuredTitles.includes(movie.title)
+  //         );
+  //         setMovies(filtered);
+
+  //         const imagePromises = filtered.map(async (movie) => {
+  //           const sanitizedTitle = sanitizeTitle(movie.title);
+  //           const blob = await getImage(sanitizedTitle);
+  //           console.log("Fetching image for:", sanitizedTitle);
+  //           return {
+  //             title: movie.title,
+  //             url: blob ? URL.createObjectURL(blob) : defaultImageUrl,
+  //           };
+  //         });
+
+  //         const images = await Promise.all(imagePromises);
+  //         const imageMap: { [title: string]: string } = {};
+  //         images.forEach((img) => {
+  //           imageMap[img.title] = img.url;
+  //         });
+  //         setMovieImages(imageMap);
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching featured movies:', err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchFeaturedMovies();
+  // }, []);
 
   const sliderSettings = {
     dots: true, // Show navigation dots
@@ -103,13 +149,15 @@ function FeaturedSection() {
           >
             <MoviePoster
               imageUrl={movieImages[movie.title] || defaultImageUrl}
-              title={movie.title}
-            />
+              title={movie.title} onClick={function (): void {
+                throw new Error('Function not implemented.');
+              } }            />
           </div>
         ))}
       </Slider>
     </section>
   );
 }
-
+}
 export default FeaturedSection;
+

@@ -526,3 +526,65 @@ body {
 .privacy-policy-subtext {
   color: white;
 }
+
+.star {
+  cursor: pointer;
+  font-size: 24px;
+  transition:
+    color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.star.unselected {
+  color: var(--color-muted);
+}
+
+.star.selected {
+  color: var(--color-secondary);
+  text-shadow: 0 0 6px var(--color-secondary);
+}
+
+.star:hover {
+  transform: scale(1.1);
+  text-shadow: 0 0 6px var(--color-secondary);
+  /* Slick arrow containers */
+  .slick-prev,
+  .slick-next {
+    width: 50px;
+    height: 50px;
+    z-index: 10;
+  }
+
+  /* Arrows themselves */
+  /* Slick arrow containers */
+  .slick-prev,
+  .slick-next {
+    width: 50px;
+    height: 50px;
+    z-index: 10;
+  }
+
+  /* Arrows themselves */
+  .slick-prev:before,
+  .slick-next:before {
+    font-size: 40px; /* default is 20px */
+    color: #57c8f4; /* Your brand blue, or try #fff for white */
+    opacity: 1; /* default is 0.75, make it fully visible */
+  }
+
+  /* Optional: Add hover effect for nicer UI */
+  .slick-prev:hover:before,
+  .slick-next:hover:before {
+    color: #79dbff;
+    transition: color 0.3s ease;
+  }
+
+  /* Optional: Shift arrows outward slightly */
+  .slick-prev {
+    left: -40px;
+  }
+
+  .slick-next {
+    right: -40px;
+  }
+}

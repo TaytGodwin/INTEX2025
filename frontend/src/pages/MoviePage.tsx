@@ -1,47 +1,78 @@
 import { useEffect, useState } from 'react';
-import MovieRow from '../components/movieCards/MovieRow';
 import GenreRec from '../components/Carousels/GenreRec';
-import { getGenres } from '../api/MoviesAPI';
+import LazyGenreRec from '../components/Carousels/LazyCarousels/LazyGenreRec';
+import { getGenres, getUserId } from '../api/MoviesAPI';
 import { Genre } from '../types/Genre';
-
+import GetContentRec from '../components/Carousels/GetContentRec';
+import GetTopRec from '../components/Carousels/GetTopRec';
+import LandingMovieHero from '../components/movieCards/LandingMovieHero';
+import LazyForYou from '../components/Carousels/LazyCarousels/LazyForYou';
+import { pingAuth } from '../api/IdentityAPI';
 
 function MoviePage() {
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [visibleCount, setVisibleCount] = useState(2); // how many carousels are visible
+  const [user_id, setUserId] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(3);
 
-    useEffect(() => {
-      const fetchGenres = async () => {
-        const allGenres = await getGenres();
-        setGenres(allGenres);
-        console.log(allGenres)
-      };
-      fetchGenres();
-    }, []);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 100
+      ) {
+        setVisibleCount((prev) => prev + 2); // Show 2 more carousels
+      }
+    };
 
-    useEffect(() => {
-      const handleScroll = () => {
-        const nearBottom =
-          window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
-        if (nearBottom && visibleCount < genres.length) {
-          setVisibleCount((prev) => prev + 1);
-        }
-      };
-    
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
-    }, [genres, visibleCount]);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      const allGenres = await getGenres();
+      setGenres(allGenres);
+      console.log(allGenres);
+    };
+    fetchGenres();
+  }, []);
+
+  // Use pingAuth to get the user's email and then fetch the user id via getUserId
+  useEffect(() => {
+    const fetchUserEmailAndId = async () => {
+      const authData = await pingAuth();
+      if (authData?.email) {
+        const id = await getUserId(authData.email);
+        setUserId(id);
+      }
+    };
+
+    fetchUserEmailAndId();
+  }, []);
+  // Adds scrolling ability
 
   return (
     <div className="movie-page">
-      <MovieRow />
+      <LandingMovieHero />
+      <div
+        style={{
+          width: '100%',
+          height: '4px', // You can adjust height
+          backgroundColor: '#57c8f4', // Nice blue color
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          paddingRight: '2rem',
+          position: 'relative', // or 'fixed' if you want it to stay on top while scrolling
+          top: 0,
+          zIndex: 100,
+        }}
+      ></div>
+      {user_id !== null && <LazyForYou userId={user_id} />}
 
-      {/* This will contain all the other stuff on the page */}
-      <GenreRec genre={'Action'}/>
-      {/* Carousel that loads on scorll for Genre */}
-      <div className="movie-page">
-    
+      <div className="genre-recs-wrapper">
         {genres.slice(0, visibleCount).map((genre, index) => (
-          <GenreRec key={index} genre={genre.genreName} />
+          <LazyGenreRec key={index} genre={genre.genreName} />
         ))}
       </div>
     </div>
