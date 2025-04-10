@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getImage } from '../../api/ImageAPI';
 import { Movie } from '../../types/Movie';
+import GetTopRec from '../Carousels/GetTopRec';
 
 interface RelatedMovie {
   title: string;
@@ -93,12 +94,8 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, relatedMovies }) => 
         <div className="related-section">
           <h3>If you’ll like this, you’d definitely love…</h3>
           <div className="scrollable-related">
-            {relatedMovies.map((relatedMovie, index) => (
-              <div className="related-card" key={index}>
-                <img src={relatedMovie.imageUrl} alt={relatedMovie.title} />
-                <div className="related-title">{relatedMovie.title}</div>
-              </div>
-            ))}
+            {/*INSERT CONNETION TO GET TOP REC */}
+            <GetTopRec showId= {movie.show_id} />
           </div>
         </div>
       </div>
