@@ -8,7 +8,7 @@ import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 function sanitizeTitle(title: string): string {
-  return title.replace(/[-?#()'":’‘“”.!]/g, '');
+  return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
 interface GenreRecProps {
   genre: string;
@@ -83,12 +83,15 @@ const GenreRec: React.FC<GenreRecProps> = ({genre}) => {
         fetchImages();
       }
     }, [movies]);
+
+
   const sliderSettings = {
     dots: true,
-    infinite: false,
+    infinite: true,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 4,
+    slidesToShow: 5,
+    slidesToScroll: 5,
+    cssEase: 'linear',
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 4 } },
       { breakpoint: 768, settings: { slidesToShow: 2, slidesToScroll: 2 } },
