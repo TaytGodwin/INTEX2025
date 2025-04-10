@@ -1,63 +1,52 @@
 import { useEffect, useState } from 'react';
 import MovieRow from '../components/movieCards/MovieRow';
+import GenreRec from '../components/Carousels/GenreRec';
+import { getGenres } from '../api/MoviesAPI';
+import { Genre } from '../types/Genre';
+import GetContentRec from '../components/Carousels/GetContentRec';
 
-interface Movie {
-  id: number;
-  title: string;
-  imageUrl: string;
-}
 
 function MoviePage() {
-  const [topPicks, setTopPicks] = useState<Movie[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
+  const [visibleCount, setVisibleCount] = useState(2); // how many carousels are visible
 
-  useEffect(() => {
-    // Replace with your API call or database fetch later
-    const mockMovies: Movie[] = [
-      { id: 1, title: 'Movie One', imageUrl: '/images/movie1.jpg' },
-      { id: 2, title: 'Movie Two', imageUrl: '/images/movie2.jpg' },
-      { id: 3, title: 'Movie Three', imageUrl: '/images/movie3.jpg' },
-      { id: 4, title: 'Movie Four', imageUrl: '/images/movie4.jpg' },
-      { id: 5, title: 'Movie Five', imageUrl: '/images/movie5.jpg' },
-      { id: 6, title: 'Movie Six', imageUrl: '/images/movie6.jpg' },
-      { id: 7, title: 'Movie Seven', imageUrl: '/images/movie7.jpg' },
-      { id: 8, title: 'Movie Eight', imageUrl: '/images/movie8.jpg' },
-      { id: 9, title: 'Movie Nine', imageUrl: '/images/movie9.jpg' },
-      { id: 10, title: 'Movie Ten', imageUrl: '/images/movie10.jpg' },
-      // More movies as needed...
-    ];
-    setTopPicks(mockMovies);
-  }, []);
+    useEffect(() => {
+      const fetchGenres = async () => {
+        const allGenres = await getGenres();
+        setGenres(allGenres);
+        console.log(allGenres)
+      };
+      fetchGenres();
+    }, []);
 
-  // useEffect(() => {
-  //   // Replace with our actual API URL
-  //   const API_URL = 'AZURE LINK';
-
-  //   const fetchMovies = async () => {
-  //     try {
-  //       const response = await fetch(API_URL, {
-  //         method: 'GET',
-  //         // If your API requires credentials (e.g., a session cookie),
-  //         // include: credentials: 'include'
-  //       });
-  //       if (!response.ok) {
-  //         throw new Error(`Error: ${response.status} ${response.statusText}`);
-  //       }
-  //       const data = await response.json();
-  //       // Assuming your API returns an array of movies
-  //       setTopPicks(data);
-  //     } catch (err: any) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchMovies();
-  // }, []);
+    useEffect(() => {
+      const handleScroll = () => {
+        const nearBottom =
+          window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+        if (nearBottom && visibleCount < genres.length) {
+          setVisibleCount((prev) => prev + 1);
+        }
+      };
+    
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, [genres, visibleCount]);
 
   return (
     <div className="movie-page">
       <MovieRow />
+      <GetContentRec showId={42}/>
+      {/* Fall Girl,  */}
+
+      {/* This will contain all the other stuff on the page */}
+      <GenreRec genre={'Action'}/>
+      {/* Carousel that loads on scorll for Genre */}
+      <div className="movie-page">
+    
+        {genres.slice(0, visibleCount).map((genre, index) => (
+          <GenreRec key={index} genre={genre.genreName} />
+        ))}
+      </div>
     </div>
   );
 }

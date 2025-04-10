@@ -93,8 +93,9 @@ function MovieRow() {
           >
             <MoviePoster
               imageUrl={movieImages[movie.title] || defaultImageUrl}
-              title={movie.title}
-            />
+              title={movie.title} onClick={function (): void {
+                throw new Error('Function not implemented.');
+              } }            />
           </div>
         ))}
       </Slider>
