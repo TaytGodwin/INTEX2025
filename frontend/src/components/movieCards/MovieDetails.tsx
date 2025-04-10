@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Movie } from '../../types/Movie';
 import GetTopRec from '../Carousels/GetTopRec';
 import StarRating from './starRating';
+import { getUserId } from '../../api/MoviesAPI';
+import { pingAuth } from '../../api/IdentityAPI';
 
 
 interface MovieDetailsProps {
@@ -23,22 +25,35 @@ const pillStyle: React.CSSProperties = {
 
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, posterUrl, onClose }) => {
-  
-  useEffect(() => {
-      const handleEsc = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          onClose();
-        }
-      };
-      window.addEventListener('keydown', handleEsc);
-      return () => window.removeEventListener('keydown', handleEsc);
-    }, [onClose]);
-  
-    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      if ((e.target as Element).classList.contains('modal-backdrop')) {
+const [user_id, setUserId] = useState<number | null>(null);
+useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
         onClose();
       }
     };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as Element).classList.contains('modal-backdrop')) {
+      onClose();
+    }
+  };
+
+// Use pingAuth to get the user's email and then fetch the user id via getUserId
+useEffect(() => {
+  const fetchUserEmailAndId = async () => {
+    const authData = await pingAuth();
+    if (authData?.email) {
+      const id = await getUserId(authData.email);
+      setUserId(id);
+    }
+  };
+
+  fetchUserEmailAndId();
+}, []);
   
   return (
 <div style={{ 
@@ -121,6 +136,13 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, posterUrl, onClose }
       <div style={{ flex: 1, color: '#e0e0e0' }}>
         <h2 style={{ marginBottom: '1rem', color: '#fff', fontSize: '2rem' }}>{movie.title}</h2>
 
+        {/* ⭐ Star Rating - neatly tucked under the title */}
+          {user_id !== null && (
+            <div style={{ marginBottom: '1rem' }}>
+              <StarRating userId={user_id} showId={movie.show_id} />
+            </div>
+          )}
+        {/* Metadata Pills */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem', alignItems: 'center' }}>
           <span style={pillStyle}>{movie.release_year}</span>
           <span style={pillStyle}>HD</span>
@@ -135,9 +157,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, posterUrl, onClose }
         <p><strong style={{ color: '#aaa' }}>Country:</strong> {movie.country}</p>
       </div>
     </div>
-
-    <StarRating userId={9} showId={movie.show_id}/>
-
     {/* Carousel for Recommendations */}
     <div style={{ minHeight: '300px', marginTop: '2rem' }}>
       <GetTopRec showId={movie.show_id} />

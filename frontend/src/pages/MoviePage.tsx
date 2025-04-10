@@ -4,7 +4,6 @@ import LazyGenreRec from '../components/Carousels/LazyCarousels/LazyGenreRec';
 import { getGenres, getUserId } from '../api/MoviesAPI';
 import { Genre } from '../types/Genre';
 import GetContentRec from '../components/Carousels/GetContentRec';
-import ForYou from '../components/Carousels/ForYou';
 import GetTopRec from '../components/Carousels/GetTopRec';
 import LandingMovieHero from '../components/movieCards/LandingMovieHero';
 import LazyForYou from '../components/Carousels/LazyCarousels/LazyForYou';

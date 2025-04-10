@@ -8,6 +8,29 @@ import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+const Spinner = () => (
+  <div style={{ textAlign: 'center', padding: '2rem' }}>
+    <div className="spinner" />
+    <style>
+      {`
+          .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid #57c8f4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+          }
+  
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+    </style>
+  </div>
+);
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
@@ -74,9 +97,16 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
       { breakpoint: 768, settings: { slidesToShow: 2, slidesToScroll: 2 } },
     ],
   };
+  
 
-  if (loading) return <div>Loading movies...</div>;  // Show loading text until the data is fetched
-
+  if (loading) {
+    return (
+      <div className="genre-rec">
+        <h2>Recommended <strong>{genre}</strong> Movies</h2>
+        <Spinner />
+      </div>
+    );
+  }
   return (
     <div className="genre-rec">
       <h2>
