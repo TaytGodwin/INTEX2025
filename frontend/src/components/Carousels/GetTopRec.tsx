@@ -201,7 +201,7 @@ import MovieDetails from '../movieCards/MovieDetails';
 
     return (
       <div className="genre-rec">
-        <h2>If you liked this, you'll definitely love these top 5...</h2>
+        <h3>If you liked this, you'll definitely love these...</h3>
         <Slider {...sliderSettings}>
           {movies.map((movie, index) => (
             <div
