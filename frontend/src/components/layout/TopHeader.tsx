@@ -13,7 +13,7 @@ function TopHeader() {
         width: '100%',
         backgroundColor: 'transparent',
         zIndex: 1000,
-        padding: '1rem 0'
+        padding: '1rem 0',
       }}
     >
       <div className="container-fluid d-flex justify-content-start align-items-center">
