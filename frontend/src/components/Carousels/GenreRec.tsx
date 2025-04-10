@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { getGenreMovies, getTopRec } from '../../api/RecommenderAPI'; // Adjust path if needed
+import { getGenreMovies} from '../../api/RecommenderAPI'; // Adjust path if needed
 import { getImage } from '../../api/ImageAPI';
 import MoviePoster from '../movieCards/MoviePoster';
 import MovieDetails from '../movieCards/MovieDetails'; // Ensure this import is correct

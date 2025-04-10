@@ -68,7 +68,18 @@ function MoviePage() {
           zIndex: 100,
         }}
       ></div>
-      {user_id !== null && <LazyForYou userId={user_id} />}
+      {user_id !== null && (<>
+      
+      <LazyForYou userId={user_id} />
+      <GetContentRec userId={user_id} />
+      </>
+        
+
+        )}
+
+{/* Because you liked..... Title .... this is this .... */}
+
+
 
       <div className="genre-recs-wrapper">
         {genres.slice(0, visibleCount).map((genre, index) => (
