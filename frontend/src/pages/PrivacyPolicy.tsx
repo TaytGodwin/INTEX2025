@@ -81,7 +81,7 @@ function PrivacyPolicy() {
           EEA). We do not knowingly collect data from children those under the
           age of 18.
         </p>
-        <p>
+        <p className="privacy-policy-subtext">
           We collect data when you:
           <ul>
             <li>Create or update your profile</li>
@@ -216,18 +216,24 @@ function PrivacyPolicy() {
           lodge a complaint with your local data protection authority in the EEA
           or with the UK’s Information Commissioner’s Office (ICO).
         </p>
-        <p>You may also:</p>
-        <ul>
-          <li>Adjust cookie preferences using our cookie banner</li>
-          <li>
+        <p className="privacy-policy-subtext">You may also:</p>
+        <ul className="privacy-policy-subtext">
+          <li className="privacy-policy-subtext">
+            Adjust cookie preferences using our cookie banner
+          </li>
+          <li className="privacy-policy-subtext">
             Update or delete your profile information in your account settings
           </li>
-          <li>Opt out of marketing communications via email footer links</li>
-          <li>
+          <li className="privacy-policy-subtext">
+            Opt out of marketing communications via email footer links
+          </li>
+          <li className="privacy-policy-subtext">
             Disable personalized recommendations by adjusting your profile
             settings
           </li>
-          <li>Contact us directly to manage any of the above</li>
+          <li className="privacy-policy-subtext">
+            Contact us directly to manage any of the above
+          </li>
         </ul>
         <p className="mt-4 privacy-policy-subtext">
           Contact us at privacy@CineNiche.com to exercise any of these rights.

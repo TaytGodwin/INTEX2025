@@ -72,23 +72,24 @@ namespace INTEX.API.Controllers
         }
 
         // This doesn't require authorization and stores the users consent to store cookies
-        [HttpPost("SetCookie")]
+        [HttpGet("SetCookie")]
         public IActionResult SetCookie()
         {
             const string CookieName = "CookieConsent";
 
-            string? cookiePref = Request.Cookies[CookieName];
-            Console.WriteLine("~~~~ Consent Cookie: " + cookiePref);
-
-            HttpContext.Response.Cookies.Append(CookieName, "User acknowledged use of cookies", new CookieOptions
+            HttpContext.Response.Cookies.Append(CookieName, "Yes", new CookieOptions
             {
-                HttpOnly = true, // Only visible to the server
-                Secure = true, // Only transmitted through https
-                SameSite = SameSiteMode.None, // Other site cookies are not allowed. (May need to be none during development)
-                Expires = DateTime.Now.AddDays(1) // How long until it expires
+                HttpOnly = true,
+                Secure = true, // Use true if you're on HTTPS
+                SameSite = SameSiteMode.None, // Allows cross-site
+                Expires = DateTime.UtcNow.AddDays(7),
+                IsEssential = true // ✅ Allows it even if consent is required
             });
 
-            return Ok();
+            return Ok("Cookie has been set.");
         }
+
+
+
     }
 }

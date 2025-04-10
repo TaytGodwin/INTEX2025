@@ -144,16 +144,12 @@ export const assignUserRole = async (
 export const SetCookie = async (): Promise<boolean> => {
   try {
     const response = await fetch(`${Identity_API_URL}/api/identity/SetCookie`, {
-      method: 'POST',
-      credentials: 'include', // ✅ Correct placement!
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      method: 'GET',
+      credentials: 'include', // still needed to ensure browser accepts it
     });
-
-    return response.ok; // ✅ true if status code is 200–299
+    return response.ok;
   } catch (error) {
-    console.error('Set Cookie Preference failed:', error);
+    console.error('Set Cookie failed:', error);
     return false;
   }
 };
