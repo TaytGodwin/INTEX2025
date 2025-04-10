@@ -6,7 +6,6 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import MovieDetailPage from './pages/MovieDetailPage';
 import { AuthProvider } from './context/AuthContext';
 import AuthorizeView from './components/authentication/AuthorizeView';
 import MoviePage from './pages/MoviePage';
@@ -29,7 +28,7 @@ function App() {
             <Route path="terms-of-use" element={<TermsOfUse />} />
             <Route path="menu" element={<HomePage />} />
             <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage identityApiUrl={Identity_API_URL} />} />
+            <Route path="register" element={<RegisterPage />} />
             
           </Route>
 
@@ -39,7 +38,7 @@ function App() {
           >
             <Route element={<Layout />}>
               <Route path="movies" element={<MoviePage />} />
-              <Route path="movieDetails" element={<MovieDetailPage />} />
+              {/* <Route path="movieDetails" element={<MovieDetailPage />} />*/}
               <Route path="search" element={<SearchPage />} />
               <Route path="logout" element={<Logout />} />
             </Route>
