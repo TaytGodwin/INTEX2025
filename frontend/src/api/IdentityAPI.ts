@@ -1,5 +1,5 @@
-const Identity_API_URL = //'https://localhost:5000';
-  'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
+const Identity_API_URL = 'https://localhost:5000';
+//'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
 
 interface LoggedInUser {
   email: string;
@@ -103,6 +103,24 @@ export const register = async (
     return response.ok; // ✅ true if 200–299, false otherwise
   } catch (error) {
     console.error('Register request failed:', error);
+    return false;
+  }
+};
+
+// This sets the cookie preferences
+export const SetCookie = async (): Promise<boolean> => {
+  try {
+    const response = await fetch(`${Identity_API_URL}/api/identity/SetCookie`, {
+      method: 'POST',
+      credentials: 'include', // ✅ Correct placement!
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return response.ok; // ✅ true if status code is 200–299
+  } catch (error) {
+    console.error('Set Cookie Preference failed:', error);
     return false;
   }
 };

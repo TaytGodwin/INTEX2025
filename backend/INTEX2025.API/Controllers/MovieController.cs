@@ -20,17 +20,9 @@ namespace INTEX.API.Controllers
             _movieContext = context;
         }
 
-
-
-        [HttpGet("Test")]
-        public IActionResult Test()
-        {
-            return Ok("I am working");
-        }
-
         // This is a Search Route
         [HttpGet("Search")]
-            
+        [Authorize] // Used by all logged in
         public IActionResult SearchMovies(
                 [FromQuery] string query = "",
                 [FromQuery] int pageSize = 25,
@@ -81,7 +73,9 @@ namespace INTEX.API.Controllers
 
                 return Ok(new { Movies = movies });
             }
+
         [HttpGet("AllMovies")]
+        [Authorize] // Used by all logged in
         public IActionResult AllMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null)
         {
             var query = _movieContext.Movies
@@ -134,7 +128,7 @@ namespace INTEX.API.Controllers
 
         // ✅ Get distinct genre names
         [HttpGet("GetGenres")]
-        // [Authorize]
+        [Authorize] // Used by all logged in
         public IActionResult GetGenres()
         {
             var allGenres = _movieContext.GenreNames
@@ -152,7 +146,7 @@ namespace INTEX.API.Controllers
 
         // ✅ Add a movie
         [HttpPost("AddMovie")]
-        [Authorize] // Requires users to be logged in
+        [Authorize("Administrator")] // Requires administrator role
         public IActionResult AddMovie([FromBody] MovieUpdateDto newMovieDto)
         {
             // 1. Create a new movie instance from the DTO
@@ -200,7 +194,7 @@ namespace INTEX.API.Controllers
 
         // ✅ Update a movie
         [HttpPut("UpdateMovie")]
-        [Authorize] // Requires users to be logged in
+        [Authorize("Administrator")] // Requires administrator role
         public IActionResult UpdateMovie([FromBody] MovieUpdateDto updatedMovie)
         {
             var existingMovie = _movieContext.Movies
@@ -253,7 +247,7 @@ namespace INTEX.API.Controllers
 
 
         // ✅ Delete a movie
-        [Authorize] // Requires users to be logged in
+        [Authorize("Administrator")] // Requires administrator role
         [HttpDelete("DeleteMovie")]
         public async Task<IActionResult> DeleteMovie([FromBody] int showIdToDelete)
         {

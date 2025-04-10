@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 
 namespace INTEX.API.Controllers
 {
@@ -38,7 +39,7 @@ namespace INTEX.API.Controllers
         //}
 
         [HttpPost("logout")]
-        [Authorize]
+        [Authorize] // Can be any role
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -55,7 +56,7 @@ namespace INTEX.API.Controllers
         }
 
         [HttpGet("pingauth")]
-        [Authorize]
+        [Authorize] // They have to be logged in, and this checks whether or not they are. If error, they are no longer a valid logged in user
         public async Task<IActionResult> PingAuth()
         {
             if (!User.Identity?.IsAuthenticated ?? false)
@@ -68,6 +69,26 @@ namespace INTEX.API.Controllers
             var roles = user != null ? await _userManager.GetRolesAsync(user) : new List<string>();
 
             return Ok(new { email, roles });
+        }
+
+        // This doesn't require authorization and stores the users consent to store cookies
+        [HttpPost("SetCookie")]
+        public IActionResult SetCookie()
+        {
+            const string CookieName = "CookieConsent";
+
+            string? cookiePref = Request.Cookies[CookieName];
+            Console.WriteLine("~~~~ Consent Cookie: " + cookiePref);
+
+            HttpContext.Response.Cookies.Append(CookieName, "User acknowledged use of cookies", new CookieOptions
+            {
+                HttpOnly = true, // Only visible to the server
+                Secure = true, // Only transmitted through https
+                SameSite = SameSiteMode.None, // Other site cookies are not allowed. (May need to be none during development)
+                Expires = DateTime.Now.AddDays(1) // How long until it expires
+            });
+
+            return Ok();
         }
     }
 }

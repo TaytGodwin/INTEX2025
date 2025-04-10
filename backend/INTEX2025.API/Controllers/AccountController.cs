@@ -15,9 +15,10 @@ public class AccountController : ControllerBase
     }
     
     [HttpGet("me")]
-    [Authorize]
+    [Authorize] // Just makes sure they are logged in and then finds their role
     public IActionResult GetCurrentUser()
     {
+        // This will return the roles of the person logged in
         var email = User.Identity?.Name;
 
         var userWithRoles = (from u in _context.Users

@@ -15,8 +15,8 @@ import AdminDatabasePage from './pages/AdminDatabasePage';
 import Logout from './components/authentication/Logout';
 
 function App() {
-  const Identity_API_URL = //'https://localhost:5000';
-    'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
+  const Identity_API_URL = 'https://localhost:5000';
+  //'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
 
   return (
     <AuthProvider>

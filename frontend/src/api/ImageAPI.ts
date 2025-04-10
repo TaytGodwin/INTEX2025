@@ -1,5 +1,5 @@
-const IMAGE_API_URL = //'https://localhost:5000';
-  'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
+const IMAGE_API_URL = 'https://localhost:5000';
+//'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
 
 // This will get an image from the API
 export const getImage = async (movieName: string): Promise<Blob | null> => {

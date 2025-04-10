@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using Azure.Storage.Blobs;
 
-// DotNetEnv.Env.Load(); // Ensure environment variables are loaded in development
+DotNetEnv.Env.Load(); // Ensure environment variables are loaded in development
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,9 +63,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 13;
     options.Password.RequiredUniqueChars = 2; // This makes sure they don't type all the same characters
-    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); // Locks out user for 10 minutes
-    //options.Lockout.MaxFailedAccessAttempts = 5; // User  can only try to log in 5 times
-    //options.Lockout.AllowedForNewUsers = true; // Allows above rules to be the case for new users too
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10); // Locks out user for 10 minutes
+    options.Lockout.MaxFailedAccessAttempts = 5; // User  can only try to log in 5 times
+    options.Lockout.AllowedForNewUsers = true; // Allows above rules to be the case for new users too
 
     options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
     options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Email; // Ensure email is stored in claims
@@ -75,22 +75,30 @@ builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUser
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.Name = ".AspNetCore.Identity.Application";
-    options.LoginPath = "/login";
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.HttpOnly = true; // Ensures the authentication cookie is not accessible via JavaScript (for security)
+    options.Cookie.SameSite = SameSiteMode.None; // Allows cookies to be sent with cross-site requests (needed for some frontend setups)
+    options.Cookie.Name = ".AspNetCore.Identity.Application"; // Sets a custom name for the authentication cookie
+    options.LoginPath = "/login"; // The path users are redirected to when not authenticated
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Ensures the cookie is only sent over HTTPS
+    options.Cookie.IsEssential = true;
     options.Events.OnRedirectToLogin = context =>
     {
-        if (context.Request.Path.StartsWithSegments("/api"))
+        if (context.Request.Path.StartsWithSegments("/api")) // Checks if the request is for an API endpoint
         {
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized; // Returns 401 instead of redirecting (for APIs)
             return Task.CompletedTask;
         }
-        context.Response.Redirect(context.RedirectUri);
+        context.Response.Redirect(context.RedirectUri); // Redirects to login page for non-API requests
         return Task.CompletedTask;
     };
 });
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true; // Always require consent
+    options.MinimumSameSitePolicy = SameSiteMode.None; // Allow cross-site cookies (if needed)
+});
+
 
 builder.Services.AddCors(options =>
 {
@@ -98,7 +106,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("https://localhost:3030", "http://localhost:3030", "https://jolly-island-0713d9a1e.6.azurestaticapps.net")
-                .AllowCredentials()
+                .AllowCredentials() // Cookies enabled with this
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
@@ -113,14 +121,17 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+} else
+{ // If it is in production
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection(); // DO NOT DELETE THIS LINE
 app.UseRouting();
 app.UseCors("AllowReactApp");
+app.UseCookiePolicy(); // This was after the two auth, but I moved it because chat said to
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCookiePolicy();
 app.MapControllers();
 app.MapIdentityApi<IdentityUser>().RequireCors("AllowReactApp");
 app.Run();
