@@ -144,36 +144,55 @@ public class RecommenderController : ControllerBase
     // 2. Exclude the original show itself
     // 3. Sort by similarity score
     // 4. Return the top 10 most similar showIds and their details
+// Endpoint: /api/recommender/content_recs1?userId={userId}
     [HttpGet("content_recs1")]
-    public async Task<IActionResult> GetContentRecs1([FromQuery] long showId)
+    public async Task<IActionResult> GetUserRecommendedLists([FromQuery] int userId)
     {
-        var query = $@"
-            SELECT show_id, [{showId}] as score
+        // Retrieve movies that the user rated above 3 from the movies rating table in the movies DB
+        // Assumes that _movieDb.Ratings exists and that each rating has a UserId, ShowId, and Rating property.
+        var ratings = await _movieDb.Ratings
+            .Where(r => r.user_id == userId && r.rating > 3)
+            .ToListAsync();
+
+        if (!ratings.Any())
+            return NotFound($"No ratings above 3 found for userId {userId}.");
+
+        var resultList = new List<object>();
+
+        foreach (var rating in ratings)
+        {
+            long baseShowId = rating.show_id;
+            // Build and execute the query on the content_recs1 table for each movie's recommendations
+            string query = $@"
+            SELECT show_id, [{baseShowId}] as score
             FROM content_recs1
-            WHERE show_id != {showId}
+            WHERE show_id != {baseShowId}
             ORDER BY score DESC
             LIMIT 10;
         ";
 
-        var connection = _context.Database.GetDbConnection();
-        await connection.OpenAsync();
-        var command = connection.CreateCommand();
-        command.CommandText = query;
+            var connection = _context.Database.GetDbConnection();
+            await connection.OpenAsync();
+            var command = connection.CreateCommand();
+            command.CommandText = query;
 
-        var showIds = new List<long>();
-        using (var reader = await command.ExecuteReaderAsync())
-        {
-            while (await reader.ReadAsync())
+            var recommendedShowIds = new List<long>();
+            using (var reader = await command.ExecuteReaderAsync())
             {
-                if (!reader.IsDBNull(0))
-                    showIds.Add(reader.GetInt64(0));
+                while (await reader.ReadAsync())
+                {
+                    if (!reader.IsDBNull(0))
+                        recommendedShowIds.Add(reader.GetInt64(0));
+                }
             }
+
+            var movieDetails = await GetMovieDetailsByShowIds(recommendedShowIds);
+            resultList.Add(new { BaseShowId = baseShowId, Recommendations = movieDetails });
         }
 
-        var movieDetails = await GetMovieDetailsByShowIds(showIds);
-
-        return Ok(movieDetails);
+        return Ok(resultList);
     }
+         
 
     // Endpoint: /api/recommender/top10_userId?userId={userId}
     // This method finds the top 10 shows recommended to a user based on user similarity.
