@@ -258,29 +258,50 @@ public class RecommenderController : ControllerBase
     // 3. Fetch their movie details and return
   [HttpGet("top5_showIds")]
 [Authorize]
-public async Task<IActionResult> GetTop5ShowIds([FromQuery] long showId)
+public async Task<IActionResult> GetTop5ShowIdsFixed([FromQuery] long showId)
 {
-    var rec = await _context.Top5ShowIds.FirstOrDefaultAsync(r => r.ShowId == showId);
+    var connection = _context.Database.GetDbConnection();
+    await connection.OpenAsync();
 
-    if (rec == null)
-        return NotFound("No recommendations found for that showId.");
+    var command = connection.CreateCommand();
+    command.CommandText = $@"
+        SELECT 
+            [Recommendation 1], 
+            [Recommendation 2], 
+            [Recommendation 3], 
+            [Recommendation 4], 
+            [Recommendation 5]
+        FROM top5_showids
+        WHERE show_id = {showId};
+    ";
 
-    var showIds = new List<long> { showId };
+    var showIds = new List<long>();
 
-    void TryAdd(string? id)
+    using (var reader = await command.ExecuteReaderAsync())
     {
-        if (!string.IsNullOrWhiteSpace(id) && long.TryParse(id, out var parsed))
-            showIds.Add(parsed);
+        if (!reader.HasRows)
+        {
+            return NotFound("No recommendations found for that showId.");
+        }
+
+        while (await reader.ReadAsync())
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                if (!reader.IsDBNull(i))
+                {
+                    // Recommendation 5 is stored as FLOAT, so convert accordingly
+                    var value = reader.GetValue(i);
+                    if (value is double dbl)
+                        showIds.Add(Convert.ToInt64(dbl));
+                    else if (value is long lng)
+                        showIds.Add(lng);
+                }
+            }
+        }
     }
 
-    TryAdd(rec.Recommendation1);
-    TryAdd(rec.Recommendation2);
-    TryAdd(rec.Recommendation3);
-    TryAdd(rec.Recommendation4);
-    TryAdd(rec.Recommendation5);
-
     var movieDetails = await GetMovieDetailsByShowIds(showIds);
-
     return Ok(movieDetails);
 }
 }

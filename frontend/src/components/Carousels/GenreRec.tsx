@@ -136,6 +136,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
       {/* Show Modal Conditionally */}
         {selectedMovie && (
           <MovieDetails
+            
             movie={selectedMovie}
             posterUrl={selectedPosterUrl}
             onClose={() => {

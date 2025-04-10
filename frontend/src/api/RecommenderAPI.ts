@@ -1,8 +1,8 @@
 import { Movie } from '../types/Movie';
 import { ContentRecGroup } from '../types/Recommendations';
 
-const Recommender_API_URL = // 'https://localhost:5000';
-  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const Recommender_API_URL = 'https://localhost:5000';
+  //'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 // This API call is for the main page. It does not require authorization
 // Should return a list of 10 movies pass one genre and get back stuff
@@ -32,6 +32,9 @@ export const getGenreMovies = async (
     return null;
   }
 };
+
+// MAIN PAGE API 
+
 export const getContentRecs = async (
   userId: number
 ): Promise<ContentRecGroup[] | null> => {
@@ -130,11 +133,13 @@ export const getForYou = async (userId: number): Promise<Movie[] | null> => {
   }
 };
 
+
+// IN MOVIE DETAIL PAGE
 //Gets top 5 handpicked off of a different filtering system
 export const getTopRec = async (showId: number): Promise<Movie[] | null> => {
   try {
     const response = await fetch(
-      `${Recommender_API_URL}/api/Recommender/content_recs1?showId=${showId}`,
+      `${Recommender_API_URL}/api/Recommender/top5_showIds?showId=${showId}`,
       {
         method: 'GET',
         credentials: 'include',

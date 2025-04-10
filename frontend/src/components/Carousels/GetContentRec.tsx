@@ -59,7 +59,7 @@ const GetContentRec: React.FC<GetContentRecProps> = ({ userId }) => {
   
         if (recGroups && recGroups.length > 0) {
           const group = recGroups[0]; // Just take the first liked show for now
-          setSourceTitle(group.recommendations[0]?.title || ''); // Optional improvement
+          setSourceTitle(`"${group.recommendations[0]?.title}"`); // Optional improvement
   
           const recommendations = group.recommendations;
           setRecommendations(recommendations);
@@ -89,6 +89,8 @@ const GetContentRec: React.FC<GetContentRecProps> = ({ userId }) => {
   
     fetchRecommendations();
   }, [userId]);
+
+  console.log("userId passed to GetContentRec:", userId);
 
   const sliderSettings = {
     dots: true,
@@ -136,6 +138,7 @@ const GetContentRec: React.FC<GetContentRecProps> = ({ userId }) => {
 
       {selectedMovie && (
         <MovieDetails
+          
           movie={selectedMovie}
           posterUrl={selectedPosterUrl}
           onClose={() => {
