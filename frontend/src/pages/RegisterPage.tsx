@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -16,9 +16,6 @@ function RegisterPage() {
   const [password, setPassword] = useState<string>('');
   const navigate = useNavigate();
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [emailAlreadyUsed, setEmailAlreadyUsed] = useState<boolean>(true);
-
-  // Get the login function from AuthContext
   const { login: authLogin } = useAuth();
 
   // Step 2: Additional fields
@@ -42,11 +39,11 @@ function RegisterPage() {
   // Error message state
   const [error, setError] = useState('');
 
-  // Handler to move from Step 1 to Step 2
+  // Handle the next step validation
   const handleNext = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Email validation function
+    // Validate email format
     function isValidEmail(email: string): boolean {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       return emailRegex.test(email);
@@ -59,19 +56,7 @@ function RegisterPage() {
       setError('Please enter a valid email');
       return;
     } else {
-      // Proceed with valid email
       setError(''); // Reset error if email is valid
-      // Further actions (e.g., form submission)
-    }
-
-    // Now check if the email is already in use
-    setEmailAlreadyUsed(await isEmailUsed(email));
-
-    if (emailAlreadyUsed) {
-      setError(
-        'That email already has an account associated with it. Please enter a different one.'
-      );
-      return;
     }
 
     if (password !== confirmPassword) {
@@ -90,7 +75,6 @@ function RegisterPage() {
       return;
     }
 
-    // Additional validation for step 1 can be added here
     setError('');
     setStep(2);
   };
@@ -99,6 +83,24 @@ function RegisterPage() {
   const handleBack = () => {
     setStep(1);
   };
+
+  // Check email availability after user stops typing (with debounce)
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (email) {
+        const emailInUse = await isEmailUsed(email);
+        if (emailInUse) {
+          setError(
+            'That email is already associated with an account. Please enter a different one.'
+          );
+        } else {
+          setError('');
+        }
+      }
+    }, 500); // 500ms delay to avoid multiple API calls while typing
+
+    return () => clearTimeout(timer); // Cleanup timeout when email changes
+  }, [email]);
 
   // Final form submission for Step 2
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -123,42 +125,32 @@ function RegisterPage() {
       peacock,
     };
 
-    // Console log the profileData to inspect the values
-    console.log('Profile data being sent:', profileData);
-
     try {
-      // Register user using the existing register function
       const authSuccess = await register(email, password);
       if (!authSuccess) {
         throw new Error('Authentication registration failed.');
       }
 
-      // Log the user in (using the login function from IdentityAPI.ts)
       const loginSuccess = await apiLogin(email, password, false);
       if (!loginSuccess) {
         throw new Error('Login failed.');
       }
 
-      // Create the user profile via IdentityAPI
       const profileSuccess = await createUserProfile(profileData);
       if (!profileSuccess) {
         throw new Error('Profile creation failed.');
       }
 
-      // Assign a role to the user via IdentityAPI
       const roleSuccess = await assignUserRole(email, 'User');
       if (!roleSuccess) {
         throw new Error('Role assignment failed.');
       }
 
-      // Give the server a moment to process role assignment
       await new Promise((res) => setTimeout(res, 300));
 
       const userData = await pingAuth();
-      console.log(userData);
       if (userData) {
         authLogin(userData);
-
         if (userData.roles.includes('Administrator')) {
           navigate('/admin');
         } else if (userData.roles.includes('User')) {
@@ -173,11 +165,12 @@ function RegisterPage() {
       setError(err.message || 'Something went wrong. Please try again.');
     }
   };
+
   const inputStyle = {
     width: '100%',
     padding: '0.75rem 1rem',
-    backgroundColor: '#fff', // white background for each input box
-    color: 'rgb(142,142,142)', // gray text
+    backgroundColor: '#fff',
+    color: 'rgb(142,142,142)',
     border: 'none',
     borderRadius: '4px',
     marginBottom: '1rem',
@@ -187,7 +180,7 @@ function RegisterPage() {
   return (
     <div
       style={{
-        backgroundColor: 'rgb(238,238,238)', // overall page background
+        backgroundColor: 'rgb(238,238,238)',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
@@ -195,7 +188,6 @@ function RegisterPage() {
         padding: '2rem',
       }}
     >
-      {/* Transparent container for the form */}
       <div
         style={{
           width: '100%',
@@ -211,7 +203,6 @@ function RegisterPage() {
         <p style={{ textAlign: 'center', marginBottom: '1rem', color: '#333' }}>
           Enter your email to create an account.
         </p>
-        {/* Link for users who already have an account */}
         <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
           <Link
             to="/login"
@@ -221,7 +212,6 @@ function RegisterPage() {
           </Link>
         </div>
 
-        {/* Progress Bar */}
         <div
           style={{
             width: '100%',
@@ -285,6 +275,7 @@ function RegisterPage() {
             </div>
           </form>
         )}
+
         {step === 2 && (
           <form onSubmit={handleSubmit}>
             <input
