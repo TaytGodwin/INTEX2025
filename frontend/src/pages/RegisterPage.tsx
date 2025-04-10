@@ -1,19 +1,26 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { pingAuth, login as apiLogin } from '../api/IdentityAPI';
 interface RegisterPageProps {
   identityApiUrl: string;
 }
 
+type UserData = {
+  email: string;
+  roles: string[];
+};
+
 const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
-  const navigate = useNavigate();
-
-  // Form step: 1 for initial info (email, password, confirm password), 2 for additional info
   const [step, setStep] = useState(1);
-
-  // Step 1: Email and password fields
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [rememberme, setRememberme] = useState<boolean>(false);
+  const navigate = useNavigate();
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Get the login function from AuthContext
+  const { login: authLogin } = useAuth();
 
   // Step 2: Additional fields
   const [name, setName] = useState('');
@@ -125,8 +132,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
 
     // Prepare the two sets of data
     const authData = {
-      email,
-      password,
+      email: email,
+      password: password,
     };
 
     const profileData = {
@@ -149,7 +156,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
     };
 
     // Console log the profileData to inspect the values
-    console.log("Profile data being sent:", profileData);
+    console.log('Profile data being sent:', profileData);
 
     try {
       // 1. Send auth data to authentication API
@@ -159,13 +166,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
         body: JSON.stringify(authData),
       });
 
-      if (!authResponse.ok) {
-        throw new Error('Authentication registration failed.');
-      }
+      //   if (!authResponse.ok) {
+      //     throw new Error('Authentication registration failed.');
+      //   }
+      const loginSuccess = await apiLogin(email, password, rememberme);
 
       // 2. Send profile data to profile API
       const profileResponse = await fetch(
-        `${identityApiUrl}/api/User/CreateUser`,
+        `${identityApiUrl}/api/Users/CreateUser`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -173,26 +181,43 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ identityApiUrl }) => {
         }
       );
 
-      if (!profileResponse.ok) {
-        throw new Error('Profile creation failed.');
-      }
+      //   if (!profileResponse.ok) {
+      //     throw new Error('Profile creation failed.');
+      //   }
 
       // 3. Assign role
+      console.log(
+        'Assigning role to user at:',
+        `${identityApiUrl}/Role/AssignRoleToUser`
+      );
       const roleResponse = await fetch(
-        `${identityApiUrl}/api/Role/AssignRoleToUser`,
+        `${identityApiUrl}/Role/AssignRoleToUser`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, role: 'User' }),
+          body: JSON.stringify({ userEmail: email, roleName: 'User' }),
         }
       );
 
-      if (!roleResponse.ok) {
-        throw new Error('Role assignment failed.');
-      }
+      // Give the server a second to process role assignment
+      await new Promise((res) => setTimeout(res, 300));
 
-      // Navigate after both succeed
-      navigate('/movies');
+      const userData: UserData | null = await pingAuth();
+      console.log(userData);
+      if (userData) {
+        authLogin(userData);
+
+        // Navigate based on user role
+        if (userData.roles.includes('Administrator')) {
+          navigate('/admin');
+        } else if (userData.roles.includes('User')) {
+          navigate('/movies');
+        } else {
+          navigate('/');
+        }
+      } else {
+        setError('Failed to retrieve user details.');
+      }
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
     }
