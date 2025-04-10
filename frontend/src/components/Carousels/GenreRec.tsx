@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { getTopRec } from '../../api/RecommenderAPI'; // Adjust path if needed
+import { getGenreMovies, getTopRec } from '../../api/RecommenderAPI'; // Adjust path if needed
 import { getImage } from '../../api/ImageAPI';
 import MoviePoster from '../movieCards/MoviePoster';
 import MovieDetails from '../movieCards/MovieDetails';  // Ensure this import is correct
@@ -30,7 +30,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
       try {
         // Assuming that the genre is being used to fetch related movies
         // You might need to adjust this based on your API. If it's a genre-based request, use the correct API
-        const results = await getTopRec(123); // Example usage, replace with showId logic
+        const results = await getGenreMovies(genre); // Example usage, replace with showId logic
         if (results) {
           setMovies(results);
 
@@ -66,22 +66,13 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
     speed: 500,
     slidesToShow: 5,
     slidesToScroll: 5,
-    cssEase: 'linear',
+    cssEase: 'ease',
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 4 } },
       { breakpoint: 768, settings: { slidesToShow: 2, slidesToScroll: 2 } },
     ],
   };
 
-<<<<<<< HEAD
-=======
-  const handlePosterClick = (movie: Movie) => {
-    setSelectedMovie(movie); // Set the selected movie for modal
-  };
-
-
-
->>>>>>> 3b0b2877772f096b6b035b63ea1df17033d07901
   if (loading) return <div>Loading movies...</div>;  // Show loading text until the data is fetched
 
   return (
@@ -101,7 +92,6 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
           </div>
         ))}
       </Slider>
-<<<<<<< HEAD
       {/* Show Modal Conditionally */}
         {selectedMovie && (
           <MovieDetails
@@ -114,18 +104,6 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
           />
           )}
     </div>
-=======
-
-      {/* Modal to display movie details */}
-      
-              <div className="modal-body">
-                {/* Pass the selectedMovie data to the MovieDetails component */}
-                {selectedMovie ? <MovieDetails movie={selectedMovie} relatedMovies={[]} /> : null}
-              </div>
-            </div>
-       
-
->>>>>>> 3b0b2877772f096b6b035b63ea1df17033d07901
   );
 };
 

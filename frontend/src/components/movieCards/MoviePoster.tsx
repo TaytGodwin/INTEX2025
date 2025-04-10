@@ -7,7 +7,7 @@ interface MoviePosterProps {
   onClick?: () => void; // Optional, for posters that don't need interaction
 }
 
-// THis is a different Comment
+// This is a different Comment
 
 const MoviePoster: React.FC<MoviePosterProps> = ({ imageUrl, title, onClick }) => {
   return (
