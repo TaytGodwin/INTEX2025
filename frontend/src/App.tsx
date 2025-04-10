@@ -6,7 +6,6 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfUse from './pages/TermsOfUse';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import MovieDetailPage from './pages/MovieDetailPage';
 import { AuthProvider } from './context/AuthContext';
 import AuthorizeView from './components/authentication/AuthorizeView';
 import MoviePage from './pages/MoviePage';
@@ -39,7 +38,7 @@ function App() {
           >
             <Route element={<Layout />}>
               <Route path="movies" element={<MoviePage />} />
-              <Route path="movieDetails" element={<MovieDetailPage />} />
+              {/* <Route path="movieDetails" element={<MovieDetailPage />} />*/}
               <Route path="search" element={<SearchPage />} />
               <Route path="logout" element={<Logout />} />
             </Route>

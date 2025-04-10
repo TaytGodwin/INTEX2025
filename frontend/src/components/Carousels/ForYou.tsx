@@ -1,21 +1,20 @@
 // GenreRec.tsx
 import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { getContentRecs } from '../../api/RecommenderAPI'; // Adjust path if needed
+import { getForYou } from '../../api/RecommenderAPI'; // Adjust path if needed
 import { getImage } from '../../api/ImageAPI';
-import MoviePoster from '../movieCards/MoviePoster';
+import MovietopTen from '../movieCards/MovietopTen';
 import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
-interface ContentRecProps {
-  showId: number;
+interface GenreRecProps {
+  userId: number;
 }
-const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
+const ForYou: React.FC<GenreRecProps> = ({userId}) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
@@ -26,7 +25,7 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
-        const results = await getContentRecs(showId);
+        const results = await getForYou(userId);
         if (results) {
           setMovies(results);
 
@@ -54,7 +53,7 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
     };
 
     fetchMovies();
-  }, [showId]);
+  }, [userId]);
   // Fetch images for the movies when the movies array changes.
      useEffect(() => {
       const fetchImages = async () => {
@@ -112,7 +111,7 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
   
     return (
       <div className="genre-rec">
-        <h2>Similar Titles</h2>
+        <h2>Your top 10<strong>{}</strong></h2>
         <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
           <div
@@ -120,10 +119,39 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
             className="carousel-item"
             style={{ padding: '0 5px' }}
           >
-            <MoviePoster key={movie.show_id}
-              imageUrl={movieImages[movie.title] || '/images/default.jpg'}  // Example image URL logic
+            
+            {/* <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <div style={{
+                fontSize: '10rem',
+                fontWeight: 900,
+                color: 'rgba(255, 255, 255, 0.08)',
+                position: 'absolute',
+                left: 0,
+                zIndex: 0,
+              }}>
+                5
+              </div>
+              <img
+                src={movieImages[movie.title] || '/images/default.jpg'}
+                alt="The Croods"
+                style={{
+                  width: '150px',
+                  height: 'auto',
+                  marginLeft: '3rem',
+                  zIndex: 1,
+                  borderRadius: '6px',
+                }}
+              />
+            </div> */}
+
+
+
+            <MovietopTen
+              key={movie.show_id}
+              posterUrl={movieImages[movie.title] || '/images/default.jpg'}
               title={movie.title}
-              onClick={() => handlePosterClick(movie)} // Handle the click to open the modal
+              onClick={() => handlePosterClick(movie)}
+              rank={index + 1} // optional: shows 1-10
             />
           </div>
         ))}
@@ -139,29 +167,14 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-
-                 {/* Poster and Info Container */}
-                <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                  {/* Poster Image */}
-                  <img
-                    src={movieImages[selectedMovie.title] || '/images/default.jpg'}
-                    alt={selectedMovie.title}
-                    style={{ width: '200px', height: 'auto', borderRadius: '8px' }}
-                  />
-
-                    <div className="modal-body">
-                      <p><strong>Director:</strong> {selectedMovie.director}</p>
-                      <p><strong>Cast:</strong> {selectedMovie.cast}</p>
-                      <p><strong>Release Year:</strong> {selectedMovie.release_year}</p>
-                      <p><strong>Rating:</strong> {selectedMovie.rating}</p>
-                      <p><strong>Duration:</strong> {selectedMovie.duration}</p>
-                      <p>{selectedMovie.description}</p>
-                    </div>
+                <div className="modal-body">
+                  <p><strong>Director:</strong> {selectedMovie.director}</p>
+                  <p><strong>Cast:</strong> {selectedMovie.cast}</p>
+                  <p><strong>Release Year:</strong> {selectedMovie.release_year}</p>
+                  <p><strong>Rating:</strong> {selectedMovie.rating}</p>
+                  <p><strong>Duration:</strong> {selectedMovie.duration}</p>
+                  <p>{selectedMovie.description}</p>
                 </div>
-                <div>
-                  <GetContentRec showId={selectedMovie.show_id}/> 
-                </div>
-
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>
                 </div>
@@ -173,4 +186,5 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
     );
   };
   
-  export default GetContentRec;
+  export default ForYou;
+
