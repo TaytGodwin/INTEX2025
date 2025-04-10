@@ -10,7 +10,34 @@ import {
   isEmailUsed,
 } from '../api/IdentityAPI';
 
+
+const Spinner = () => (
+  <div style={{ textAlign: 'center', padding: '2rem' }}>
+    <div className="spinner" />
+    <style>
+      {`
+        .spinner {
+          border: 4px solid rgba(255, 255, 255, 0.2);
+          border-top: 4px solid #57C8F4;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 0.8s linear infinite;
+          margin: 0 auto;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}
+    </style>
+  </div>
+);
+
 function RegisterPage() {
+  //loading functionality
+  const [loading, setLoading] = useState(false);
+
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -105,6 +132,7 @@ function RegisterPage() {
   // Final form submission for Step 2
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     const profileData = {
       email,
@@ -163,6 +191,8 @@ function RegisterPage() {
       }
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -206,9 +236,9 @@ function RegisterPage() {
         <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
           <Link
             to="/login"
-            style={{ color: '#57c8f4', textDecoration: 'underline' }}
+            style={{ color: '#57c8f4', }}
           >
-            I already have an account
+            <strong>I already have an account</strong>
           </Link>
         </div>
 
@@ -229,7 +259,11 @@ function RegisterPage() {
             }}
           />
         </div>
-
+         {/* If loading is true, show the spinner */}
+         {loading ? (
+          <Spinner />
+        ) : (
+        <>
         {step === 1 && (
           <form onSubmit={handleNext}>
             <input
@@ -518,6 +552,8 @@ function RegisterPage() {
               </button>
             </div>
           </form>
+        )}
+        </>
         )}
         {error && (
           <p style={{ marginTop: '1rem', textAlign: 'center', color: 'red' }}>
