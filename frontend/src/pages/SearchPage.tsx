@@ -6,6 +6,7 @@ import { getImage } from '../api/ImageAPI';
 import { Movie } from '../types/Movie';
 import { Genre } from '../types/Genre';
 import LazyImage from '../components/movieCards/LazyImage';
+import MoviePoster from '../components/movieCards/MoviePoster';
 
 const Spinner = () => (
   <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -31,7 +32,7 @@ const Spinner = () => (
 );
 
 function sanitizeTitle(title: string): string {
-  return title.replace(/[-?#()'":’‘“”.!]/g, '');
+  return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
 
 const SearchPage: React.FC = () => {
@@ -81,9 +82,13 @@ const SearchPage: React.FC = () => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
+        //gives impression things are loading in
+        await new Promise(resolve => setTimeout(resolve, 2000));
         // Pass selectedGenre as an array if one is chosen, otherwise an empty array.
         const genreList = selectedGenres.length > 0 ? selectedGenres : [];
         const newMovies = await searchMovies(searchTerm || '', 25, page, genreList);
+
+        
         setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
         setHasMore(newMovies.length > 0);
       } catch (error) {
@@ -257,6 +262,17 @@ const SearchPage: React.FC = () => {
                         objectFit: 'cover',
                       }}
                     />
+                    {/* <MoviePoster
+                      key={movie.show_id}
+                      imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+                      title={movie.title}
+                      onClick={() => {
+                        setSelectedMovie(movie);
+                        setSelectedPosterUrl(
+                          movieImages[movie.title] || '/images/default.jpg'
+                        );
+                      }} // Handle the click to open the modal
+                    /> */}
                     <h5 style={{ color: '#fff', textAlign: 'center', marginTop: '0.5rem' }}>
                       {movie.title}
                     </h5>

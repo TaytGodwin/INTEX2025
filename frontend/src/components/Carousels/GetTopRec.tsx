@@ -131,6 +131,7 @@ import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import MovieDetails from '../movieCards/MovieDetails';
+import { Link } from 'react-router-dom';
 
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
@@ -218,13 +219,27 @@ const GetTopRec: React.FC<TopRecProps> = ({ showId }) => {
   };
 
   
-  if (loading) {
+  if (movies.length < 5) {
     return (
-      <div className="genre-rec">
-        <h3>If you liked this, you'll definitely love these...
-          <Spinner />
+      <div className="genre-rec" style={{ textAlign: 'center', padding: '2rem' }}>
+        <h3 style={{ color: '#fff' }}>
+          If you enjoyed this, discover more movies!
         </h3>
-       
+        <Link
+          to="/search"
+          style={{
+            display: 'inline-block',
+            marginTop: '1rem',
+            padding: '0.75rem 1.5rem',
+            backgroundColor: '#57C8F4',
+            color: '#fff',
+            textDecoration: 'none',
+            borderRadius: '4px',
+            fontSize: '1rem',
+          }}
+        >
+          Go to Search
+        </Link>
       </div>
     );
   }
@@ -241,6 +256,7 @@ const GetTopRec: React.FC<TopRecProps> = ({ showId }) => {
             style={{ padding: '0 10px' }}
           >
             <MoviePoster
+              key={movie.show_id}
               imageUrl={movieImages[movie.title] || defaultImageUrl}
               title={movie.title}
               onClick={() => {
