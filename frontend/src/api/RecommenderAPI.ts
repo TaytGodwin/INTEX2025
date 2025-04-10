@@ -1,7 +1,7 @@
 import { Movie } from '../types/Movie';
 
-const Recommender_API_URL = // 'https://localhost:5000';
-  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const Recommender_API_URL = 'https://localhost:5000';
+  // 'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 // This API call is for the main page. It does not require authorization
 // Should return a list of 10 movies pass one genre and get back stuff
