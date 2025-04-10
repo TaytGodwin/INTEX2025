@@ -113,7 +113,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
 
   return (
     <div className="genre-rec">
-      <h2>Recommended Movies in Your Genre <strong>{genre}</strong></h2>
+      <h2>Recommended <strong>{genre}</strong></h2>
       <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
           <div key={index} className="carousel-item" style={{ padding: '0 5px' }}>
