@@ -3,22 +3,27 @@ import { getImage } from '../../api/ImageAPI';
 import { Movie } from '../../types/Movie';
 import GetTopRec from '../Carousels/GetTopRec';
 
-interface MovieDetailsProps {
-  movie: Movie;
+interface RelatedMovie {
+  title: string;
+  imageUrl: string;
 }
 
-const MovieDetails: React.FC<MovieDetailsProps> = ({ movie}) => {
+interface MovieDetailsProps {
+  movie: Movie;
+  relatedMovies: RelatedMovie[];
+}
+
+const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, relatedMovies }) => {
   const [movieImage, setMovieImage] = useState<string | null>(null);
   const [loadingImage, setLoadingImage] = useState<boolean>(true);
   const modalRef = useRef<HTMLDivElement | null>(null);  // Ref for modal
 
+  // Fetch movie image when component mounts or movie title changes
   useEffect(() => {
     const fetchMovieImage = async () => {
       try {
-        // Fetch the movie image based on its title
         const imageBlob = await getImage(movie.title);
 
-        // If an image is returned, convert it into an object URL
         if (imageBlob) {
           setMovieImage(URL.createObjectURL(imageBlob));
         } else {
@@ -26,20 +31,20 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie}) => {
         }
       } catch (error) {
         console.error('Error fetching movie image:', error);
-        setMovieImage('/images/default.jpg'); // Use default image in case of an error
+        setMovieImage('/images/default.jpg');
       } finally {
-        setLoadingImage(false); // Set loading to false after the image fetch is complete or failed
+        setLoadingImage(false);
       }
     };
 
-    fetchMovieImage(); // Call the function when the component mounts
-  }, [movie.title]); // Re-fetch if the movie title changes
+    fetchMovieImage();
+  }, [movie.title]);
 
   // Close the modal when clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        closeModal();  // Close modal if click is outside
+        closeModal();
       }
     };
 
@@ -50,10 +55,19 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie}) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(movie);
 
   const closeModal = () => {
-    setSelectedMovie(null); // Close the modal
+    setSelectedMovie(null);
   };
 
-  if (loadingImage) return <div>Loading image...</div>; // Show loading text until the image is fetched
+  // Prevent scrolling on the background when modal is open
+  useEffect(() => {
+    if (selectedMovie) {
+      document.body.style.overflow = 'hidden';  // Disable scrolling
+    } else {
+      document.body.style.overflow = '';  // Enable scrolling when modal is closed
+    }
+  }, [selectedMovie]);
+
+  if (loadingImage) return <div>Loading image...</div>;
 
   return (
     <div className="movie-detail-overlay">
@@ -64,9 +78,9 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie}) => {
             <>
               <img
                 className="banner-poster"
-                src={movieImage || '/images/default.jpg'} // Use fetched image URL or default
+                src={movieImage || '/images/default.jpg'}
                 alt={`${selectedMovie.title} Poster`}
-                style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain' }}  // Ensure image fits inside modal
+                style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
               />
               <div className="action-buttons">
                 <button className="play-button">▶</button>
@@ -93,7 +107,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie}) => {
                   <strong>Genres:</strong>
                   {selectedMovie.genres.map((genre, index) => (
                     <span key={index} className="genre-tag">
-                      {genre.genreName} {/* Render the genre's name */}
+                      {genre.genreName}
                       {index < selectedMovie.genres.length - 1 && ', '}
                     </span>
                   ))}
@@ -104,12 +118,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie}) => {
           )}
         </div>
 
-        {/* Recommendations */}
+        {/* Recommendations 
         <div className="related-section">
           <div className="scrollable-related">
-            <GetTopRec showId={selectedMovie?.show_id ?? 0} /> {/* You can pass actual related movies here */}
+            <GetTopRec showId={selectedMovie?.show_id ?? 0} />
           </div>
-        </div>
+        </div>*/}
       </div>
     </div>
   );
