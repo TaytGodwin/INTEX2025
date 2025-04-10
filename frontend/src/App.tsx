@@ -12,6 +12,7 @@ import MoviePage from './pages/MoviePage';
 import SearchPage from './pages/SearchPage';
 import AdminDatabasePage from './pages/AdminDatabasePage';
 import Logout from './components/authentication/Logout';
+import ForgotPass from './pages/ForgotPass';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="menu" element={<HomePage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
+            <Route path="forgot-password" element={<ForgotPass />} />
           </Route>
 
           {/* Protected Routes for all authenticated users (User and Administrator) */}
