@@ -50,6 +50,7 @@ const AdminDatabasePage = () => {
     };
 
     fetchData();
+    console.log(allMovies);
   }, [pageSize, currentPage, sortByPreference, searchTerm]); // Add genres as a dependency
 
   const handleDelete = async (show_id: number) => {
@@ -75,6 +76,20 @@ const AdminDatabasePage = () => {
     setMovieToEdit(movie);
     setShowEditModal(true);
     console.log(movie);
+  };
+
+  const handleGenres = (movie: Movie) => {
+    return (
+      <>
+        {movie.genres.map((genre, index) => (
+          <span key={index}>
+            {typeof genre === 'string' ? genre : genre.genreName}
+            {/* Adjust depending on if it's a string or an object */}
+            {index < movie.genres.length - 1 ? ', ' : ''}
+          </span>
+        ))}
+      </>
+    );
   };
 
   return (
@@ -135,7 +150,7 @@ const AdminDatabasePage = () => {
                   <tr key={movie.show_id}>
                     <td>{movie.title}</td>
                     <td>{movie.type}</td>
-                    <td>{movie.genres.map((g) => g.genreName).join(', ')}</td>
+                    <td>{handleGenres(movie)}</td>
                     <td>{movie.release_year}</td>
                     <td>{movie.director}</td>
                     <td>
