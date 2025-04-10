@@ -1,4 +1,4 @@
-export interface NewMovie {
+export interface UpdatedMovie {
   title: string;
   type: string;
   director: string;

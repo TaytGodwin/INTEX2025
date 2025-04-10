@@ -20,6 +20,7 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
 }) => {
   // Initialize state with the movie to be edited
   const [editedMovie, setEditedMovie] = useState<Movie>(movie);
+  const [inputError, setInputError] = useState('');
 
   // Handle changes in the input fields and update the corresponding property in the edited movie state
   const handleChange = (
@@ -33,16 +34,37 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
 
   // Handle form submission to update the movie
   const handleSubmit = async () => {
+    // Check if all required fields are filled
+    if (
+      !editedMovie.title ||
+      !editedMovie.type ||
+      !editedMovie.release_year ||
+      !editedMovie.rating ||
+      !editedMovie.duration ||
+      !editedMovie.description ||
+      !editedMovie.genres.length
+    ) {
+      setInputError('Please fill in all required fields.');
+      return;
+    }
+
     try {
-      const response = await updateMovie(editedMovie); // Call the API to update the movie
+      console.log('Submitting movie update with genres:', editedMovie.genres); // Log genres for debugging
+
+      const response = await updateMovie({
+        ...editedMovie,
+        genres: editedMovie.genres, // Send only genre names (strings)
+      });
 
       if (response) {
         // If successful, fetch the updated movie list
         const updated = await getAllMovies(); // Get all movies after the update
         onMovieUpdated(updated); // Update the movie list in the parent component
+        window.confirm('Movie updated successfully');
         onClose(); // Close the modal
       } else {
-        console.error('Failed to update movie'); // Log an error if the update failed
+        console.error('Failed to update movie');
+        window.confirm('There was an error in the database, please try again');
       }
     } catch (error) {
       console.error('Error:', error); // Log any errors that occur during the update process
@@ -72,12 +94,20 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
               value={editedMovie.title}
               onChange={handleChange} // Trigger handleChange to update state on input change
             />
-            <input
-              className="form-control mb-2"
-              name="type" // This is for the type of the movie
+            <select
+              className="form-select mb-2"
+              name="type"
               value={editedMovie.type}
-              onChange={handleChange} // Trigger handleChange to update state on input change
-            />
+              onChange={handleChange}
+              required
+            >
+              {/* Placeholder */}
+              <option disabled value="">
+                Select...
+              </option>
+              <option value="TV Show">TV Show</option>
+              <option value="Movie">Movie</option>
+            </select>
             <input
               className="form-control mb-2"
               name="director" // This is for the director's name
@@ -147,21 +177,34 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
 
             {/* Genre selection using react-select */}
             <Select
-              isMulti // Allow multiple selections
-              className="mb-2" // Adjust styling for select dropdown
-              options={genres.map((g) => ({ value: g, label: g }))} // Map genres to options for react-select
-              required
-              value={editedMovie.genres.map((g) => ({ value: g, label: g }))} // Set the selected genres in the state
+              isMulti
+              className="mb-2"
+              options={genres.map((g) => ({
+                value: g.genreName as any, // genreName as value
+                label: g.genreName as any, // genreName as label
+              }))}
+              value={editedMovie.genres.map((g) => ({
+                value: g, // genreName as value (string)
+                label: g, // genreName as label (string)
+              }))}
               onChange={(selectedOptions) =>
                 setEditedMovie({
                   ...editedMovie,
                   genres: selectedOptions
-                    ? selectedOptions.map((opt) => opt.value) // Update genres state
+                    ? selectedOptions.map((opt) => opt.value) // Save only genre names (strings)
                     : [],
                 })
               }
             />
           </div>
+          {inputError && (
+            <>
+              <span className="error text-danger text-center">
+                {inputError}
+              </span>
+              <br />
+            </>
+          )}
           {/* Modal footer with Cancel and Save buttons */}
           <div className="modal-footer">
             <button className="btn btn-secondary" onClick={onClose}>

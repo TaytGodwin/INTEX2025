@@ -1,6 +1,8 @@
 // MovietopTen.tsx
 import React, { useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import '../../css/theme.css';
 
 export interface MovietopTenProps {
   title: string;
@@ -18,15 +20,17 @@ const MovietopTen: React.FC<MovietopTenProps> = ({
   const [imageLoaded, setImageLoaded] = useState(false);
   return (
     <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        marginBottom: '1.5rem',
-        position: 'relative',
-        paddingLeft: '5rem',
-        cursor: onClick ? 'pointer' : 'default',
-      }}
+      className="movie-poster"
       onClick={onClick}
+      style={{ cursor: onClick ? 'pointer' : 'default' }}
+      //     display: 'flex',
+      //     alignItems: 'center',
+      //     marginBottom: '1.5rem',
+      //     position: 'relative',
+      //     paddingLeft: '5rem',
+      //     cursor: onClick ? 'pointer' : 'default',
+      //   }}
+      //   onClick={onClick}
     >
       {rank && (
         <div
@@ -47,6 +51,14 @@ const MovietopTen: React.FC<MovietopTenProps> = ({
           src={posterUrl}
           alt={title}
           onLoad={() => setImageLoaded(true)}
+          onError={(e) => {
+            // Option 1: Simply stop the skeleton by marking as loaded.
+            setImageLoaded(true);
+            // Option 2: Set a fallback image if not already the default
+            if (e.currentTarget.src !== '/images/default.jpg') {
+              e.currentTarget.src = '/images/default.jpg';
+            }
+          }}
           style={{
             // width: '150px',
             // height: 'auto',
@@ -64,7 +76,7 @@ const MovietopTen: React.FC<MovietopTenProps> = ({
           <Skeleton height={225} width={'100%'} borderRadius={8} />
         )}
       </div>
-      
+
       {/* Title */}
       <div className="movie-poster-title" style={{ marginTop: '0.5rem' }}>
         {imageLoaded ? title : <Skeleton width={100} />}

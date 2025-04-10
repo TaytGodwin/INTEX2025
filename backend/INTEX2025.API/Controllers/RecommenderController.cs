@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using INTEX.API.Data;
 using System.ComponentModel.DataAnnotations.Schema;
 using INTEX.API.Data.RecommenderModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace INTEX.API.Controllers;
 
@@ -92,7 +93,8 @@ public class RecommenderController : ControllerBase
     //     return Ok(movieDetails);
     // }
     [HttpGet("genre_recommendations")]
-        public async Task<IActionResult> GetGenreRecommendations([FromQuery] string genreName)
+    [Authorize] // Used by all logged in
+    public async Task<IActionResult> GetGenreRecommendations([FromQuery] string genreName)
         {
             if (string.IsNullOrWhiteSpace(genreName))
                 return BadRequest("Genre name is required.");
@@ -146,6 +148,7 @@ public class RecommenderController : ControllerBase
     // 4. Return the top 10 most similar showIds and their details
 // Endpoint: /api/recommender/content_recs1?userId={userId}
     [HttpGet("content_recs1")]
+    [Authorize] // Used by all logged in
     public async Task<IActionResult> GetUserRecommendedLists([FromQuery] int userId)
     {
         // Retrieve movies that the user rated above 3 from the movies rating table in the movies DB
@@ -198,6 +201,7 @@ public class RecommenderController : ControllerBase
     // This method finds the top 10 shows recommended to a user based on user similarity.
     // It uses the 'distance' metric to rank which other users are similar.
     [HttpGet("top10_userId")]
+    [Authorize] // Used by all logged in
     public async Task<IActionResult> GetTop10UserIds([FromQuery] int userId)
     {
         var results = _context.Top10UserIds

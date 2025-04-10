@@ -36,10 +36,10 @@ const Spinner = () => (
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
-interface GenreRecProps {
+interface UserRecProps {
   userId: number;
 }
-const ForYou: React.FC<GenreRecProps> = ({ userId }) => {
+const ForYou: React.FC<UserRecProps> = ({ userId }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [selectedPosterUrl, setSelectedPosterUrl] = useState<string>('');

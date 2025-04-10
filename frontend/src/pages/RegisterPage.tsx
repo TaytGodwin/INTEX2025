@@ -44,10 +44,23 @@ function RegisterPage() {
   // Handler to move from Step 1 to Step 2
   const handleNext = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
     }
+
+    if (password.length < 13) {
+      setError('Password must be at least 13 characters long.');
+      return;
+    }
+
+    const uniqueChars = new Set(password).size;
+    if (uniqueChars < 2) {
+      setError('Password must contain at least 2 unique characters.');
+      return;
+    }
+
     // Additional validation for step 1 can be added here
     setError('');
     setStep(2);
