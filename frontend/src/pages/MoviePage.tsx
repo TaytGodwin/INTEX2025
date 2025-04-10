@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import GenreRec from '../components/Carousels/GenreRec';
+import LazyGenreRec from '../components/Carousels/LazyCarousels/LazyGenreRec';
 import { getGenres } from '../api/MoviesAPI';
 import { Genre } from '../types/Genre';
 import GetContentRec from '../components/Carousels/GetContentRec';
@@ -8,9 +9,24 @@ import GetTopRec from '../components/Carousels/GetTopRec';
 import LandingMovieHero from '../components/movieCards/LandingMovieHero';
 
 
+
 function MoviePage() {
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [visibleCount, setVisibleCount] = useState(2); // how many carousels are visible
+
+  const [visibleCount, setVisibleCount] = useState(3);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100
+      ) {
+        setVisibleCount(prev => prev + 2); // Show 2 more carousels
+      }
+    };
+
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, []);
 
     useEffect(() => {
       const fetchGenres = async () => {
@@ -21,18 +37,6 @@ function MoviePage() {
       fetchGenres();
     }, []);
 // Adds scrolling ability 
-    useEffect(() => {
-      const handleScroll = () => {
-        const nearBottom =
-          window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
-        if (nearBottom && visibleCount < genres.length) {
-          setVisibleCount((prev) => prev + 1);
-        }
-      };
-    
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
-    }, [genres, visibleCount]);
 
   return (
     <div className="movie-page">
@@ -55,9 +59,9 @@ function MoviePage() {
       <GenreRec genre={'Action'} />
 
       <div className="genre-recs-wrapper">
-        {genres.slice(0, visibleCount).map((genre, index) => (
-          <GenreRec key={index} genre={genre.genreName} />
-        ))}
+      {genres.slice(0, visibleCount).map((genre, index) => (
+        <LazyGenreRec key={index} genre={genre.genreName} />
+      ))}
       </div>
 </div>
   );
