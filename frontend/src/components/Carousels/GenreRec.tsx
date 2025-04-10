@@ -76,9 +76,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
     setSelectedMovie(movie); // Set the selected movie for modal
   };
 
-  const closeModal = () => {
-    setSelectedMovie(null); // Close the modal
-  };
+
 
   if (loading) return <div>Loading movies...</div>;  // Show loading text until the data is fetched
 
@@ -112,9 +110,6 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
               <div className="modal-body">
                 {/* Pass the selectedMovie data to the MovieDetails component */}
                 {selectedMovie ? <MovieDetails movie={selectedMovie} relatedMovies={[]} /> : null}
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>
               </div>
             </div>
           </div>
