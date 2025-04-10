@@ -3,13 +3,9 @@ import PricingCard from './PricingCard';
 
 const PricingSection: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-
-
   const handleToggle = (cycle: 'monthly' | 'yearly') => {
     setBillingCycle(cycle);
   };
-
-
   const pricingData = [
     {
       planId: 'basic',
@@ -52,14 +48,10 @@ const PricingSection: React.FC = () => {
       buttonText: 'Get Premium',
     },
   ];
-
-
   const displayedData = pricingData.map((plan) => {
     const price = billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice;
     return { ...plan, price };
   });
-
-
   return (
     <section
       style={{
@@ -79,8 +71,6 @@ const PricingSection: React.FC = () => {
       >
         Choose Your Plan
       </h2>
-
-
       <div
         style={{
           display: 'flex',
@@ -120,8 +110,6 @@ const PricingSection: React.FC = () => {
           Pay per Year
         </button>
       </div>
-
-
       <div
         style={{
           display: 'grid',
@@ -144,6 +132,4 @@ const PricingSection: React.FC = () => {
     </section>
   );
 };
-
-
 export default PricingSection;

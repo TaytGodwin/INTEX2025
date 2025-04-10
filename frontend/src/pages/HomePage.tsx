@@ -2,10 +2,11 @@ import LandingHero from '../components/home/LandingHero';
 // import FeaturedSection from '../components/home/FeaturedSection';
 import TestimonialsSection from '../components/home/TestimonialsSection';
 import FAQSection from '../components/home/FAQSection';
-import PricingSection from '../components/home/PricingSection';
+import PricingSection from '../components/home/PricingSection'; // Import PricingSection
 
 import CookiesModal from '../components/home/CookiesModal';
 import { useEffect, useState } from 'react';
+import FeaturedSection from '../components/home/FeaturedSection';
 
 // This is the page that doesn't have info
 
@@ -20,15 +21,26 @@ function HomePage() {
       setShouldShow(true);
     }
   }, []);
+
+ 
+
   return (
     <div>
       {shouldShow && showCookiesModal && (
         <CookiesModal setShowCookieModal={setShowCookieModal} />
       )}
+      
       <LandingHero />
+      <FeaturedSection/>
       <TestimonialsSection />
+      
       <FAQSection />
-      <PricingSection />
+      <PricingSection/>
+
+      {/* Pass the pricing data to PricingSection */}
+      
+
+    
     </div>
   );
 }
