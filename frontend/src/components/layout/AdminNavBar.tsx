@@ -57,7 +57,7 @@ const AdminNavbar = () => {
             </li>
             {/* Movie Database Button */}
             <li className="nav-item my-3">
-              <Link to="/movie-database" className="nav-link text-white">
+              <Link to="/admin" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-film fs-2"></i>
                   <span style={labelStyle}>Movie Database</span>
