@@ -2,16 +2,19 @@ using System.Linq.Dynamic.Core;
 using INTEX.API.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore; // Added for asynchronous EF Core operations
 
 [ApiController]
 [Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly MovieDbContext _movieDbContext; // Added MovieDbContext
 
-    public AccountController(ApplicationDbContext context)
+    public AccountController(ApplicationDbContext context, MovieDbContext movieDbContext) // Updated constructor
     {
         _context = context;
+        _movieDbContext = movieDbContext;
     }
     
     [HttpGet("me")]
@@ -31,5 +34,24 @@ public class AccountController : ControllerBase
                              }).FirstOrDefault();
 
         return Ok(new { email = userWithRoles?.Email, roles = userWithRoles?.Roles });
+    }
+    
+    [HttpGet("userId")]
+    public async Task<IActionResult> GetUserIdByEmailAsync(string email)
+    {
+        // Select only the user_id column to avoid mapping boolean columns
+        var userId = await _movieDbContext.MovieUsers
+            .FromSqlInterpolated($"SELECT user_id FROM [dbo].[movies_users] WHERE CAST(email AS nvarchar(max)) = {email}")
+            .AsNoTracking()
+            .Select(u => u.UserId)
+            .FirstOrDefaultAsync();
+        
+        // Assuming UserId is an identity and 0 means no record found
+        if(userId == 0)
+        {
+            return NotFound();
+        }
+        
+        return Ok(new { userId }); // Updated return statement
     }
 }
