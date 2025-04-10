@@ -7,7 +7,6 @@ import AddMovieModal from '../components/admin/AddMovieModal';
 import EditMovieModal from '../components/admin/EditMovieModal';
 import { Genre } from '../types/Genre';
 import AdminPagination from '../components/admin/AdminPagination';
-import UserNavbar from '../components/layout/UserNavBar'; // Import UserNavbar here
 
 const AdminDatabasePage = () => {
   const [allMovies, setMovies] = useState<Movie[]>([]);
@@ -85,10 +84,6 @@ const AdminDatabasePage = () => {
   return (
     <AuthorizeView allowedRoles={['Administrator']}>
       <div style={adminPageStyle}>
-        {/* Integrating UserNavbar in the sidebar section */}
-        <aside style={sidebarStyle}>
-          <UserNavbar /> {/* UserNavbar integrated here */}
-        </aside>
 
         <main style={contentStyle}>
           <h2 style={headerStyle}>🎬 Movie Database</h2>
@@ -194,17 +189,31 @@ const adminPageStyle = {
   fontFamily: 'Poppins, sans-serif',
 };
 
-// Sidebar Style (unchanged)
-const sidebarStyle: React.CSSProperties = {
+const sidebarStyle = {
   backgroundColor: '#1e1e1e',
   padding: '2rem 1rem',
   width: '220px',
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'column' as const,
   borderRight: '1px solid #333',
 };
 
-// Main content and other styles (unchanged)
+const sidebarTitleStyle = {
+  color: '#fff',
+  fontSize: '1.2rem',
+  fontWeight: 600,
+  marginBottom: '2rem',
+};
+
+const sidebarItemStyle = {
+  margin: '1rem 0',
+  fontSize: '1rem',
+  color: '#ccc',
+  display: 'flex',
+  gap: '0.5rem',
+  cursor: 'pointer',
+};
+
 const contentStyle = {
   flex: 1,
   padding: '2rem',
@@ -218,14 +227,14 @@ const headerStyle = {
   marginBottom: '1.5rem',
 };
 
-const searchControlStyle: React.CSSProperties = {
+const searchControlStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: '1rem',
   marginBottom: '1.5rem',
 };
 
-const searchInputStyle: React.CSSProperties = {
+const searchInputStyle = {
   backgroundColor: '#2a2a2a',
   border: '1px solid #444',
   color: '#fff',
@@ -234,7 +243,7 @@ const searchInputStyle: React.CSSProperties = {
   flex: 1,
 };
 
-const searchButtonStyle: React.CSSProperties = {
+const searchButtonStyle = {
   padding: '0.5rem 1rem',
   backgroundColor: '#57C8F4',
   color: '#fff',
@@ -242,7 +251,7 @@ const searchButtonStyle: React.CSSProperties = {
   borderRadius: '6px',
 };
 
-const addButtonStyle: React.CSSProperties = {
+const addButtonStyle = {
   padding: '0.5rem 1rem',
   backgroundColor: '#57C8F4',
   color: '#fff',
@@ -250,23 +259,23 @@ const addButtonStyle: React.CSSProperties = {
   borderRadius: '6px',
 };
 
-const tableStyle: React.CSSProperties = {
+const tableStyle = {
   width: '100%',
-  borderCollapse: 'collapse',
+  borderCollapse: 'collapse' as const,
   borderRadius: '10px',
   overflow: 'hidden',
 };
 
-const thStyle: React.CSSProperties = {
+const thStyle = {
   backgroundColor: '#2e2e2e',
   color: '#57C8F4',
   fontWeight: 600,
   padding: '0.75rem',
   border: '1px solid #333',
-  textAlign: 'left',
+  textAlign: 'left' as const,
 };
 
-const tdStyle: React.CSSProperties = {
+const tdStyle = {
   padding: '0.75rem',
   border: '1px solid #333',
   color: '#eee',
@@ -284,6 +293,5 @@ const actionButtonStyle = {
     backgroundColor: 'transparent',
   },
 };
-
 
 export default AdminDatabasePage;
