@@ -1,11 +1,13 @@
 import { Movie } from '../types/Movie';
 
-const Recommender_API_URL = 'https://localhost:5000'
-  //'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
+const Recommender_API_URL = 'https://localhost:5000';
+//'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
 
 // This API call is for the main page. It does not require authorization
-// Should return a list of 10 movies pass one genre and get back stuff 
-export const getGenreMovies = async (genre: string): Promise<Movie[] | null> => {
+// Should return a list of 10 movies pass one genre and get back stuff
+export const getGenreMovies = async (
+  genre: string
+): Promise<Movie[] | null> => {
   try {
     const response = await fetch(
       `${Recommender_API_URL}/api/Recommender/genre_recommendations?genreName=${encodeURIComponent(genre)}`,
@@ -30,10 +32,12 @@ export const getGenreMovies = async (genre: string): Promise<Movie[] | null> => 
   }
 };
 
-export const getContentRecs = async (showId: number): Promise<Movie[] | null> => {
+export const getContentRecs = async (
+  userId: number
+): Promise<Movie[] | null> => {
   try {
     const response = await fetch(
-      `${Recommender_API_URL}/api/Recommender/content_recs1?showId=${showId}`,
+      `${Recommender_API_URL}/api/Recommender/content_recs1?userId=${userId}`,
       {
         method: 'GET',
         credentials: 'include',
@@ -123,4 +127,3 @@ export const getTopRec = async (showId: number): Promise<Movie[] | null> => {
     return null;
   }
 };
-

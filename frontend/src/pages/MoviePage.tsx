@@ -8,6 +8,7 @@ import GetTopRec from '../components/Carousels/GetTopRec';
 import LandingMovieHero from '../components/movieCards/LandingMovieHero';
 import LazyForYou from '../components/Carousels/LazyCarousels/LazyForYou';
 import { pingAuth } from '../api/IdentityAPI';
+import LazyTitleRec from '../components/Carousels/LazyCarousels/LazyTitleRec';
 
 function MoviePage() {
   const [genres, setGenres] = useState<Genre[]>([]);
@@ -69,6 +70,8 @@ function MoviePage() {
         }}
       ></div>
       {user_id !== null && <LazyForYou userId={user_id} />}
+
+      {user_id !== null && <LazyTitleRec userId={user_id} />}
 
       <div className="genre-recs-wrapper">
         {genres.slice(0, visibleCount).map((genre, index) => (
