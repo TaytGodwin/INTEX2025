@@ -105,7 +105,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("https://localhost:3030", "http://localhost:3030", "https://jolly-island-0713d9a1e.6.azurestaticapps.net")
+            policy.WithOrigins("https://localhost:3030", "http://localhost:3030", "")
                 .AllowCredentials() // Cookies enabled with this
                 .AllowAnyHeader()
                 .AllowAnyMethod();
