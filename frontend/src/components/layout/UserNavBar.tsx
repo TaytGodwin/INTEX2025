@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {logout as apiLogout} from '../../api/IdentityAPI'
-import logo from '../../assets/Website_Logo.png'
+import { logout as apiLogout } from '../../api/IdentityAPI';
+import logo from '../../assets/Website_Logo.png';
 import '../../css/theme.css'; // Custom CSS for the sidebar
 import { useAuth } from '../../context/AuthContext';
 
@@ -15,18 +15,15 @@ function UserNavbar() {
     if (result) {
       logout();
       navigate('/login');
-    }
-    else {
-      console.error('Logout failed')
+    } else {
+      console.error('Logout failed');
     }
   };
 
-  // Function to show the confirmation modal
   const confirmLogout = () => {
     setModal(true); // Show the modal
   };
 
-  // Function to close the modal without logging out
   const closeModal = () => {
     setModal(false); // Hide the modal
   };
@@ -34,7 +31,6 @@ function UserNavbar() {
   return (
     <>
       <nav className="side-navbar d-flex flex-column text-white" style={{ background: 'transparent' }}>
-        {/* Logo or brand at the top */}
         <div className="nav-top">
           <ul className="nav flex-column text-center">
             <li className="nav-item my-3">
@@ -49,41 +45,64 @@ function UserNavbar() {
             {/* Search */}
             <li className="nav-item my-3">
               <Link to="/search" className="nav-link text-white">
-                <i className="bi bi-search fs-2"></i>
+                <div style={iconWrapperStyle}>
+                  <i className="bi bi-search fs-2"></i>
+                  <span style={labelStyle}>Search</span>
+                </div>
               </Link>
             </li>
             {/* Home */}
             <li className="nav-item my-3">
               <Link to="/movies" className="nav-link text-white">
-                <i className="bi bi-house fs-2"></i>
+                <div style={iconWrapperStyle}>
+                  <i className="bi bi-house fs-2"></i>
+                  <span style={labelStyle}>Home</span>
+                </div>
               </Link>
             </li>
             {/* Favorites */}
             <li className="nav-item my-3">
               <Link to="/favorites" className="nav-link text-white">
-                <i className="bi bi-heart fs-2"></i>
+                <div style={iconWrapperStyle}>
+                  <i className="bi bi-heart fs-2"></i>
+                  <span style={labelStyle}>Favorites</span>
+                </div>
               </Link>
             </li>
-            {/* Add to Favorites or extra functionality */}
+            {/* Add Movie */}
             <li className="nav-item my-3">
               <Link to="/add" className="nav-link text-white">
-                <i className="bi bi-plus fs-2"></i>
+                <div style={iconWrapperStyle}>
+                  <i className="bi bi-plus fs-2"></i>
+                  <span style={labelStyle}>Add</span>
+                </div>
               </Link>
             </li>
           </ul>
         </div>
-        {/* Logout button anchored at the bottom */}
         <div className="nav-bottom">
           <ul className="nav flex-column text-center">
+            {/* Privacy Policy */}
+            <li className="nav-item my-3">
+              <Link to="/privacy" className="nav-link text-white">
+                <div style={iconWrapperStyle}>
+                  <i className="bi bi-shield-lock fs-2"></i> {/* Lock icon for Privacy Policy */}
+                  <span style={labelStyle}>Privacy</span>
+                </div>
+              </Link>
+            </li>
             <li className="nav-item my-3">
               <button onClick={confirmLogout} className="nav-link text-white btn btn-link">
-                <i className="bi bi-box-arrow-right fs-2"></i>
+                <div style={iconWrapperStyle}>
+                  <i className="bi bi-box-arrow-right fs-2"></i>
+                  <span style={labelStyle}>Logout</span>
+                </div>
               </button>
             </li>
           </ul>
         </div>
       </nav>
-  
+
       {/* Confirmation Modal */}
       {showModal && (
         <div className="modal show" style={{ display: 'block' }} tabIndex={-1} aria-labelledby="logoutModal" aria-hidden="true" onClick={(e) => e.stopPropagation()}>
@@ -105,6 +124,19 @@ function UserNavbar() {
       )}
     </>
   );
-}  
+}
+
+const iconWrapperStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+const labelStyle: React.CSSProperties = {
+  fontSize: '0.8rem',
+  color: '#fff',
+  marginTop: '0.25rem',
+};
 
 export default UserNavbar;
