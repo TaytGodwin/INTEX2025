@@ -30,19 +30,3 @@ export const getGenreMovies = async (genre: string): Promise<Movie[] | null> => 
   }
 };
 
-    const contentType = response.headers.get('content-type');
-
-    // Ensure the response is JSON
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Invalid response format from server');
-    }
-
-    const data = await response.json();
-
-    // Assuming the backend returns a list of MovieUpdateDto objects
-    return data as Movie[];
-  } catch (error) {
-    console.error('Error getting movies based on genre:', error);
-    return null;
-  }
-};
