@@ -18,6 +18,7 @@ interface GenreRecProps {
 
 const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [selectedPosterUrl, setSelectedPosterUrl] = useState<string>('');
   const [movies, setMovies] = useState<Movie[]>([]);
   const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
   const [loading, setLoading] = useState<boolean>(true);
@@ -101,12 +102,6 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
     ],
   };
 
-  const handlePosterClick = (movie: any) => {
-    setSelectedMovie(movie); // Set the selected movie for modal
-  };
-
-
-
   if (loading) return <div>Loading movies...</div>;  // Show loading text until the data is fetched
 
   return (
@@ -119,18 +114,25 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
               key={movie.show_id}
               imageUrl={movieImages[movie.title] || '/images/default.jpg'}
               title={movie.title}
-              onClick={() => handlePosterClick(movie)} // Handle the click to open the modal
+              onClick={() => {
+                setSelectedMovie(movie);
+                setSelectedPosterUrl(movieImages[movie.title]|| '/images/default.jpg')}}// Handle the click to open the modal
             />
           </div>
         ))}
       </Slider>
-
-      {/* Modal to display movie details */}
-              <div className="modal-body">
-                {/* Pass the selectedMovie data to the MovieDetails component */}
-                {selectedMovie ? <MovieDetails movie={selectedMovie} /> : null}
-              </div>
-            </div>
+      {/* Show Modal Conditionally */}
+        {selectedMovie && (
+          <MovieDetails
+            movie={selectedMovie}
+            posterUrl={selectedPosterUrl}
+            onClose={() => {
+              setSelectedMovie(null);
+              setSelectedPosterUrl('');
+            }}
+          />
+          )}
+    </div>
   );
 };
 

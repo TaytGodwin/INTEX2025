@@ -22,27 +22,37 @@ const FeaturedSection = () => {
 
   //Hard Coded Area for FeaturedTitles
   const featuredTitles = ['Interstellar', 'Inception', 'The Dark Knight', 'Squid Game', 'Dear John', 'The Karate Kid', 'Attack on Titan', 'Legally Blonde','How to Train Your Dragon 2'];
+function FeaturedSection() {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  // Using the movie title as the key to store the fetched image URL
+  const [movieImages, setMovieImages] = useState<{ [title: string]: string }>(
+    {}
+  );
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // A default image URL in case fetching fails
+  const defaultImageUrl = '/images/default.jpg';
 
   useEffect(() => {
-    const fetchFeaturedMovies = async () => {
+    const fetchMovies = async () => {
       try {
+        // Call your API to get all movies
         const result = await getAllMovies();
         if (result) {
-          const filtered = result.filter((movie) =>
-            featuredTitles.includes(movie.title)
-          );
-          setMovies(filtered);
+          // Grab the first 10 movies from the result
+          const topTenMovies = result.slice(0, 10);
+          setMovies(topTenMovies);
 
-          const imagePromises = filtered.map(async (movie) => {
+          // For each movie, fetch its image using the movie title
+          const imagePromises = topTenMovies.map(async (movie) => {
             const sanitizedTitle = sanitizeTitle(movie.title);
             const blob = await getImage(sanitizedTitle);
-            console.log("Fetching image for:", sanitizedTitle);
-            return {
-              title: movie.title,
-              url: blob ? URL.createObjectURL(blob) : defaultImageUrl,
-            };
+            if (blob) {
+              return { title: movie.title, url: URL.createObjectURL(blob) };
+            } else {
+              return { title: movie.title, url: defaultImageUrl };
+            }
           });
-
           const images = await Promise.all(imagePromises);
           const imageMap: { [title: string]: string } = {};
           images.forEach((img) => {
@@ -50,15 +60,51 @@ const FeaturedSection = () => {
           });
           setMovieImages(imageMap);
         }
-      } catch (err) {
-        console.error('Error fetching featured movies:', err);
+      } catch (error) {
+        console.error('Failed to fetch movies:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchFeaturedMovies();
+    fetchMovies();
   }, []);
+  // useEffect(() => {
+  //   const fetchFeaturedMovies = async () => {
+  //     try {
+  //       const result = await getAllMovies();
+  //       if (result) {
+  //         const filtered = result.filter((movie) =>
+  //           featuredTitles.includes(movie.title)
+  //         );
+  //         setMovies(filtered);
+
+  //         const imagePromises = filtered.map(async (movie) => {
+  //           const sanitizedTitle = sanitizeTitle(movie.title);
+  //           const blob = await getImage(sanitizedTitle);
+  //           console.log("Fetching image for:", sanitizedTitle);
+  //           return {
+  //             title: movie.title,
+  //             url: blob ? URL.createObjectURL(blob) : defaultImageUrl,
+  //           };
+  //         });
+
+  //         const images = await Promise.all(imagePromises);
+  //         const imageMap: { [title: string]: string } = {};
+  //         images.forEach((img) => {
+  //           imageMap[img.title] = img.url;
+  //         });
+  //         setMovieImages(imageMap);
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching featured movies:', err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchFeaturedMovies();
+  // }, []);
 
   const sliderSettings = {
     dots: true, // Show navigation dots
@@ -112,53 +158,6 @@ const FeaturedSection = () => {
     </section>
   );
 }
-
+}
 export default FeaturedSection;
 
-// function FeaturedSection() {
-//   const [movies, setMovies] = useState<Movie[]>([]);
-//   // Using the movie title as the key to store the fetched image URL
-//   const [movieImages, setMovieImages] = useState<{ [title: string]: string }>(
-//     {}
-//   );
-//   const [loading, setLoading] = useState<boolean>(true);
-
-//   // A default image URL in case fetching fails
-//   const defaultImageUrl = '/images/default.jpg';
-
-//   useEffect(() => {
-//     const fetchMovies = async () => {
-//       try {
-//         // Call your API to get all movies
-//         const result = await getAllMovies();
-//         if (result) {
-//           // Grab the first 10 movies from the result
-//           const topTenMovies = result.slice(0, 10);
-//           setMovies(topTenMovies);
-
-//           // For each movie, fetch its image using the movie title
-//           const imagePromises = topTenMovies.map(async (movie) => {
-//             const sanitizedTitle = sanitizeTitle(movie.title);
-//             const blob = await getImage(sanitizedTitle);
-//             if (blob) {
-//               return { title: movie.title, url: URL.createObjectURL(blob) };
-//             } else {
-//               return { title: movie.title, url: defaultImageUrl };
-//             }
-//           });
-//           const images = await Promise.all(imagePromises);
-//           const imageMap: { [title: string]: string } = {};
-//           images.forEach((img) => {
-//             imageMap[img.title] = img.url;
-//           });
-//           setMovieImages(imageMap);
-//         }
-//       } catch (error) {
-//         console.error('Failed to fetch movies:', error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchMovies();
-//   }, []);

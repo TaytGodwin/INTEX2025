@@ -1,15 +1,15 @@
 import React from 'react';
-import '../../css/theme.css'; // Update or create a CSS file for styling
+import '../../css/theme.css'; // Make sure you have styles defined here
 
 interface MoviePosterProps {
   imageUrl: string;
   title: string;
-  onClick: () => void; // Callback function to open the modal with movie details
+  onClick?: () => void; // Optional, for posters that don't need interaction
 }
 
 const MoviePoster: React.FC<MoviePosterProps> = ({ imageUrl, title, onClick }) => {
   return (
-    <div className="movie-poster" onClick={onClick} style={{ cursor: 'pointer' }}>
+    <div className="movie-poster" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
       <div className="poster-image-container">
         <img src={imageUrl} alt={title} className="poster-image" />
       </div>

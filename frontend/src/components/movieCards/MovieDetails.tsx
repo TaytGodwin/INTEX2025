@@ -1,114 +1,118 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { getImage } from '../../api/ImageAPI';
+import React, { useEffect } from 'react';
 import { Movie } from '../../types/Movie';
 import GetTopRec from '../Carousels/GetTopRec';
 
+
 interface MovieDetailsProps {
   movie: Movie;
+  posterUrl: string;
+  onClose: () => void;
 }
 
-const MovieDetails: React.FC<MovieDetailsProps> = ({ movie}) => {
-  const [movieImage, setMovieImage] = useState<string | null>(null);
-  const [loadingImage, setLoadingImage] = useState<boolean>(true);
-  const modalRef = useRef<HTMLDivElement | null>(null);  // Ref for modal
 
+
+const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, posterUrl, onClose }) => {
+  
   useEffect(() => {
-    const fetchMovieImage = async () => {
-      try {
-        // Fetch the movie image based on its title
-        const imageBlob = await getImage(movie.title);
-
-        // If an image is returned, convert it into an object URL
-        if (imageBlob) {
-          setMovieImage(URL.createObjectURL(imageBlob));
-        } else {
-          setMovieImage('/images/default.jpg'); // Use default image if fetching fails
+      const handleEsc = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          onClose();
         }
-      } catch (error) {
-        console.error('Error fetching movie image:', error);
-        setMovieImage('/images/default.jpg'); // Use default image in case of an error
-      } finally {
-        setLoadingImage(false); // Set loading to false after the image fetch is complete or failed
+      };
+      window.addEventListener('keydown', handleEsc);
+      return () => window.removeEventListener('keydown', handleEsc);
+    }, [onClose]);
+  
+    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      if ((e.target as Element).classList.contains('modal-backdrop')) {
+        onClose();
       }
     };
-
-    fetchMovieImage(); // Call the function when the component mounts
-  }, [movie.title]); // Re-fetch if the movie title changes
-
-  // Close the modal when clicked outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        closeModal();  // Close modal if click is outside
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(movie);
-
-  const closeModal = () => {
-    setSelectedMovie(null); // Close the modal
-  };
-
-  if (loadingImage) return <div>Loading image...</div>; // Show loading text until the image is fetched
-
+    window.scrollTo(0, 0);
+  }, [movie]);
+  
   return (
-    <div className="movie-detail-overlay">
-      <div className="movie-detail-card" ref={modalRef}>
-        {/* Poster & Action Buttons */}
-        <div className="header-section">
-          {selectedMovie && (
-            <>
-              <img
-                className="banner-poster"
-                src={movieImage || '/images/default.jpg'} // Use fetched image URL or default
-                alt={`${selectedMovie.title} Poster`}
-                style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain' }}  // Ensure image fits inside modal
-              />
-              <div className="action-buttons">
-                <button className="play-button">▶</button>
-                <button className="add-button">＋</button>
-                <button className="favorite-button">☆</button>
-              </div>
-            </>
-          )}
-        </div>
+    <div
+      className="modal-backdrop"
+      onClick={handleBackdropClick}
+      style={{
+        position: 'fixed',
+        top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        zIndex: 9999,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflowY: 'auto',
+        padding: '2rem',
+      }}
+    >
+      <div
+        className="modal-content"
+        style={{
+          backgroundColor: '#181818',
+          borderRadius: '12px',
+          padding: '2rem',
+          maxWidth: '800px',
+          width: '100%',
+          color: '#fff',
+          position: 'relative',
+          maxHeight: '90vh',           // 👈 prevents content from growing endlessly
+          overflowY: 'auto',  
+        }}
+        onClick={(e) => e.stopPropagation()} // Don't close modal when clicking inside
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="bi bi-arrow-left"
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            background: 'transparent',
+            border: 'none',
+            fontSize: '2rem',
+            color: '#fff',
+            cursor: 'pointer',
+            transition: 'color 0.3s ease',
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = '#57c8f4';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = '#fff';
+          }}
+        ></button>
 
-        {/* Metadata */}
-        <div className="movie-info">
-          {selectedMovie && (
-            <>
-              <div className="tags">
-                <span>{selectedMovie.release_year}</span>
-                <span className="tag">{selectedMovie.rating}</span>
-              </div>
-              <div className="cast-genres">
-                <p>
-                  <strong>Cast:</strong> {selectedMovie.cast}
-                </p>
-                <p>
-                  <strong>Genres:</strong>
-                  {selectedMovie.genres.map((genre, index) => (
-                    <span key={index} className="genre-tag">
-                      {genre.genreName} {/* Render the genre's name */}
-                      {index < selectedMovie.genres.length - 1 && ', '}
-                    </span>
-                  ))}
-                </p>
-              </div>
-              <p className="description">{selectedMovie.description}</p>
-            </>
-          )}
-        </div>
-
-        {/* Recommendations */}
-        <div className="related-section">
-          <div className="scrollable-related">
-            <GetTopRec showId={selectedMovie?.show_id ?? 0} /> {/* You can pass actual related movies here */}
+        {/* Poster + Info Layout */}
+        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+          <img
+            src={posterUrl}
+            alt={movie.title}
+            style={{
+              width: '200px',
+              height: 'auto',
+              borderRadius: '8px',
+              objectFit: 'cover',
+            }}
+          />
+          <div>
+            <h2 style={{ marginBottom: '1rem' }}>{movie.title}</h2>
+            <p><strong>Director:</strong> {movie.director}</p>
+            <p><strong>Cast:</strong> {movie.cast}</p>
+            <p><strong>Release Year:</strong> {movie.release_year}</p>
+            <p><strong>Rating:</strong> {movie.rating}</p>
+            <p><strong>Duration:</strong> {movie.duration}</p>
+            <p><strong>Country:</strong> {movie.country}</p>
+            <p style={{ marginTop: '1rem' }}>{movie.description}</p>
           </div>
+        </div>
+
+        {/* Carousel for Recommendations */}
+        <div style={{ marginTop: '3rem', paddingBottom: '2rem'  }}>
+          <GetTopRec showId={movie.show_id} />
         </div>
       </div>
     </div>
