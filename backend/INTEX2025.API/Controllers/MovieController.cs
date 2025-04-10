@@ -295,7 +295,7 @@ namespace INTEX.API.Controllers
         
         
         [HttpPost("AddRating")]
-        public async Task<IActionResult> AddRating([FromBody] int rating, int userId, int showId)
+        public async Task<IActionResult> AddRating([FromQuery] int rating, [FromQuery] int userId, [FromQuery] int showId)
         {
             // Create a new rating instance using the provided values
             var newRating = new movies_rating
