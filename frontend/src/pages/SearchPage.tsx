@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MoviePoster from '../components/movieCards/MoviePoster';
-import { getTotalMovies, getGenres, searchMovies } from '../api/MoviesAPI';
+import { getGenres, searchMovies } from '../api/MoviesAPI';
 import { getImage } from '../api/ImageAPI';
-import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
+import { Genre } from '../types/Genre';
 
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!]/g, '');
@@ -19,7 +19,7 @@ const SearchPage: React.FC = () => {
 
 
   // Genre dropdown state
-  const [genres, setGenres] = useState<string[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
   // Reset the movie list and pagination when the search term changes.
@@ -43,19 +43,9 @@ const SearchPage: React.FC = () => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
+        // Pass selectedGenre as an array if one is chosen, otherwise an empty array.
         const genreList = selectedGenres.length > 0 ? selectedGenres : [];
-
-        let newMovies;
-        
-        if (searchTerm.trim() === '' && genreList.length === 0) {
-          const result = await getTotalMovies(25, page);
-          newMovies = result ?? []; // Fallback if null
-        } else {
-          const result = await searchMovies(searchTerm.trim(), 25, page, genreList);
-          newMovies = result ?? []; // Fallback if null
-        }
-        
-
+        const newMovies = await searchMovies(searchTerm || '', 25, page, genreList);
         setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
         setHasMore(newMovies.length > 0);
       } catch (error) {
@@ -66,8 +56,8 @@ const SearchPage: React.FC = () => {
     };
     fetchMovies();
   }, [searchTerm, selectedGenres, page]);
+
   // Infinite scrolling: attach an observer to the last movie element.
-  
   const observer = useRef<IntersectionObserver | null>(null);
   const lastMovieElementRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -150,17 +140,17 @@ const SearchPage: React.FC = () => {
               />
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
   {genres.map((genre) => {
-    const isSelected = selectedGenres.includes(genre);
+    const isSelected = selectedGenres.includes(genre.genreName);
 
     return (
       <button
-        key={genre}
+        key={genre.genreID}
         type="button"
         onClick={() => {
           if (isSelected) {
-            setSelectedGenres(selectedGenres.filter(g => g !== genre));
+            setSelectedGenres(selectedGenres.filter(g => g !== genre.genreName));
           } else {
-            setSelectedGenres([...selectedGenres, genre]);
+            setSelectedGenres([...selectedGenres, genre.genreName]);
           }
         }}
         style={{
@@ -178,7 +168,7 @@ const SearchPage: React.FC = () => {
           transition: 'all 0.3s ease',
         }}
       >
-        {genre}
+        {genre.genreName}
       </button>
     );
   })}
@@ -213,9 +203,8 @@ const SearchPage: React.FC = () => {
                 <div key={movie.title} ref={lastMovieElementRef} style={{ padding: '0 10px' }}>
                   <MoviePoster
                     title={movie.title}
-                    imageUrl={movieImages[movie.title] || '/images/default.jpg'} onClick={function (): void {
-                      throw new Error('Function not implemented.');
-                    } }                  />
+                    imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+                  />
                 </div>
               );
             } else {
@@ -223,9 +212,8 @@ const SearchPage: React.FC = () => {
                 <div key={movie.title} style={{ padding: '0 10px' }}>
                   <MoviePoster
                     title={movie.title}
-                    imageUrl={movieImages[movie.title] || '/images/default.jpg'} onClick={function (): void {
-                      throw new Error('Function not implemented.');
-                    } }                  />
+                    imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+                  />
                 </div>
               );
             }
