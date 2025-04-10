@@ -106,14 +106,6 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSingleton<IEmailSender<IdentityUser>, NoOpEmailSender<IdentityUser>>();
 
-// Stuff for extra security hsts
-builder.Services.AddHsts(options =>
-{
-    options.Preload = true;
-    options.IncludeSubDomains = true;
-    options.MaxAge = TimeSpan.FromDays(365);
-});
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -123,7 +115,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHsts(); // Enables HSTS for production environments.
 app.UseHttpsRedirection(); // DO NOT DELETE THIS LINE
 app.UseRouting();
 app.UseCors("AllowReactApp");
