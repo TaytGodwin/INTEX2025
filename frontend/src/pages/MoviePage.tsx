@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
-import MovieRow from '../components/movieCards/MovieRow';
 import GenreRec from '../components/Carousels/GenreRec';
 import { getGenres } from '../api/MoviesAPI';
 import { Genre } from '../types/Genre';
 import GetContentRec from '../components/Carousels/GetContentRec';
 import ForYou from '../components/Carousels/ForYou';
 import GetTopRec from '../components/Carousels/GetTopRec';
-import FeaturedSection from '../components/home/FeaturedSection';
-import LandingHero from '../components/home/LandingHero';
+import LandingMovieHero from '../components/movieCards/LandingMovieHero';
 
 
 function MoviePage() {
@@ -38,8 +36,21 @@ function MoviePage() {
 
   return (
     <div className="movie-page">
-      <h1>HERE'S A TITLE</h1>
-      <LandingHero/>
+      <LandingMovieHero/>
+      <div
+      style={{
+        width: '100%',
+        height: '4px', // You can adjust height
+        backgroundColor: '#57c8f4', // Nice blue color
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        paddingRight: '2rem',
+        position: 'relative', // or 'fixed' if you want it to stay on top while scrolling
+        top: 0,
+        zIndex: 100,
+        }}>
+      </div>
       <ForYou userId={4} />
       <GenreRec genre={'Action'} />
 

@@ -113,7 +113,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
 
   return (
     <div className="genre-rec">
-      <h2>Recommended Movies in Your Genre <strong>{genre}</strong></h2>
+      <h2>Recommended <strong>{genre} Movies</strong></h2>
       <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
           <div key={index} className="carousel-item" style={{ padding: '0 5px' }}>
@@ -128,28 +128,14 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
       </Slider>
 
       {/* Modal to display movie details */}
-      {selectedMovie && (
-        <div className="modal show" style={{ display: 'block' }} tabIndex={-1} aria-labelledby="movieModal" aria-hidden="false">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="movieModal">{selectedMovie.title}</h5>
-                <button type="button" className="close" onClick={closeModal}>
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
               <div className="modal-body">
                 {/* Pass the selectedMovie data to the MovieDetails component */}
-                <MovieDetails movie={selectedMovie} relatedMovies={[]} /> {/* You can pass actual related movies here */}
+                {selectedMovie ? <MovieDetails movie={selectedMovie} /> : null}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-    </div>
   );
 };
 
