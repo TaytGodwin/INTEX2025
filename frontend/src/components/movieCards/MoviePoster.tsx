@@ -7,6 +7,8 @@ interface MoviePosterProps {
   onClick?: () => void; // Optional, for posters that don't need interaction
 }
 
+// THis is a different Comment
+
 const MoviePoster: React.FC<MoviePosterProps> = ({ imageUrl, title, onClick }) => {
   return (
     <div className="movie-poster" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
