@@ -1,15 +1,36 @@
 import React from 'react';
 import Slider from 'react-slick';
-import { Link } from 'react-router-dom';
+
 import genericBg from '../../assets/Solo A Star Wars Story.jpg';
 import poster1 from '../../assets/The Music of Silence.jpg';
 import poster2 from '../../assets/The Secret Life of Pets 2.jpg';
 import poster3 from '../../assets/Jaws.jpg'
 import '../../css/theme.css';
-import "slick-carousel/slick/slick.css"; 
-import "slick-carousel/slick/slick-theme.css";
-
-const LandingHero: React.FC = () => {
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+const CustomArrow = (props: any) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        borderRadius: '50%',
+        width: '50px',
+        height: '50px',
+        zIndex: 3,
+        fontSize: '2rem',
+        color: '#57c8f4',
+      }}
+      onClick={onClick}
+    />
+  );
+};
+const LandingMovieHero: React.FC = () => {
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -19,6 +40,8 @@ const LandingHero: React.FC = () => {
     autoplay: true,
     autoplaySpeed: 5000,  // 5 seconds per slide
     arrows: true,
+    nextArrow: <CustomArrow />,
+    prevArrow: <CustomArrow />,
   };
 
   // Array of images for the slider; first is generic background.
@@ -72,4 +95,4 @@ const LandingHero: React.FC = () => {
   );
 };
 
-export default LandingHero;
+export default LandingMovieHero;
