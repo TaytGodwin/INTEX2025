@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import Select from 'react-select';
 import { Genre } from '../../types/Genre';
+import { uploadImage } from '../../api/MoviesAPI';
 
 interface AddMovieModalProps {
   genres: Genre[];
@@ -8,7 +10,11 @@ interface AddMovieModalProps {
   onMovieAdded: (updatedMovies: any[]) => void;
 }
 
-const AddMovieModal: React.FC<AddMovieModalProps> = ({ genres, onClose, onMovieAdded }) => {
+const AddMovieModal: React.FC<AddMovieModalProps> = ({
+  genres,
+  onClose,
+  onMovieAdded,
+}) => {
   const [formData, setFormData] = useState({
     title: '',
     type: '',
@@ -22,7 +28,11 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ genres, onClose, onMovieA
     selectedGenres: [] as string[],
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -32,8 +42,47 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ genres, onClose, onMovieA
     setFormData({ ...formData, selectedGenres: genreValues });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type === 'image/jpeg') {
+        setImageFile(file);
+      } else {
+        alert('Only JPG files are allowed');
+      }
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate that the title is provided, which we use as the image name
+    const imageName = formData.title.trim();
+    if (!imageName) {
+      alert('Image title is required!');
+      return;
+    }
+
+    // Validate that an image file has been selected
+    if (!imageFile) {
+      alert('Please select an image file.');
+      return;
+    }
+
+    // Create a new File object with the title as the new file name
+    // This replaces the front part of the original file name with the title.
+    const renamedFile = new File([imageFile], `${imageName}.jpg`, { type: imageFile.type });
+
+    // Call the API function from MoviesAPI to upload the image
+    const uploadSuccess = await uploadImage(imageName, renamedFile);
+    if (!uploadSuccess) {
+      alert('Image upload failed.');
+      return;
+    }
+
+    // Proceed with additional actions like updating the movie list and closing the modal
     onMovieAdded([]);
     onClose();
   };
@@ -43,12 +92,28 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ genres, onClose, onMovieA
       <div style={modalStyle}>
         <div style={modalHeaderStyle}>
           <h2 style={modalTitleStyle}>Add New Movie</h2>
-          <button onClick={onClose} style={closeButtonStyle}>×</button>
+          <button onClick={onClose} style={closeButtonStyle}>
+            ×
+          </button>
         </div>
         <form onSubmit={handleSubmit} style={formStyle}>
-          {['title', 'type', 'director', 'cast', 'country', 'release_year', 'rating', 'duration', 'description'].map((field, i) => (
+          {[
+            'title',
+            'type',
+            'director',
+            'cast',
+            'country',
+            'release_year',
+            'rating',
+            'duration',
+            'description',
+          ].map((field, i) => (
             <div key={i}>
-              <label style={labelStyle}>{field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</label>
+              <label style={labelStyle}>
+                {field
+                  .replace('_', ' ')
+                  .replace(/\b\w/g, (l) => l.toUpperCase())}
+              </label>
               {field === 'description' ? (
                 <textarea
                   name={field}
@@ -70,14 +135,30 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({ genres, onClose, onMovieA
           <label style={labelStyle}>Genres</label>
           <Select
             isMulti
-            options={genres.map((g) => ({ value: g.genreName, label: g.genreName }))}
+            options={genres.map((g) => ({
+              value: g.genreName,
+              label: g.genreName,
+            }))}
             value={formData.selectedGenres.map((g) => ({ value: g, label: g }))}
             onChange={handleGenreChange}
             styles={selectStyles}
           />
+          <div>
+            <label style={labelStyle}>Upload Image (JPG only)</label>
+            <input
+              type="file"
+              accept=".jpg, image/jpeg"
+              onChange={handleFileUpload}
+              style={inputStyle}
+            />
+          </div>
           <div style={buttonRowStyle}>
-            <button type="button" onClick={onClose} style={cancelButtonStyle}>Cancel</button>
-            <button type="submit" style={submitButtonStyle}>Add Movie</button>
+            <button type="button" onClick={onClose} style={cancelButtonStyle}>
+              Cancel
+            </button>
+            <button type="submit" style={submitButtonStyle}>
+              Add Movie
+            </button>
           </div>
         </form>
       </div>
@@ -105,6 +186,8 @@ const modalStyle: React.CSSProperties = {
   width: '90%',
   maxWidth: '600px',
   color: '#fff',
+  maxHeight: '80vh', // Set a maximum height for the modal
+  overflowY: 'auto', // Enable vertical scrolling for overflow content
 };
 
 const modalHeaderStyle: React.CSSProperties = {
