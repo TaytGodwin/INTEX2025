@@ -13,6 +13,7 @@ import SearchPage from './pages/SearchPage';
 import AdminDatabasePage from './pages/AdminDatabasePage';
 import Logout from './components/authentication/Logout';
 
+
 function App() {
   return (
     <AuthProvider>
@@ -34,7 +35,6 @@ function App() {
           >
             <Route element={<Layout />}>
               <Route path="movies" element={<MoviePage />} />
-              {/* <Route path="movieDetails" element={<MovieDetailPage />} />*/}
               <Route path="search" element={<SearchPage />} />
               <Route path="logout" element={<Logout />} />
             </Route>
