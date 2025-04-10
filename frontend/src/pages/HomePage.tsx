@@ -1,9 +1,9 @@
 import LandingHero from '../components/home/LandingHero';
-import FeaturedSection from '../components/home/FeaturedSection';
+// import FeaturedSection from '../components/home/FeaturedSection';
 import TestimonialsSection from '../components/home/TestimonialsSection';
 import FAQSection from '../components/home/FAQSection';
 import PricingSection from '../components/home/PricingSection';
-import { Link } from 'react-router-dom';
+
 import CookiesModal from '../components/home/CookiesModal';
 import { useEffect, useState } from 'react';
 
@@ -26,16 +26,9 @@ function HomePage() {
         <CookiesModal setShowCookieModal={setShowCookieModal} />
       )}
       <LandingHero />
-      <FeaturedSection />
-
       <TestimonialsSection />
       <FAQSection />
       <PricingSection />
-      <div className="text-center py-5">
-        <Link to="/register" className="btn btn-lg btn-primary">
-          Get Started Now
-        </Link>
-      </div>
     </div>
   );
 }

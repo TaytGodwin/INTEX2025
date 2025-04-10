@@ -588,3 +588,15 @@ body {
     right: -40px;
   }
 }
+
+/* In your theme.css or a global CSS file */
+.nav-link:hover {
+  color: #57c8f4 !important; /* Custom blue color on hover */
+}
+
+.nav-link i:hover {
+  color: #57c8f4 !important; /* Custom blue color on hover for icons */
+  transform: scale(1.1); /* Slight zoom effect on hover */
+  transition: transform 0.3s ease, color 0.3s ease; /* Smooth transition for scaling and color */
+}
+
