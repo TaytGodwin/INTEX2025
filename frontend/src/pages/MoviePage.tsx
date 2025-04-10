@@ -8,6 +8,7 @@ import ForYou from '../components/Carousels/ForYou';
 import GetTopRec from '../components/Carousels/GetTopRec';
 import FeaturedSection from '../components/home/FeaturedSection';
 import LandingHero from '../components/home/LandingHero';
+import LandingMovieHero from '../components/movieCards/LandingMovieHero';
 
 
 function MoviePage() {
@@ -38,8 +39,7 @@ function MoviePage() {
 
   return (
     <div className="movie-page">
-      <h1>HERE'S A TITLE</h1>
-      <LandingHero/>
+      <LandingMovieHero/>
       <ForYou userId={4} />
       <GenreRec genre={'Action'} />
 
