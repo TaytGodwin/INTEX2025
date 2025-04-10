@@ -28,7 +28,7 @@ export default defineConfig({
         "img-src 'self' data:; " +
         "frame-ancestors 'none'; " +
         "font-src 'self' fonts.gstatic.com data:; " +
-        "connect-src 'self' https://localhost:5000 https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net; " +
+        "connect-src 'self' https://localhost:5000 https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net'; " +
         "object-src 'none'; " +
         "base-uri 'self'; " +
         "form-action 'self';",
