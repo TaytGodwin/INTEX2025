@@ -3,7 +3,7 @@ import LandingHero from '../components/home/LandingHero';
 import TestimonialsSection from '../components/home/TestimonialsSection';
 import FAQSection from '../components/home/FAQSection';
 import PricingSection from '../components/home/PricingSection';
-import { Link } from 'react-router-dom';
+
 import CookiesModal from '../components/home/CookiesModal';
 import { useEffect, useState } from 'react';
 

@@ -189,31 +189,6 @@ const adminPageStyle = {
   fontFamily: 'Poppins, sans-serif',
 };
 
-const sidebarStyle = {
-  backgroundColor: '#1e1e1e',
-  padding: '2rem 1rem',
-  width: '220px',
-  display: 'flex',
-  flexDirection: 'column' as const,
-  borderRight: '1px solid #333',
-};
-
-const sidebarTitleStyle = {
-  color: '#fff',
-  fontSize: '1.2rem',
-  fontWeight: 600,
-  marginBottom: '2rem',
-};
-
-const sidebarItemStyle = {
-  margin: '1rem 0',
-  fontSize: '1rem',
-  color: '#ccc',
-  display: 'flex',
-  gap: '0.5rem',
-  cursor: 'pointer',
-};
-
 const contentStyle = {
   flex: 1,
   padding: '2rem',
