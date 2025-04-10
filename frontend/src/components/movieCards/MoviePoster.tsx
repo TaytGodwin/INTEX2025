@@ -1,25 +1,31 @@
 import React, { useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import '../../css/theme.css'; // Make sure your CSS exists
-
+import { motion } from 'framer-motion';
+import '../../css/theme.css';
 interface MoviePosterProps {
   imageUrl: string;
   title: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
-
 const MoviePoster: React.FC<MoviePosterProps> = ({ imageUrl, title, onClick }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-
   return (
-    <div
+    <motion.div
       className="movie-poster"
       onClick={onClick}
-      style={{ cursor: onClick ? 'pointer' : 'default' }}
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: 'tween', duration: 0.3 }}
+      style={{
+        cursor: onClick ? 'pointer' : 'default',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        position: 'relative',
+        textAlign: 'center',
+      }}
     >
       <div className="poster-image-container">
-        {/* Image */}
+        {/* Actual Image */}
         <img
           src={imageUrl}
           alt={title}
@@ -27,21 +33,28 @@ const MoviePoster: React.FC<MoviePosterProps> = ({ imageUrl, title, onClick }) =
           style={{
             display: imageLoaded ? 'block' : 'none',
             width: '100%',
-            borderRadius: '8px',
+            height: '100%',
+            borderRadius: '12px',
             objectFit: 'cover',
-            
           }}
         />
         {/* Skeleton Placeholder */}
-        {!imageLoaded && <Skeleton height={225} width={'100%'} borderRadius={8} />}
+        {!imageLoaded && <Skeleton height={225} width={'100%'} borderRadius={12} />}
       </div>
-
-      {/* Title */}
-      <div className="movie-poster-title" style={{ marginTop: '0.5rem' }}>
+      {/* Title Below Poster */}
+      <div
+        className="movie-poster-title"
+        style={{
+          marginTop: '0.5rem',
+          color: '#fff',
+          fontWeight: 500,
+          fontSize: '0.9rem',
+        }}
+      >
         {imageLoaded ? title : <Skeleton width={100} />}
       </div>
-    </div>
+    </motion.div>
   );
 };
-
 export default MoviePoster;
+
