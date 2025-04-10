@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authorization;
 
 namespace INTEX.API.Controllers
 {
@@ -32,7 +33,8 @@ namespace INTEX.API.Controllers
         }
 
         // Get image from blob storage
-        [HttpGet("GetImage/{imageName}")]
+        [HttpGet("GetImage/{imageName}")] 
+        // This does not have an authorized tag because it displays some on the home page
         public async Task<IActionResult> GetImage(string imageName)
         {
             // Append the folder name correctly (no URL encoding here)
@@ -62,6 +64,7 @@ namespace INTEX.API.Controllers
 
         // Update image under same name
         [HttpPost("AddImage/{imageName}")]
+        [Authorize(Roles = "Administrator")] // Only lets admin do this
         public async Task<IActionResult> UploadImage(string imageName, IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -87,6 +90,7 @@ namespace INTEX.API.Controllers
 
         // Deletes an image
         [HttpDelete("DeleteImage/{imageName}")]
+        [Authorize(Roles = "Administrator")] // Only lets admin do this
         public async Task<IActionResult> DeleteImage(string imageName)
         {
             // Append the folder name correctly (no URL encoding here)

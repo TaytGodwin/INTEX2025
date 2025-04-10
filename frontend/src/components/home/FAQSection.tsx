@@ -57,7 +57,7 @@ const FAQSection: React.FC = () => {
           marginBottom: '2rem',
           fontWeight: 700,
           fontSize: '2rem',
-          fontFamily: 'Poppins, sans-serif',
+          fontFamily: 'Fredoka One',
         }}
       >
         FAQs

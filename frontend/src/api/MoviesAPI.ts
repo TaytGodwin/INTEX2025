@@ -3,7 +3,7 @@ import { Movie } from '../types/Movie';
 import { NewMovie } from '../types/NewMovie';
 
 const MOVIE_API_URL = 'https://localhost:5000';
-//'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
+// 'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
 
 export const getAllMovies = async (): Promise<Movie[]> => {
   try {
@@ -61,7 +61,6 @@ export const getTotalMovies = async (
   }
 };
 
-
 export const searchMovies = async (
   query: string,
   pageSize: number = 25,
@@ -76,7 +75,7 @@ export const searchMovies = async (
         url += `&genrelist=${encodeURIComponent(genre)}`;
       });
     }
-    
+
     const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -95,7 +94,6 @@ export const searchMovies = async (
     return [];
   }
 };
-
 
 // GenreAPI.ts
 

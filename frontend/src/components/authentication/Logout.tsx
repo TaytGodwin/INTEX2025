@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { logout as apiLogout } from '../../api/IdentityAPI';
 import { useAuth } from '../../context/AuthContext';
 import { useState } from 'react';
-import StarRating from '../movieCards/starRating';
 
 function Logout() {
   const navigate = useNavigate();

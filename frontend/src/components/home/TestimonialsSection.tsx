@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import TestimonialCard from './TestimonialCard';
+
 interface Testimonial {
   quote: string;
   name: string;
   description: string;
   imageUrl: string;
 }
+
 const TestimonialsSection: React.FC = () => {
   const testimonials: Testimonial[] = [
     {
@@ -45,50 +47,74 @@ const TestimonialsSection: React.FC = () => {
       imageUrl: '/images/David.png',
     },
   ];
+
+  // Track screen width and set columns
+  const [columns, setColumns] = useState(1);
+
+  useEffect(() => {
+    const updateColumns = () => {
+      const width = window.innerWidth;
+      if (width >= 1600) setColumns(6);       // 6x1
+      else if (width >= 1200) setColumns(3);   // 3x2
+      else if (width >= 768) setColumns(2);    // 2x3
+      else setColumns(1);                      // 1x6
+    };
+
+    updateColumns(); // Run on load
+    window.addEventListener('resize', updateColumns);
+    return () => window.removeEventListener('resize', updateColumns);
+  }, []);
+
   return (
-    <section style={sectionStyle}>
-      <h2 style={sectionHeaderStyle}>Why should you join?</h2>
-      <p style={sectionDescStyle}>Hear some of our testimonials</p>
-      <div style={testimonialsRowStyle}>
+    <section
+      style={{
+        backgroundColor: '#1C1C1C',
+        padding: '60px 30px',
+        textAlign: 'center',
+        color: '#fff',
+      }}
+    >
+      <h2
+        style={{
+          fontSize: '2.5rem',
+          fontWeight: 'bold',
+          marginBottom: '20px',
+          fontFamily: 'Fredoka One',
+        }}
+      >
+        Why Should You Join?
+      </h2>
+      <p
+        style={{
+          fontSize: '1.2rem',
+          color: '#ccc',
+          marginBottom: '30px',
+          fontStyle: 'italic',
+          fontFamily: 'Poppins, sans-serif',
+        }}
+      >
+        Hear Some of Our Testimonials
+      </p>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${columns}, 1fr)`,
+          gap: '1.5rem',
+        }}
+      >
         {testimonials.map((t, index) => (
-          <div key={index} style={testimonialColumnStyle}>
-            <TestimonialCard
-              quote={t.quote}
-              name={t.name}
-              description={t.description}
-              imageUrl={t.imageUrl}
-            />
-          </div>
+          <TestimonialCard
+            key={index}
+            quote={t.quote}
+            name={t.name}
+            description={t.description}
+            imageUrl={t.imageUrl}
+          />
         ))}
       </div>
     </section>
   );
 };
-// Inline Styles
-const sectionStyle: React.CSSProperties = {
-  backgroundColor: '#1C1C1C',
-  padding: '60px 30px',
-  textAlign: 'center',
-  color: '#fff',
-};
-const sectionHeaderStyle: React.CSSProperties = {
-  fontSize: '2.5rem',
-  fontWeight: 'bold',
-  marginBottom: '20px',
-};
-const sectionDescStyle: React.CSSProperties = {
-  fontSize: '1.2rem',
-  color: '#ccc',
-  marginBottom: '30px',
-  fontStyle: 'italic',
-};
-const testimonialsRowStyle: React.CSSProperties = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'space-between',
-};
-const testimonialColumnStyle: React.CSSProperties = {
-  flexBasis: '48%',
-  marginBottom: '20px',
-};
+
 export default TestimonialsSection;

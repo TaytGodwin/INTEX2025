@@ -4,23 +4,33 @@ import TestimonialsSection from '../components/home/TestimonialsSection';
 import FAQSection from '../components/home/FAQSection';
 import PricingSection from '../components/home/PricingSection';
 import { Link } from 'react-router-dom';
+import CookiesModal from '../components/home/CookiesModal';
+import { useEffect, useState } from 'react';
 
 // This is the page that doesn't have info
 
 function HomePage() {
+  const [shouldShow, setShouldShow] = useState(false);
+  const [showCookiesModal, setShowCookieModal] = useState(true);
+
+  useEffect(() => {
+    // Check if consent has already been given
+    const hasConsent = document.cookie.includes('CookieConsent=true');
+    if (!hasConsent) {
+      setShouldShow(true);
+    }
+  }, []);
   return (
     <div>
+      {shouldShow && showCookiesModal && (
+        <CookiesModal setShowCookieModal={setShowCookieModal} />
+      )}
       <LandingHero />
       <FeaturedSection />
 
       <TestimonialsSection />
       <FAQSection />
       <PricingSection />
-      <div className="text-center py-5">
-        <Link to="/register" className="btn btn-lg btn-primary">
-          Get Started Now
-        </Link>
-      </div>
     </div>
   );
 }

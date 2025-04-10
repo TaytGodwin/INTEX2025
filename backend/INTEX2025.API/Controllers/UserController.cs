@@ -20,7 +20,7 @@ namespace INTEX.API.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("CreateUser")]
+        [HttpPost("CreateUser")] // Creates user upon registering so it is not authorized with an authorize tag
         public async Task<IActionResult> PostUser([FromBody] UserDto userDto)
         {
             if (userDto == null)
