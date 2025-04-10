@@ -7,6 +7,7 @@ import GetContentRec from '../components/Carousels/GetContentRec';
 import ForYou from '../components/Carousels/ForYou';
 import GetTopRec from '../components/Carousels/GetTopRec';
 import LandingMovieHero from '../components/movieCards/LandingMovieHero';
+import LazyForYou from '../components/Carousels/LazyCarousels/LazyForYou';
 
 
 
@@ -55,7 +56,7 @@ function MoviePage() {
         zIndex: 100,
         }}>
       </div>
-      <ForYou userId={4} />
+      <LazyForYou userId={4} />
     
       <div className="genre-recs-wrapper">
       {genres.slice(0, visibleCount).map((genre, index) => (

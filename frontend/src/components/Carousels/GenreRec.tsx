@@ -105,9 +105,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
     setSelectedMovie(movie); // Set the selected movie for modal
   };
 
-  const closeModal = () => {
-    setSelectedMovie(null); // Close the modal
-  };
+
 
   if (loading) return <div>Loading movies...</div>;  // Show loading text until the data is fetched
 
