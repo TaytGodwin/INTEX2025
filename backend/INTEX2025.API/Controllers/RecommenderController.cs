@@ -146,6 +146,7 @@ public class RecommenderController : ControllerBase
     // 2. Exclude the original show itself
     // 3. Sort by similarity score
     // 4. Return the top 10 most similar showIds and their details
+    
     [HttpGet("content_recs1")]
     [Authorize] // Used by all logged in
     public async Task<IActionResult> GetUserRecommendedLists([FromQuery] int userId)
@@ -255,38 +256,31 @@ public class RecommenderController : ControllerBase
     // 1. Get the recommendation row by showId
     // 2. Parse the recommended showIds
     // 3. Fetch their movie details and return
-    [HttpGet("top5_showIds")]
-    [Authorize] // Used by all logged in
-    public async Task<IActionResult> GetTop5ShowIds([FromQuery] long showId)
+  [HttpGet("top5_showIds")]
+[Authorize]
+public async Task<IActionResult> GetTop5ShowIds([FromQuery] long showId)
+{
+    var rec = await _context.Top5ShowIds.FirstOrDefaultAsync(r => r.ShowId == showId);
+
+    if (rec == null)
+        return NotFound("No recommendations found for that showId.");
+
+    var showIds = new List<long> { showId };
+
+    void TryAdd(string? id)
     {
-        var rec = _context.Top5ShowIds
-            .Where(r => r.ShowId == showId)
-            .Select(r => new
-            {
-                r.IfYouLike,
-                r.Recommendation1,
-                r.Recommendation2,
-                r.Recommendation3,
-                r.Recommendation4,
-                r.Recommendation5
-            })
-            .FirstOrDefault();
-
-        if (rec == null)
-            return NotFound("No recommendations found for that showId.");
-
-        var showIds = new List<long>
-        {
-            showId,
-            long.Parse(rec.Recommendation1),
-            long.Parse(rec.Recommendation2),
-            long.Parse(rec.Recommendation3),
-            long.Parse(rec.Recommendation4),
-            long.Parse(rec.Recommendation5)
-        };
-
-        var movieDetails = await GetMovieDetailsByShowIds(showIds);
-
-        return Ok(movieDetails);
+        if (!string.IsNullOrWhiteSpace(id) && long.TryParse(id, out var parsed))
+            showIds.Add(parsed);
     }
+
+    TryAdd(rec.Recommendation1);
+    TryAdd(rec.Recommendation2);
+    TryAdd(rec.Recommendation3);
+    TryAdd(rec.Recommendation4);
+    TryAdd(rec.Recommendation5);
+
+    var movieDetails = await GetMovieDetailsByShowIds(showIds);
+
+    return Ok(movieDetails);
+}
 }

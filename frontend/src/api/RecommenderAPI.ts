@@ -131,7 +131,6 @@ export const getForYou = async (userId: number): Promise<Movie[] | null> => {
 };
 
 //Gets top 5 handpicked off of a different filtering system
-
 export const getTopRec = async (showId: number): Promise<Movie[] | null> => {
   try {
     const response = await fetch(
