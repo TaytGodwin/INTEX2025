@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { SetCookie } from '../../api/IdentityAPI';
 
 type CookiesProps = {
@@ -5,14 +6,18 @@ type CookiesProps = {
 };
 
 const CookiesModal: React.FC<CookiesProps> = ({ setShowCookieModal }) => {
-  const handleAcknowledge = async () => {
-    const result = await SetCookie();
-    if (result) {
-      setShowCookieModal(false); // Hide modal only when user accepts
-    } else {
-      console.error('Cookie Preferences not set');
-    }
-  };
+  useEffect(() => {
+    const handleCookieConsent = async () => {
+      const result = await SetCookie();
+      if (result) {
+        setShowCookieModal(false); // Hide modal only when user accepts
+      } else {
+        console.error('Cookie Preferences not set');
+      }
+    };
+
+    handleCookieConsent();
+  }, [setShowCookieModal]);
 
   return (
     <div
