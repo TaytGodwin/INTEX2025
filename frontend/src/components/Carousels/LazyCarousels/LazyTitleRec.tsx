@@ -51,7 +51,7 @@ const LazyTitleRec = ({ userId }: { userId: number }) => {
     <div ref={ref} style={{ minHeight: '300px' }}>
       {showComponent ? (
         <div>
-          {/* <GetTitleRec userId={userId} /> */}
+          {/* GetTitleRec userId={userId} /> */}
         </div>
       ) : (
         <Spinner />
