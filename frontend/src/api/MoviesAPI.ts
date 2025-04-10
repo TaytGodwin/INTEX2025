@@ -189,3 +189,20 @@ export const updateMovie = async (movieToEdit: Movie): Promise<boolean> => {
     return false;
   }
 };
+
+export const getUserId = async (email: string): Promise<number | null> => {
+    try {
+      const response = await fetch(`${MOVIE_API_URL}/api/Account/userId?email=${encodeURIComponent(email)}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.userId;
+    } catch (error) {
+      console.error('Error fetching user id:', error);
+      return null;
+    }
+  };

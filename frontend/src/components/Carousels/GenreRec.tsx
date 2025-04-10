@@ -3,7 +3,7 @@ import Slider from 'react-slick';
 import { getGenreMovies, getTopRec } from '../../api/RecommenderAPI'; // Adjust path if needed
 import { getImage } from '../../api/ImageAPI';
 import MoviePoster from '../movieCards/MoviePoster';
-import MovieDetails from '../movieCards/MovieDetails';  // Ensure this import is correct
+import MovieDetails from '../movieCards/MovieDetails'; // Ensure this import is correct
 import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -13,14 +13,16 @@ function sanitizeTitle(title: string): string {
 }
 
 interface GenreRecProps {
-  genre: string;  // Destructure genre as a string
+  genre: string; // Destructure genre as a string
 }
 
 const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [selectedPosterUrl, setSelectedPosterUrl] = useState<string>('');
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
+  const [movieImages, setMovieImages] = useState<{ [title: string]: string }>(
+    {}
+  );
   const [loading, setLoading] = useState<boolean>(true);
   const defaultImageUrl = '/images/default.jpg';
 
@@ -58,7 +60,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
     };
 
     fetchMovies();
-  }, [genre]);  // Runs when genre changes
+  }, [genre]); // Runs when genre changes
 
   const sliderSettings = {
     dots: true,
@@ -77,17 +79,26 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
 
   return (
     <div className="genre-rec">
-      <h2>Recommended <strong>{genre}</strong> Movies</h2>
+      <h2>
+        Recommended <strong>{genre}</strong> Movies
+      </h2>
       <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
-          <div key={index} className="carousel-item" style={{ padding: '0 5px' }}>
+          <div
+            key={index}
+            className="carousel-item"
+            style={{ padding: '0 5px' }}
+          >
             <MoviePoster
               key={movie.show_id}
               imageUrl={movieImages[movie.title] || defaultImageUrl}
               title={movie.title}
               onClick={() => {
                 setSelectedMovie(movie);
-                setSelectedPosterUrl(movieImages[movie.title]|| '/images/default.jpg')}}// Handle the click to open the modal
+                setSelectedPosterUrl(
+                  movieImages[movie.title] || '/images/default.jpg'
+                );
+              }} // Handle the click to open the modal
             />
           </div>
         ))}

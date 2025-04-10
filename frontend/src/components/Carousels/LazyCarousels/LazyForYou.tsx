@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import ForYou from '../ForYou';
 //This is a spinner
 const Spinner = () => (
-    <div style={{ textAlign: 'center', padding: '2rem' }}>
-      <div className="spinner" />
-      <style>
-        {`
+  <div style={{ textAlign: 'center', padding: '2rem' }}>
+    <div className="spinner" />
+    <style>
+      {`
           .spinner {
             border: 4px solid rgba(255, 255, 255, 0.2);
             border-top: 4px solid #57c8f4;
@@ -21,9 +21,9 @@ const Spinner = () => (
             100% { transform: rotate(360deg); }
           }
         `}
-      </style>
-    </div>
-  );
+    </style>
+  </div>
+);
 
 const LazyForYou = ({ userId }: { userId: number }) => {
   const [showComponent, setShowComponent] = useState(false);
@@ -31,7 +31,7 @@ const LazyForYou = ({ userId }: { userId: number }) => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => {
+      (entries) => {
         if (entries[0].isIntersecting) {
           setShowComponent(true);
           observer.disconnect(); // Only load once

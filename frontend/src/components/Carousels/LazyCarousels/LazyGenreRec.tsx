@@ -12,7 +12,7 @@ const LazyGenreRec: React.FC<LazyGenreRecProps> = ({ genre }) => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => {
+      (entries) => {
         if (entries[0].isIntersecting) {
           setIsVisible(true);
           observer.disconnect(); // Only observe once
@@ -30,7 +30,11 @@ const LazyGenreRec: React.FC<LazyGenreRecProps> = ({ genre }) => {
 
   return (
     <div ref={containerRef} style={{ minHeight: '300px' }}>
-      {isVisible ? <GenreRec genre={genre} /> : <div style={{ height: '350px' }} />}
+      {isVisible ? (
+        <GenreRec genre={genre} />
+      ) : (
+        <div style={{ height: '350px' }} />
+      )}
     </div>
   );
 };
