@@ -64,7 +64,7 @@ namespace INTEX.API.Controllers
 
         // Update image under same name
         [HttpPost("AddImage/{imageName}")]
-        [Authorize("Administrator")] // Only lets admin do this
+        [Authorize(Roles = "Administrator")] // Only lets admin do this
         public async Task<IActionResult> UploadImage(string imageName, IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -90,7 +90,7 @@ namespace INTEX.API.Controllers
 
         // Deletes an image
         [HttpDelete("DeleteImage/{imageName}")]
-        [Authorize("Administrator")] // Only lets admin do this
+        [Authorize(Roles = "Administrator")] // Only lets admin do this
         public async Task<IActionResult> DeleteImage(string imageName)
         {
             // Append the folder name correctly (no URL encoding here)

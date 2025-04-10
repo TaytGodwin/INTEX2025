@@ -24,7 +24,7 @@ public class RoleController : Controller
     }
     
     [HttpPost("AddRole")]
-    [Authorize("Administrator")] // Used only by adminstrators
+    [Authorize(Roles = "Administrator")] // Used only by adminstrators
     public async Task<IActionResult> AddRole([FromQuery] string roleName)
     {
         if (string.IsNullOrWhiteSpace(roleName))
@@ -48,7 +48,7 @@ public class RoleController : Controller
     }
 
     [HttpPost("AssignRoleToUser")]
-    [Authorize("Administrator")] // Used only by adminstrators
+    [Authorize(Roles = "Administrator")] // Used only by adminstrators
     public async Task<IActionResult> AssignRoleToUser([FromBody] RoleAssignmentDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.UserEmail) || string.IsNullOrWhiteSpace(dto.RoleName))

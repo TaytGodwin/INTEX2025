@@ -81,7 +81,7 @@ namespace INTEX.API.Controllers
             {
                 HttpOnly = true,
                 Secure = true, // Use true if you're on HTTPS
-                SameSite = SameSiteMode.None, // Allows cross-site
+                SameSite = SameSiteMode.None, // ALlows cross-site
                 Expires = DateTime.UtcNow.AddDays(7),
                 IsEssential = true // ✅ Allows it even if consent is required
             });

@@ -146,7 +146,7 @@ namespace INTEX.API.Controllers
 
         // ✅ Add a movie
         [HttpPost("AddMovie")]
-        [Authorize("Administrator")] // Requires administrator role
+        [Authorize(Roles = "Administrator")] // Requires administrator role
         public IActionResult AddMovie([FromBody] MovieUpdateDto newMovieDto)
         {
             // 1. Create a new movie instance from the DTO
@@ -194,7 +194,7 @@ namespace INTEX.API.Controllers
 
         // ✅ Update a movie
         [HttpPut("UpdateMovie")]
-        [Authorize("Administrator")] // Requires administrator role
+        [Authorize(Roles = "Administrator")] // Requires administrator role
         public IActionResult UpdateMovie([FromBody] MovieUpdateDto updatedMovie)
         {
             var existingMovie = _movieContext.Movies
@@ -247,7 +247,7 @@ namespace INTEX.API.Controllers
 
 
         // ✅ Delete a movie
-        [Authorize("Administrator")] // Requires administrator role
+        [Authorize(Roles = "Administrator")] // Requires administrator role
         [HttpDelete("DeleteMovie")]
         public async Task<IActionResult> DeleteMovie([FromBody] int showIdToDelete)
         {
@@ -306,6 +306,13 @@ namespace INTEX.API.Controllers
             await _movieContext.SaveChangesAsync();
 
             return Ok(new { message = "Rating added successfully" });
+        }
+
+        [Authorize]
+        [HttpGet("debug-claims")]
+        public IActionResult DebugClaims()
+        {
+            return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
         }
 
 
