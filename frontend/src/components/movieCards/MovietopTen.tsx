@@ -8,7 +8,12 @@ export interface MovietopTenProps {
   rank?: number;
 }
 
-const MovietopTen: React.FC<MovietopTenProps> = ({ title, posterUrl, onClick, rank }) => {
+const MovietopTen: React.FC<MovietopTenProps> = ({
+  title,
+  posterUrl,
+  onClick,
+  rank,
+}) => {
   return (
     <div
       style={{
@@ -39,11 +44,11 @@ const MovietopTen: React.FC<MovietopTenProps> = ({ title, posterUrl, onClick, ra
         src={posterUrl}
         alt={title}
         style={{
-            width: '150px',
-            height: 'auto',
-            marginLeft: '2rem',
-            zIndex: 1,
-            borderRadius: '6px',
+          width: '150px',
+          height: 'auto',
+          marginLeft: '2rem',
+          zIndex: 1,
+          borderRadius: '6px',
         }}
       />
     </div>

@@ -48,7 +48,7 @@ const LazyForYou = ({ userId }: { userId: number }) => {
   }, []);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ minHeight: '300px' }}>
       {showComponent ? (
         <div>
           <ForYou userId={userId} />
