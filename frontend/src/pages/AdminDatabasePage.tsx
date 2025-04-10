@@ -1,6 +1,6 @@
 import AuthorizeView from '../components/authentication/AuthorizeView';
 import { useState, useEffect } from 'react';
-import { deleteMovie, getTotalMovies } from '../api/MoviesAPI';
+import { deleteMovie, getTotalMovies, searchMovies } from '../api/MoviesAPI';
 import { getGenres } from '../api/MoviesAPI';
 import { Movie } from '../types/Movie';
 import '../css/theme.css';
@@ -12,8 +12,8 @@ import AdminPagination from '../components/admin/AdminPagination';
 
 const AdminDatabasePage = () => {
   const [allMovies, setMovies] = useState<Movie[]>([]);
-  const [genres, setGenres] = useState<Genre[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [genres, setGenres] = useState<Genre[]>([]);
   const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -24,19 +24,33 @@ const AdminDatabasePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { movies, totalNumMovies } = await getTotalMovies(
-        pageSize,
-        currentPage,
-        sortByPreference
-      );
+      if (searchTerm.trim() === '') {
+        // No search term and no genre selected, fallback to getAllMovies
+        const { movies, totalNumMovies } = await getTotalMovies(
+          pageSize,
+          currentPage,
+          sortByPreference
+        );
+
+        setMovies(movies);
+        setTotalPages(Math.ceil(totalNumMovies / pageSize)); // Recalculate total pages
+      } else {
+        const newMovies = await searchMovies(
+          searchTerm.trim(),
+          pageSize,
+          currentPage
+        );
+        setMovies(newMovies); // Assuming the response is in the format { movies: [...], totalNumMovies: number }
+        setTotalPages(Math.ceil(newMovies.length / pageSize)); // Recalculate total pages for search results
+      }
+
+      // Fetch genres data
       const genreData: Genre[] = await getGenres();
       setGenres(genreData);
-      setMovies(movies);
-      setTotalPages(Math.ceil(totalNumMovies / pageSize));
     };
 
     fetchData();
-  }, [pageSize, currentPage, sortByPreference]);
+  }, [pageSize, currentPage, sortByPreference, searchTerm]); // Add genres as a dependency
 
   const handleDelete = async (show_id: number) => {
     const confirmDelete = window.confirm(
