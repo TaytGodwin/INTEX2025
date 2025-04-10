@@ -145,7 +145,12 @@ const GetTopRec: React.FC<TopRecProps> = ({showId}) => {
                   <img
                     src={movieImages[selectedMovie.title] || '/images/default.jpg'}
                     alt={selectedMovie.title}
-                    style={{ width: '200px', height: 'auto', borderRadius: '8px' }}
+                    style={{
+                      maxWidth: '100%',   // Allow the image to take the full width of the container but not exceed it
+                      maxHeight: '400px', // Set a max height for the image
+                      objectFit: 'contain', // Ensure the image retains its aspect ratio and doesn't stretch
+                      borderRadius: '8px',
+                    }}
                   />
 
                     <div className="modal-body">
