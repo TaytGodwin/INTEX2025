@@ -1,7 +1,7 @@
 // GenreRec.tsx
 import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { getContentRecs } from '../../api/RecommenderAPI'; // Adjust path if needed
+import { getTopRec } from '../../api/RecommenderAPI'; // Adjust path if needed
 import { getImage } from '../../api/ImageAPI';
 import MoviePoster from '../movieCards/MoviePoster';
 import { Movie } from '../../types/Movie';
@@ -12,10 +12,10 @@ import 'slick-carousel/slick/slick-theme.css';
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
-interface ContentRecProps {
+interface TopRecProps {
   showId: number;
 }
-const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
+const GetTopRec: React.FC<TopRecProps> = ({showId}) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
@@ -26,7 +26,7 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
-        const results = await getContentRecs(showId);
+        const results = await getTopRec(showId);
         if (results) {
           setMovies(results);
 
@@ -112,7 +112,8 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
   
     return (
       <div className="genre-rec">
-        <h2>Similar Titles</h2>
+        <h2>If you liked this, you'll definitely love these top 5...</h2>
+        
         <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
           <div
@@ -120,11 +121,9 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
             className="carousel-item"
             style={{ padding: '0 5px' }}
           >
-            <MoviePoster key={movie.show_id}
-              imageUrl={movieImages[movie.title] || '/images/default.jpg'}  // Example image URL logic
-              title={movie.title}
-              onClick={() => handlePosterClick(movie)} // Handle the click to open the modal
-            />
+           
+            <GetTopRec showId={movie.show_id}/> 
+              
           </div>
         ))}
       </Slider>
@@ -158,9 +157,7 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
                       <p>{selectedMovie.description}</p>
                     </div>
                 </div>
-                <div>
-                  <GetContentRec showId={selectedMovie.show_id}/> 
-                </div>
+                
 
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>
@@ -173,4 +170,4 @@ const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
     );
   };
   
-  export default GetContentRec;
+  export default GetTopRec;

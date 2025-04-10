@@ -4,6 +4,10 @@ import GenreRec from '../components/Carousels/GenreRec';
 import { getGenres } from '../api/MoviesAPI';
 import { Genre } from '../types/Genre';
 import GetContentRec from '../components/Carousels/GetContentRec';
+import ForYou from '../components/Carousels/ForYou';
+import GetTopRec from '../components/Carousels/GetTopRec';
+import FeaturedSection from '../components/home/FeaturedSection';
+import LandingHero from '../components/home/LandingHero';
 
 
 function MoviePage() {
@@ -18,7 +22,7 @@ function MoviePage() {
       };
       fetchGenres();
     }, []);
-
+// Adds scrolling ability 
     useEffect(() => {
       const handleScroll = () => {
         const nearBottom =
@@ -34,20 +38,17 @@ function MoviePage() {
 
   return (
     <div className="movie-page">
-      <MovieRow />
-      <GetContentRec showId={42}/>
-      {/* Fall Girl,  */}
+      <h1>HERE'S A TITLE</h1>
+      <LandingHero/>
+      <ForYou userId={4} />
+      <GenreRec genre={'Action'} />
 
-      {/* This will contain all the other stuff on the page */}
-      <GenreRec genre={'Action'}/>
-      {/* Carousel that loads on scorll for Genre */}
-      <div className="movie-page">
-    
+      <div className="genre-recs-wrapper">
         {genres.slice(0, visibleCount).map((genre, index) => (
           <GenreRec key={index} genre={genre.genreName} />
         ))}
       </div>
-    </div>
+</div>
   );
 }
 
