@@ -69,7 +69,7 @@ const AdminPagination = ({
             onPageChange(1); // Reset to page 1 when size changes
           }}
         >
-          {[25, 50, 100, 200].map((size) => (
+          {[15, 25, 50].map((size) => (
             <option key={size}>{size}</option>
           ))}
         </select>
@@ -85,7 +85,7 @@ const AdminPagination = ({
         >
           <option value="title">Title</option>
           <option value="director">Director</option>
-          <option value="release_year">Year</option>
+          <option value="type">Type</option>
         </select>
       </div>
 
