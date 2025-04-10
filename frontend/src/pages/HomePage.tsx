@@ -16,11 +16,6 @@ function HomePage() {
       <TestimonialsSection />
       <FAQSection />
       <PricingSection />
-      <div className="text-center py-5">
-        <Link to="/register" className="btn btn-lg btn-primary">
-          Get Started Now
-        </Link>
-      </div>
     </div>
   );
 }
