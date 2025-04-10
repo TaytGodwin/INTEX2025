@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import GenreRec from '../components/Carousels/GenreRec';
 import LazyGenreRec from '../components/Carousels/LazyCarousels/LazyGenreRec';
 import { getGenres, getUserId } from '../api/MoviesAPI';
 import { Genre } from '../types/Genre';
 import GetContentRec from '../components/Carousels/GetContentRec';
-import GetTopRec from '../components/Carousels/GetTopRec';
 import LandingMovieHero from '../components/movieCards/LandingMovieHero';
 import LazyForYou from '../components/Carousels/LazyCarousels/LazyForYou';
 import { pingAuth } from '../api/IdentityAPI';

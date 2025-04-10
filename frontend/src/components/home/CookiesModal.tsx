@@ -24,16 +24,15 @@ const CookiesModal: React.FC<CookiesProps> = ({ setShowCookieModal }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Cookie Notification</h5>
-            <button
-              className="btn-close"
-              onClick={() => setShowCookieModal(false)}
-            ></button>
           </div>
           <div className="modal-body">
             This site uses cookies to improve your experience.
           </div>
           <div className="modal-footer">
-            <button className="btn btn-primary" onClick={handleAcknowledge}>
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowCookieModal(false)}
+            >
               OK
             </button>
           </div>

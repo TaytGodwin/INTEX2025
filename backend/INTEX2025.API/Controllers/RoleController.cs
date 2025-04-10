@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace INTEX.API.Controllers;
 
@@ -48,7 +49,7 @@ public class RoleController : Controller
     }
 
     [HttpPost("AssignRoleToUser")]
-    [Authorize(Roles = "Administrator")] // Used only by adminstrators
+    // [Authorize] // Can't be authroized because they aren't logged in
     public async Task<IActionResult> AssignRoleToUser([FromBody] RoleAssignmentDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.UserEmail) || string.IsNullOrWhiteSpace(dto.RoleName))

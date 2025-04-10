@@ -153,3 +153,32 @@ export const SetCookie = async (): Promise<boolean> => {
     return false;
   }
 };
+
+// This API call checks to see if an email is already in the database and returns true if it is
+export const isEmailUsed = async (email: string): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${Identity_API_URL}/api/identity/isEmailUsed`, // API URL
+      {
+        method: 'POST', // POST to send data
+        headers: {
+          'Content-Type': 'application/json', // Ensure Content-Type is application/json
+        },
+        credentials: 'include', // Ensure the browser sends cookies
+        body: JSON.stringify({ email }), // Send email as JSON in the body
+      }
+    );
+
+    // Check if the response is OK (status code in the range 200-299)
+    if (response.ok) {
+      const data = await response.json(); // Parse JSON response from the server
+      return data.exists; // Assuming your API returns an object with a field 'exists'
+    } else {
+      console.error('Email checking failed with status:', response.status);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error during email checking:', error);
+    return false;
+  }
+};
