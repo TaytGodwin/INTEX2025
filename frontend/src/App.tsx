@@ -37,7 +37,6 @@ function App() {
           >
             <Route element={<Layout />}>
               <Route path="movies" element={<MoviePage />} />
-              <Route path="favorites" element={<FavoritesPage/>}/>
               {/* <Route path="movieDetails" element={<MovieDetailPage />} />*/}
               <Route path="search" element={<SearchPage />} />
               <Route path="logout" element={<Logout />} />
