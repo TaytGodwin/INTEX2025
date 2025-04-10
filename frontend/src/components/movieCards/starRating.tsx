@@ -9,7 +9,8 @@ interface StarRatingProps {
 // <StarRating userId={2} showId={22} />
 const StarRating: React.FC<StarRatingProps> = ({ userId, showId }) => {
   const [rating, setRating] = useState<number>(0);
-  const Identity_API_URL = 'https://localhost:5000';
+  const Identity_API_URL =
+    'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
   // Fetch the user's current rating when the component mounts or when userId/showId changes
   useEffect(() => {

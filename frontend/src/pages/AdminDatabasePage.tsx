@@ -84,14 +84,6 @@ const AdminDatabasePage = () => {
   return (
     <AuthorizeView allowedRoles={['Administrator']}>
       <div style={adminPageStyle}>
-        <aside style={sidebarStyle}>
-          <h4 style={sidebarTitleStyle}>Admin Panel</h4>
-          <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-            <li style={sidebarItemStyle}><span>🎬</span> Movie Database</li>
-            {/* <li style={sidebarItemStyle}><span>👥</span> Users</li> */}
-          </ul>
-          <button style={{ ...actionButtonStyle.delete, marginTop: 'auto' }}>Logout</button>
-        </aside>
 
         <main style={contentStyle}>
           <h2 style={headerStyle}>🎬 Movie Database</h2>

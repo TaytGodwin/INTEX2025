@@ -2,8 +2,8 @@ import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
 import { NewMovie } from '../types/NewMovie';
 
-const MOVIE_API_URL = 'https://localhost:5000';
-// 'https://intexbackend25-c6ffa9adgthsgtdf.eastus-01.azurewebsites.net';
+const MOVIE_API_URL = // 'https://localhost:5000';
+  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 export const getAllMovies = async (): Promise<Movie[]> => {
   try {
@@ -189,18 +189,21 @@ export const updateMovie = async (movieToEdit: Movie): Promise<boolean> => {
 };
 
 export const getUserId = async (email: string): Promise<number | null> => {
-    try {
-      const response = await fetch(`${MOVIE_API_URL}/api/Account/userId?email=${encodeURIComponent(email)}`, {
+  try {
+    const response = await fetch(
+      `${MOVIE_API_URL}/api/Account/userId?email=${encodeURIComponent(email)}`,
+      {
         method: 'GET',
         credentials: 'include',
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
       }
-      const data = await response.json();
-      return data.userId;
-    } catch (error) {
-      console.error('Error fetching user id:', error);
-      return null;
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
     }
-  };
+    const data = await response.json();
+    return data.userId;
+  } catch (error) {
+    console.error('Error fetching user id:', error);
+    return null;
+  }
+};
