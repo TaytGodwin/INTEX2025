@@ -97,25 +97,14 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
       </Slider>
 
       {/* Modal to display movie details */}
-      {selectedMovie && (
-        <div className="modal show" style={{ display: 'block' }} tabIndex={-1} aria-labelledby="movieModal" aria-hidden="false">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="movieModal">{selectedMovie.title}</h5>
-                <button type="button" className="close" onClick={closeModal}>
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
+      
               <div className="modal-body">
                 {/* Pass the selectedMovie data to the MovieDetails component */}
                 {selectedMovie ? <MovieDetails movie={selectedMovie} relatedMovies={[]} /> : null}
               </div>
             </div>
-          </div>
-        </div>
-      )}
-    </div>
+       
+
   );
 };
 
