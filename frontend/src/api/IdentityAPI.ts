@@ -106,3 +106,36 @@ export const register = async (
     return false;
   }
 };
+
+export const createUserProfile = async (
+  profileData: object
+): Promise<boolean> => {
+  try {
+    const response = await fetch(`${Identity_API_URL}/api/Users/CreateUser`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(profileData),
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Create user profile failed:', error);
+    return false;
+  }
+};
+
+export const assignUserRole = async (
+  userEmail: string,
+  roleName: string
+): Promise<boolean> => {
+  try {
+    const response = await fetch(`${Identity_API_URL}/Role/AssignRoleToUser`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userEmail, roleName }),
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Assign user role failed:', error);
+    return false;
+  }
+};

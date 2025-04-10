@@ -99,14 +99,15 @@ namespace INTEX.API.Controllers
                 query = query.Where(m => m.MovieGenres.Any(mg => genreIDs.Contains(mg.GenreID)));
             }
 
-            var allowedSortFields = new[] { "title", "release_year", "rating", "duration" };
+            var allowedSortFields = new[] { "title", "director", "type" };
             if (!allowedSortFields.Contains(sortBy))
             {
                 sortBy = "title";
             }
 
             var AllMovies = query
-                .OrderBy(sortBy)
+                .OrderBy(m => sortBy == "title" ? (m.title ?? "") : // Handles nulls
+                         sortBy == "director" ? (m.director ?? "") : "") // For strings
                 .Skip((pageNum - 1) * pageSize)
                 .Take(pageSize)
                 .Select(m => new
@@ -129,31 +130,6 @@ namespace INTEX.API.Controllers
 
             return Ok(new {Movies = AllMovies, totalNumMovies});
         }
-
-        //    // IQueryable are built one thing at a time
-        //    var query = _bookDbContext.Books.AsQueryable();
-
-        //    if (categoryTypes != null && categoryTypes.Any()) // Check if book categories are not null
-        //    {
-        //        query = query.Where(c => categoryTypes.Contains(c.Category)); // Only get project types when they are in the list
-        //    }
-
-        //    var AllBooks = query // Narrowed down, filtered list
-        //        .OrderBy(sortBy) // Uses using System.Linq.Dynamic.Core; to sort by the preference that the user gave
-        //        .Skip((pageNum - 1) * pageSize) // Skips the page size amount until it gets to the page you are on
-        //        .Take(pageSize) // Sends how many the user selected
-        //        .ToList();
-
-        //    var totalNumBooks = query.Count();
-
-        //    var TotalObject = new
-        //    {
-        //        Books = AllBooks,
-        //        totalNumBooks
-        //    };
-
-        //    return Ok(TotalObject);
-        //}
 
 
         // ✅ Get distinct genre names

@@ -1,20 +1,21 @@
 // GenreRec.tsx
 import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { getGenreMovies } from '../../api/RecommenderAPI'; // Adjust path if needed
+import { getContentRecs } from '../../api/RecommenderAPI'; // Adjust path if needed
 import { getImage } from '../../api/ImageAPI';
 import MoviePoster from '../movieCards/MoviePoster';
 import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
-interface GenreRecProps {
-  genre: string;
+interface ContentRecProps {
+  showId: number;
 }
-const GenreRec: React.FC<GenreRecProps> = ({genre}) => {
+const GetContentRec: React.FC<ContentRecProps> = ({showId}) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
@@ -25,7 +26,7 @@ const GenreRec: React.FC<GenreRecProps> = ({genre}) => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
-        const results = await getGenreMovies(genre);
+        const results = await getContentRecs(showId);
         if (results) {
           setMovies(results);
 
@@ -53,7 +54,7 @@ const GenreRec: React.FC<GenreRecProps> = ({genre}) => {
     };
 
     fetchMovies();
-  }, [genre]);
+  }, [showId]);
   // Fetch images for the movies when the movies array changes.
      useEffect(() => {
       const fetchImages = async () => {
@@ -111,7 +112,7 @@ const GenreRec: React.FC<GenreRecProps> = ({genre}) => {
   
     return (
       <div className="genre-rec">
-        <h2>Recommended Movies in Your Genre <strong>{genre}</strong></h2>
+        <h2>If you liked this, you'll definitely love...</h2>
         <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
           <div
@@ -157,8 +158,4 @@ const GenreRec: React.FC<GenreRecProps> = ({genre}) => {
     );
   };
   
-  export default GenreRec;
-
-function setSelectedMovie(arg0: null) {
-  throw new Error('Function not implemented.');
-}
+  export default GetContentRec;

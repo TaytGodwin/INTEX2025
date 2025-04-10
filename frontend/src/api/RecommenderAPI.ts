@@ -30,19 +30,35 @@ export const getGenreMovies = async (genre: string): Promise<Movie[] | null> => 
   }
 };
 
-    const contentType = response.headers.get('content-type');
+export const getContentRecs = async (showId: number): Promise<Movie[] | null> => {
+  try {
+    const response = await fetch(
+      `${Recommender_API_URL}/api/Recommender/content_recs1?showId=${showId}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-    // Ensure the response is JSON
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       throw new Error('Invalid response format from server');
     }
 
     const data = await response.json();
-
-    // Assuming the backend returns a list of MovieUpdateDto objects
     return data as Movie[];
   } catch (error) {
-    console.error('Error getting movies based on genre:', error);
+    console.error('Error fetching content recommendations:', error);
     return null;
   }
 };
+
+
+
