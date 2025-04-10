@@ -7,15 +7,16 @@ import {
   register,
   createUserProfile,
   assignUserRole,
+  isEmailUsed,
 } from '../api/IdentityAPI';
 
 function RegisterPage() {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [rememberme, setRememberme] = useState<boolean>(false);
   const navigate = useNavigate();
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [emailAlreadyUsed, setEmailAlreadyUsed] = useState<boolean>(true);
 
   // Get the login function from AuthContext
   const { login: authLogin } = useAuth();
@@ -42,8 +43,36 @@ function RegisterPage() {
   const [error, setError] = useState('');
 
   // Handler to move from Step 1 to Step 2
-  const handleNext = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleNext = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Email validation function
+    function isValidEmail(email: string): boolean {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return emailRegex.test(email);
+    }
+
+    if (!email) {
+      setError('Please enter an email');
+      return;
+    } else if (!isValidEmail(email)) {
+      setError('Please enter a valid email');
+      return;
+    } else {
+      // Proceed with valid email
+      setError(''); // Reset error if email is valid
+      // Further actions (e.g., form submission)
+    }
+
+    // Now check if the email is already in use
+    setEmailAlreadyUsed(await isEmailUsed(email));
+
+    if (emailAlreadyUsed) {
+      setError(
+        'That email already has an account associated with it. Please enter a different one.'
+      );
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
@@ -71,81 +100,9 @@ function RegisterPage() {
     setStep(1);
   };
 
-  // Handler for navigating to the login page
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
-
-  // Generic change handler for input fields
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'phone':
-        setPhone(value);
-        break;
-      case 'gender':
-        setGender(value);
-        break;
-      case 'city':
-        setCity(value);
-        break;
-      case 'state':
-        setStateValue(value);
-        break;
-      case 'zip':
-        setZip(value);
-        break;
-      case 'email':
-        setEmail(value);
-        break;
-      case 'password':
-        setPassword(value);
-        break;
-      case 'confirmPassword':
-        setConfirmPassword(value);
-        break;
-      // Handle checkboxes for subscriptions
-      case 'netflix':
-        setNetflix(checked);
-        break;
-      case 'amazonPrime':
-        setAmazonPrime(checked);
-        break;
-      case 'disneyPlus':
-        setDisneyPlus(checked);
-        break;
-      case 'paramountPlus':
-        setParamountPlus(checked);
-        break;
-      case 'max':
-        setMax(checked);
-        break;
-      case 'hulu':
-        setHulu(checked);
-        break;
-      case 'appleTVPlus':
-        setAppleTVPlus(checked);
-        break;
-      case 'peacock':
-        setPeacock(checked);
-        break;
-      default:
-        break;
-    }
-  };
-
   // Final form submission for Step 2
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // Prepare the two sets of data
-    const authData = {
-      email: email,
-      password: password,
-    };
 
     const profileData = {
       email,
@@ -177,7 +134,7 @@ function RegisterPage() {
       }
 
       // Log the user in (using the login function from IdentityAPI.ts)
-      const loginSuccess = await apiLogin(email, password, rememberme);
+      const loginSuccess = await apiLogin(email, password, false);
       if (!loginSuccess) {
         throw new Error('Login failed.');
       }
@@ -260,7 +217,7 @@ function RegisterPage() {
             to="/login"
             style={{ color: '#57c8f4', textDecoration: 'underline' }}
           >
-            I already have a login
+            I already have an account
           </Link>
         </div>
 
@@ -298,6 +255,7 @@ function RegisterPage() {
               name="password"
               placeholder="Password"
               value={password}
+              title="Passwords must be 13 characters or more"
               onChange={(e) => setPassword(e.target.value)}
               style={inputStyle}
             />
@@ -365,7 +323,7 @@ function RegisterPage() {
                   value="Male"
                   checked={gender === 'Male'}
                   onChange={(e) => setGender(e.target.value)}
-                />{' '}
+                />
                 Male
               </label>
               <label style={{ marginRight: '0.5rem' }}>
@@ -578,324 +536,6 @@ function RegisterPage() {
       </div>
     </div>
   );
-
-  // <div className="container">
-  //   <div className="row">
-  //     <div className="card border-0 shadow rounded-3 ">
-  //       <div className="card-body p-4 p-sm-5">
-  //         <h5 className="card-title text-center mb-5 fw-light fs-5">
-  //           Register
-  //         </h5>
-
-  //         {/* ALREADY HAVE ACCOUNT */}
-  //         <div className="d-grid mb-2">
-  //           <button
-  //             className="btn btn-primary btn-login text-uppercase fw-bold"
-  //             onClick={handleLoginClick}
-  //           >
-  //             I already have a login
-  //           </button>
-  //         </div>
-
-  //         {/* FORM */}
-  //         <form onSubmit={handleSubmit}>
-  //           {/* NAME TEXT BOX */}
-  //           <div className="form-floating mb-3">
-  //             <input
-  //               className="form-control"
-  //               type="text"
-  //               id="name"
-  //               name="name"
-  //               value={name}
-  //               onChange={(e) => setName(e.target.value)} // Correctly pass a function reference
-  //             />
-  //             <label htmlFor="name">Full Name</label>
-  //           </div>
-
-  //           {/* PHONE NUMBER TEXT BOX */}
-  //           <div className="form-floating mb-3">
-  //             <input
-  //               className="form-control"
-  //               type="number"
-  //               id="phone"
-  //               name="phone"
-  //               value={phone}
-  //               onChange={(e) => setPhone((e.target.value))} // Correctly pass a function reference
-  //             />
-  //             <label htmlFor="phone">Phone Number</label>
-  //           </div>
-
-  //           {/* AGE */}
-  //           <div className="form-floating mb-3">
-  //             <input
-  //               className="form-control"
-  //               type="number"
-  //               id="age"
-  //               min={18}
-  //               max={120}
-  //               name="age"
-  //               value={age}
-  //               onChange={(e) => setAge(Number(e.target.value))} // Correctly pass a function reference
-  //             />
-  //             <label htmlFor="age">Age</label>
-  //           </div>
-
-  //           {/* GENDER RADIO BUTTONS */}
-  //           <label className="form-label d-block">Gender</label>
-  //           <div className="form-floating mb-3">
-  //             <div className="form-check form-check-inline">
-  //               <input
-  //                 className="form-check-input"
-  //                 type="radio"
-  //                 name="gender"
-  //                 id="genderMale"
-  //                 value="Male"
-  //                 checked={gender === 'Male'}
-  //                 onChange={handleChange}
-  //               />
-  //               <label className="form-check-label" htmlFor="genderMale">Male</label>
-  //             </div>
-  //             <div className="form-check form-check-inline">
-  //               <input
-  //                 className="form-check-input"
-  //                 type="radio"
-  //                 name="gender"
-  //                 id="genderFemale"
-  //                 value="Female"
-  //                 checked={gender === 'Female'}
-  //                 onChange={handleChange}
-  //               />
-  //               <label className="form-check-label" htmlFor="genderFemale">Female</label>
-  //             </div>
-  //           <div className="form-check form-check-inline">
-  //             <input
-  //                 className="form-check-input"
-  //                 type="radio"
-  //                 name="gender"
-  //                 id="genderOther"
-  //                 value="Other"
-  //                 checked={gender === 'Other'}
-  //                 onChange={handleChange}
-  //               />
-  //               <label className="form-check-label" htmlFor="genderOther">Other</label>
-  //           </div>
-  //           </div>
-
-  //           {/* CITY TEXT BOX */}
-  //           <div className="form-floating mb-3">
-  //             <input
-  //               className="form-control"
-  //               type="city"
-  //               id="city"
-  //               name="city"
-  //               value={city}
-  //               onChange={handleChange}
-  //             />
-  //             <label htmlFor="city">City</label>
-  //           </div>
-
-  //           {/* STATE TEXT BOX */}
-  //           <div className="form-floating mb-3">
-  //             <input
-  //               className="form-control"
-  //               type="state"
-  //               id="state"
-  //               name="state"
-  //               value={state}
-  //               onChange={handleChange}
-  //             />
-  //             <label htmlFor="state">State</label>
-  //           </div>
-
-  //           {/* ZIP TEXT BOX */}
-  //           <div className="form-floating mb-3">
-  //             <input
-  //               className="form-control"
-  //               type="zip"
-  //               id="zip"
-  //               name="zip"
-  //               value={zip}
-  //               onChange={handleChange}
-  //             />
-  //             <label htmlFor="zip">Zip</label>
-  //           </div>
-
-  //           {/* SUBSCRIPTIONS MULTI-SELECT */}
-  //          <h6 className="form-label d-block">Select Your Current Subscriptions:</h6>
-  //          <div className="mb-3">
-  //             <div className="row">
-  //               <div className="col-3">
-  //                 <div className="form-check">
-  //                   <input
-  //                     className="form-check-input"
-  //                     type="checkbox"
-  //                     id="netflix"
-  //                     checked={netflix}
-  //                     onChange={(e) => setNetflix(e.target.checked)}
-  //                   />
-  //                   <label className="form-check-label" htmlFor="netflix">
-  //                     Netflix
-  //                   </label>
-  //                 </div>
-  //               </div>
-  //               <div className="col-3">
-  //                 <div className="form-check">
-  //                   <input
-  //                     className="form-check-input"
-  //                     type="checkbox"
-  //                     id="amazonPrime"
-  //                     checked={amazonPrime}
-  //                     onChange={(e) => setAmazonPrime(e.target.checked)}
-  //                   />
-  //                   <label className="form-check-label" htmlFor="amazonPrime">
-  //                     Amazon Prime
-  //                   </label>
-  //                 </div>
-  //               </div>
-  //               <div className="col-3">
-  //                 <div className="form-check">
-  //                   <input
-  //                     className="form-check-input"
-  //                     type="checkbox"
-  //                     id="disneyPlus"
-  //                     checked={disneyPlus}
-  //                     onChange={(e) => setDisneyPlus(e.target.checked)}
-  //                   />
-  //                   <label className="form-check-label" htmlFor="disneyPlus">
-  //                     Disney+
-  //                   </label>
-  //                 </div>
-  //               </div>
-  //               <div className="col-3">
-  //                 <div className="form-check">
-  //                   <input
-  //                     className="form-check-input"
-  //                     type="checkbox"
-  //                     id="paramountPlus"
-  //                     checked={paramountPlus}
-  //                     onChange={(e) => setParamountPlus(e.target.checked)}
-  //                   />
-  //                   <label className="form-check-label" htmlFor="paramountPlus">
-  //                     Paramount+
-  //                   </label>
-  //                 </div>
-  //               </div>
-
-  //               <div className="col-3 mt-2">
-  //                 <div className="form-check">
-  //                   <input
-  //                     className="form-check-input"
-  //                     type="checkbox"
-  //                     id="max"
-  //                     checked={max}
-  //                     onChange={(e) => setMax(e.target.checked)}
-  //                   />
-  //                   <label className="form-check-label" htmlFor="max">
-  //                     Max
-  //                   </label>
-  //                 </div>
-  //               </div>
-  //               <div className="col-3 mt-2">
-  //                 <div className="form-check">
-  //                   <input
-  //                     className="form-check-input"
-  //                     type="checkbox"
-  //                     id="hulu"
-  //                     checked={hulu}
-  //                     onChange={(e) => setHulu(e.target.checked)}
-  //                   />
-  //                   <label className="form-check-label" htmlFor="hulu">
-  //                     Hulu
-  //                   </label>
-  //                 </div>
-  //               </div>
-  //               <div className="col-3 mt-2">
-  //                 <div className="form-check">
-  //                   <input
-  //                     className="form-check-input"
-  //                     type="checkbox"
-  //                     id="appleTVPlus"
-  //                     checked={appleTVPlus}
-  //                     onChange={(e) => setAppleTVPlus(e.target.checked)}
-  //                   />
-  //                   <label className="form-check-label" htmlFor="appleTVPlus">
-  //                     Apple TV+
-  //                   </label>
-  //                 </div>
-  //               </div>
-  //               <div className="col-3 mt-2">
-  //                 <div className="form-check">
-  //                   <input
-  //                     className="form-check-input"
-  //                     type="checkbox"
-  //                     id="peacock"
-  //                     checked={peacock}
-  //                     onChange={(e) => setPeacock(e.target.checked)}
-  //                   />
-  //                   <label className="form-check-label" htmlFor="peacock">
-  //                     Peacock
-  //                   </label>
-  //                 </div>
-  //               </div>
-  //             </div>
-  //           </div>
-
-  //           {/* EMAIL TEXT BOX */}
-  //           <div className="form-floating mb-3">
-  //             <input
-  //               className="form-control"
-  //               type="email"
-  //               id="email"
-  //               name="email"
-  //               value={email}
-  //               onChange={handleChange}
-  //             />
-  //             <label htmlFor="email">Email address</label>
-  //           </div>
-
-  //           {/* PASSWORD TEXT BOX */}
-  //           <div className="form-floating mb-3">
-  //             <input
-  //               className="form-control"
-  //               type="password"
-  //               id="password"
-  //               name="password"
-  //               value={password}
-  //               onChange={handleChange}
-  //             />
-  //             <label htmlFor="password">Password</label>
-  //           </div>
-
-  //           {/* CONFIRM PASSWORD TEXT BOX */}
-  //           <div className="form-floating mb-3">
-  //             <input
-  //               className="form-control"
-  //               type="password"
-  //               id="confirmPassword"
-  //               name="confirmPassword"
-  //               value={confirmPassword}
-  //               onChange={handleChange}
-  //             />
-  //             <label htmlFor="confirmPassword">Confirm Password</label>
-  //           </div>
-
-  //           {/* SUBMIT FORM */}
-
-  //           {/* REGISTER */}
-  //           <div className="d-grid mb-2">
-  //             <button
-  //               className="btn btn-primary btn-login text-uppercase fw-bold"
-  //               type='submit'
-  //             >
-  //               Register
-  //             </button>
-  //           </div>
-  //         </form>
-  //         <strong>{error && <p className="error">{error}</p>}</strong>
-  //       </div>
-  //     </div>
-  //   </div>
-  // </div>
 }
 
 export default RegisterPage;
