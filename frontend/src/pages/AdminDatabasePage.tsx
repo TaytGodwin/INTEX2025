@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react';
 import { deleteMovie, getTotalMovies, searchMovies } from '../api/MoviesAPI';
 import { getGenres } from '../api/MoviesAPI';
 import { Movie } from '../types/Movie';
-import '../css/theme.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import AddMovieModal from '../components/admin/AddMovieModal';
 import EditMovieModal from '../components/admin/EditMovieModal';
 import { Genre } from '../types/Genre';
@@ -25,33 +23,27 @@ const AdminDatabasePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (searchTerm.trim() === '') {
-        // No search term and no genre selected, fallback to getAllMovies
         const { movies, totalNumMovies } = await getTotalMovies(
           pageSize,
           currentPage,
           sortByPreference
         );
-
         setMovies(movies);
-        setTotalPages(Math.ceil(totalNumMovies / pageSize)); // Recalculate total pages
+        setTotalPages(Math.ceil(totalNumMovies / pageSize));
       } else {
         const newMovies = await searchMovies(
           searchTerm.trim(),
           pageSize,
           currentPage
         );
-        setMovies(newMovies); // Assuming the response is in the format { movies: [...], totalNumMovies: number }
-        setTotalPages(Math.ceil(newMovies.length / pageSize)); // Recalculate total pages for search results
+        setMovies(newMovies);
+        setTotalPages(Math.ceil(newMovies.length / pageSize));
       }
-
-      // Fetch genres data
       const genreData: Genre[] = await getGenres();
       setGenres(genreData);
     };
-
     fetchData();
-    console.log(allMovies);
-  }, [pageSize, currentPage, sortByPreference, searchTerm]); // Add genres as a dependency
+  }, [pageSize, currentPage, sortByPreference, searchTerm]);
 
   const handleDelete = async (show_id: number) => {
     const confirmDelete = window.confirm(
@@ -61,7 +53,6 @@ const AdminDatabasePage = () => {
 
     try {
       const success = await deleteMovie(show_id);
-
       if (success) {
         setMovies(allMovies.filter((m) => m.show_id !== show_id));
       } else {
@@ -75,7 +66,6 @@ const AdminDatabasePage = () => {
   const handleOpenEdit = (movie: Movie) => {
     setMovieToEdit(movie);
     setShowEditModal(true);
-    console.log(movie);
   };
 
   const handleGenres = (movie: Movie) => {
@@ -84,7 +74,6 @@ const AdminDatabasePage = () => {
         {movie.genres.map((genre, index) => (
           <span key={index}>
             {typeof genre === 'string' ? genre : genre.genreName}
-            {/* Adjust depending on if it's a string or an object */}
             {index < movie.genres.length - 1 ? ', ' : ''}
           </span>
         ))}
@@ -94,80 +83,66 @@ const AdminDatabasePage = () => {
 
   return (
     <AuthorizeView allowedRoles={['Administrator']}>
-      <div className="admin-page">
-        <aside className="admin-sidebar">
-          <h4 className="admin-title">Admin Panel</h4>
-          <ul>
-            <li>
-              <span>📦</span> Database
-            </li>
-            <li>
-              <span>👥</span> Users
-            </li>
+      <div style={adminPageStyle}>
+        <aside style={sidebarStyle}>
+          <h4 style={sidebarTitleStyle}>Admin Panel</h4>
+          <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+            <li style={sidebarItemStyle}><span>🎬</span> Movie Database</li>
+            {/* <li style={sidebarItemStyle}><span>👥</span> Users</li> */}
           </ul>
-          <button className="logout-btn btn btn-outline-danger mt-auto">
-            Logout
-          </button>
+          <button style={{ ...actionButtonStyle.delete, marginTop: 'auto' }}>Logout</button>
         </aside>
 
-        <main className="admin-content">
-          <h2 className="mb-4">🎬 Movie Database</h2>
+        <main style={contentStyle}>
+          <h2 style={headerStyle}>🎬 Movie Database</h2>
 
-          <div className="search-controls d-flex align-items-center gap-2 mb-3">
+          <div style={searchControlStyle}>
             <input
               type="text"
-              className="form-control"
               placeholder="Search by title..."
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
+              style={searchInputStyle}
             />
-            <button className="btn btn-primary">Search</button>
-            <button
-              className="btn btn-success ms-auto"
-              onClick={() => setShowAddModal(true)}
-            >
+            <button style={searchButtonStyle}>Search</button>
+            <button style={addButtonStyle} onClick={() => setShowAddModal(true)}>
               + Add Movie
             </button>
           </div>
 
           <div className="table-responsive">
-            <table className="movie-table table table-bordered table-striped table-hover">
-              <thead className="table-light">
+            <table style={tableStyle}>
+              <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Type</th>
-                  <th>Genres</th>
-                  <th>Year</th>
-                  <th>Director</th>
-                  <th>Actions</th>
+                  {['Title', 'Type', 'Genres', 'Year', 'Director', 'Actions'].map((header, idx) => (
+                    <th key={idx} style={thStyle}>{header}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {allMovies.map((movie) => (
                   <tr key={movie.show_id}>
-                    <td>{movie.title}</td>
-                    <td>{movie.type}</td>
-                    <td>{handleGenres(movie)}</td>
-                    <td>{movie.release_year}</td>
-                    <td>{movie.director}</td>
-                    <td>
-                      <div className="d-flex gap-2">
+                    <td style={tdStyle}>{movie.title}</td>
+                    <td style={tdStyle}>{movie.type}</td>
+                    <td style={tdStyle}>{handleGenres(movie)}</td>
+                    <td style={tdStyle}>{movie.release_year}</td>
+                    <td style={tdStyle}>{movie.director}</td>
+                    <td style={tdStyle}>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <button
-                          className="btn btn-sm btn-outline-primary"
-                          title="Edit"
+                          style={actionButtonStyle.edit}
                           onClick={() => handleOpenEdit(movie)}
                         >
                           ✏️ Edit
                         </button>
                         <button
-                          className="btn btn-sm btn-outline-danger"
-                          title="Delete"
+                          style={actionButtonStyle.delete}
                           onClick={() => handleDelete(movie.show_id)}
                         >
-                          <span style={{ color: 'black' }}>🗑</span> Delete
+                          🗑 Delete
                         </button>
                       </div>
                     </td>
@@ -213,6 +188,118 @@ const AdminDatabasePage = () => {
       </div>
     </AuthorizeView>
   );
+};
+
+const adminPageStyle = {
+  display: 'flex',
+  minHeight: '100vh',
+  backgroundColor: '#121212',
+  fontFamily: 'Poppins, sans-serif',
+};
+
+const sidebarStyle = {
+  backgroundColor: '#1e1e1e',
+  padding: '2rem 1rem',
+  width: '220px',
+  display: 'flex',
+  flexDirection: 'column' as const,
+  borderRight: '1px solid #333',
+};
+
+const sidebarTitleStyle = {
+  color: '#fff',
+  fontSize: '1.2rem',
+  fontWeight: 600,
+  marginBottom: '2rem',
+};
+
+const sidebarItemStyle = {
+  margin: '1rem 0',
+  fontSize: '1rem',
+  color: '#ccc',
+  display: 'flex',
+  gap: '0.5rem',
+  cursor: 'pointer',
+};
+
+const contentStyle = {
+  flex: 1,
+  padding: '2rem',
+  backgroundColor: '#181818',
+  color: '#fff',
+};
+
+const headerStyle = {
+  fontSize: '1.75rem',
+  fontWeight: 600,
+  marginBottom: '1.5rem',
+};
+
+const searchControlStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  marginBottom: '1.5rem',
+};
+
+const searchInputStyle = {
+  backgroundColor: '#2a2a2a',
+  border: '1px solid #444',
+  color: '#fff',
+  padding: '0.5rem 1rem',
+  borderRadius: '6px',
+  flex: 1,
+};
+
+const searchButtonStyle = {
+  padding: '0.5rem 1rem',
+  backgroundColor: '#57C8F4',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '6px',
+};
+
+const addButtonStyle = {
+  padding: '0.5rem 1rem',
+  backgroundColor: '#57C8F4',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '6px',
+};
+
+const tableStyle = {
+  width: '100%',
+  borderCollapse: 'collapse' as const,
+  borderRadius: '10px',
+  overflow: 'hidden',
+};
+
+const thStyle = {
+  backgroundColor: '#2e2e2e',
+  color: '#57C8F4',
+  fontWeight: 600,
+  padding: '0.75rem',
+  border: '1px solid #333',
+  textAlign: 'left' as const,
+};
+
+const tdStyle = {
+  padding: '0.75rem',
+  border: '1px solid #333',
+  color: '#eee',
+};
+
+const actionButtonStyle = {
+  edit: {
+    borderColor: '#57C8F4',
+    color: '#57C8F4',
+    backgroundColor: 'transparent',
+  },
+  delete: {
+    borderColor: '#ff5e5e',
+    color: '#ff5e5e',
+    backgroundColor: 'transparent',
+  },
 };
 
 export default AdminDatabasePage;
