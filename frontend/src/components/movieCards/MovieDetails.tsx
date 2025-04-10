@@ -3,17 +3,11 @@ import { getImage } from '../../api/ImageAPI';
 import { Movie } from '../../types/Movie';
 import GetTopRec from '../Carousels/GetTopRec';
 
-interface RelatedMovie {
-  title: string;
-  imageUrl: string;
-}
-
 interface MovieDetailsProps {
   movie: Movie;
-  relatedMovies: RelatedMovie[];
 }
 
-const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, relatedMovies }) => {
+const MovieDetails: React.FC<MovieDetailsProps> = ({ movie}) => {
   const [movieImage, setMovieImage] = useState<string | null>(null);
   const [loadingImage, setLoadingImage] = useState<boolean>(true);
   const modalRef = useRef<HTMLDivElement | null>(null);  // Ref for modal
@@ -72,6 +66,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, relatedMovies }) => 
                 className="banner-poster"
                 src={movieImage || '/images/default.jpg'} // Use fetched image URL or default
                 alt={`${selectedMovie.title} Poster`}
+                style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain' }}  // Ensure image fits inside modal
               />
               <div className="action-buttons">
                 <button className="play-button">▶</button>
@@ -111,7 +106,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, relatedMovies }) => 
 
         {/* Recommendations */}
         <div className="related-section">
-          <h3>If you’ll like this, you’d definitely love...</h3>
           <div className="scrollable-related">
             <GetTopRec showId={selectedMovie?.show_id ?? 0} /> {/* You can pass actual related movies here */}
           </div>
