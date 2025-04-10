@@ -56,8 +56,7 @@ function MoviePage() {
         }}>
       </div>
       <ForYou userId={4} />
-      <GenreRec genre={'Action'} />
-
+    
       <div className="genre-recs-wrapper">
       {genres.slice(0, visibleCount).map((genre, index) => (
         <LazyGenreRec key={index} genre={genre.genreName} />

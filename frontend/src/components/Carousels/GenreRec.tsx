@@ -132,9 +132,6 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
                 {/* Pass the selectedMovie data to the MovieDetails component */}
                 {selectedMovie ? <MovieDetails movie={selectedMovie} /> : null}
               </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>
-              </div>
             </div>
   );
 };
