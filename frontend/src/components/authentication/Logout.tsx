@@ -65,7 +65,6 @@ function Logout() {
                   Are you sure you want to log out?
                 </h5>
               </div>
-              
               <div className="modal-body">
                 <p>Do you really want to log out?</p>
               </div>
