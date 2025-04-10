@@ -2,8 +2,8 @@ import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
 import { NewMovie } from '../types/NewMovie';
 
-const MOVIE_API_URL = 'https://localhost:5000';
-  // 'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const MOVIE_API_URL = //'https://localhost:5000';
+  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 export const getAllMovies = async (): Promise<Movie[]> => {
   try {
@@ -25,16 +25,22 @@ export const getAllMovies = async (): Promise<Movie[]> => {
   }
 };
 
-export const uploadImage = async (imageName: string, file: File): Promise<boolean> => {
+export const uploadImage = async (
+  imageName: string,
+  file: File
+): Promise<boolean> => {
   try {
     const formPayload = new FormData();
     formPayload.append('file', file);
-    
-    const response = await fetch(`${MOVIE_API_URL}/api/Image/AddImage/${encodeURIComponent(imageName)}`, {
-      method: 'POST',
-      credentials: 'include',
-      body: formPayload,
-    });
+
+    const response = await fetch(
+      `${MOVIE_API_URL}/api/Image/AddImage/${encodeURIComponent(imageName)}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: formPayload,
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);

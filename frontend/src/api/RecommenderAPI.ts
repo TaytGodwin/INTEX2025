@@ -1,8 +1,8 @@
 import { Movie } from '../types/Movie';
 import { ContentRecGroup } from '../types/Recommendations';
 
-const Recommender_API_URL = 'https://localhost:5000';
-  //'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const Recommender_API_URL = //'https://localhost:5000';
+  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 // This API call is for the main page. It does not require authorization
 // Should return a list of 10 movies pass one genre and get back stuff
@@ -33,7 +33,7 @@ export const getGenreMovies = async (
   }
 };
 
-// MAIN PAGE API 
+// MAIN PAGE API
 
 export const getContentRecs = async (
   userId: number
@@ -66,8 +66,6 @@ export const getContentRecs = async (
     return null;
   }
 };
-
-
 
 // export const getContentRecs = async (
 //   showId: number
@@ -132,7 +130,6 @@ export const getForYou = async (userId: number): Promise<Movie[] | null> => {
     return null;
   }
 };
-
 
 // IN MOVIE DETAIL PAGE
 //Gets top 5 handpicked off of a different filtering system
