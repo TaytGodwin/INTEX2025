@@ -307,6 +307,38 @@ namespace INTEX.API.Controllers
         }
 
 
+        [HttpGet("GetRating")]
+        public async Task<IActionResult> GetRating([FromQuery] int userId, int showId)
+        {
+            var userRating = await _movieContext.Ratings.FirstOrDefaultAsync(r => r.user_id == userId && r.show_id == showId);
+
+            int ratingValue = userRating != null ? userRating.rating : 0;
+
+            return Ok(new { rating = ratingValue });
+        }
+        
+        
+        [HttpPost("AddRating")]
+        public async Task<IActionResult> AddRating([FromBody] int rating, int userId, int showId)
+        {
+            // Create a new rating instance using the provided values
+            var newRating = new movies_rating
+            {
+                show_id = showId,
+                user_id = userId,
+                rating = rating
+            };
+
+            // Add the new rating to the context
+            _movieContext.Ratings.Add(newRating);
+
+            // Save changes asynchronously
+            await _movieContext.SaveChangesAsync();
+
+            return Ok(new { message = "Rating added successfully" });
+        }
+
+
 
     }
 }
