@@ -3,6 +3,7 @@ import MovieRow from '../components/movieCards/MovieRow';
 import GenreRec from '../components/Carousels/GenreRec';
 import { getGenres } from '../api/MoviesAPI';
 import { Genre } from '../types/Genre';
+import GetContentRec from '../components/Carousels/GetContentRec';
 
 
 function MoviePage() {
@@ -34,6 +35,8 @@ function MoviePage() {
   return (
     <div className="movie-page">
       <MovieRow />
+      <GetContentRec showId={42}/>
+      {/* Fall Girl,  */}
 
       {/* This will contain all the other stuff on the page */}
       <GenreRec genre={'Action'}/>
