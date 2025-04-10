@@ -60,7 +60,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
 
     try {
       const response = await addMovie(newMovie); // Calls the generic API call
-
+      console.log(newMovie);
       if (response) {
         const updated = await getAllMovies(); // ✅ fetch the updated list
         onMovieAdded(updated); // ✅ send updated list to parent
@@ -194,18 +194,18 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
               isMulti
               className="mb-2"
               options={genres.map((g) => ({
-                value: g,
-                label: g,
+                value: g.genreName, // genreName as value
+                label: g.genreName, // genreName as label
               }))}
               value={newMovie.genres.map((g) => ({
-                value: g,
-                label: g,
+                value: g, // genreName as value (string)
+                label: g, // genreName as label (string)
               }))}
               onChange={(selectedOptions) =>
                 setNewMovie({
                   ...newMovie,
                   genres: selectedOptions
-                    ? selectedOptions.map((opt) => opt.value)
+                    ? selectedOptions.map((opt) => opt.value) // Save only genre names (strings)
                     : [],
                 })
               }

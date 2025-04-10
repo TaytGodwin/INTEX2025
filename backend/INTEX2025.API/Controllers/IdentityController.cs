@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 
 namespace INTEX.API.Controllers
 {
@@ -38,7 +39,7 @@ namespace INTEX.API.Controllers
         //}
 
         [HttpPost("logout")]
-        [Authorize]
+        [Authorize] // Can be any role
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -55,7 +56,7 @@ namespace INTEX.API.Controllers
         }
 
         [HttpGet("pingauth")]
-        [Authorize]
+        [Authorize] // They have to be logged in, and this checks whether or not they are. If error, they are no longer a valid logged in user
         public async Task<IActionResult> PingAuth()
         {
             if (!User.Identity?.IsAuthenticated ?? false)
@@ -69,5 +70,26 @@ namespace INTEX.API.Controllers
 
             return Ok(new { email, roles });
         }
+
+        // This doesn't require authorization and stores the users consent to store cookies
+        [HttpGet("SetCookie")]
+        public IActionResult SetCookie()
+        {
+            const string CookieName = "CookieConsent";
+
+            HttpContext.Response.Cookies.Append(CookieName, "Yes", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Use true if you're on HTTPS
+                SameSite = SameSiteMode.None, // ALlows cross-site
+                Expires = DateTime.UtcNow.AddDays(7),
+                IsEssential = true // ✅ Allows it even if consent is required
+            });
+
+            return Ok("Cookie has been set.");
+        }
+
+
+
     }
 }
