@@ -7,6 +7,7 @@ import MoviePoster from '../movieCards/MoviePoster';
 import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!]/g, '');
 }
