@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import { getAllMovies } from '../../api/MoviesAPI'; // New API call to fetch all movies
 import { getImage } from '../../api/ImageAPI';
-import defaultImageUrl from '../public/default.jpg';
+import defaultImageUrl from '/public/default.jpg';
 import MoviePoster from '../movieCards/MoviePoster';
 import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
@@ -21,7 +21,7 @@ const FeaturedSection = () => {
 
 
   //Hard Coded Area for FeaturedTitles
-  const featuredTitles = ['Interstellar', 'Inception', 'The Dark Knight', 'Squid Game', 'Dear John',];
+  const featuredTitles = ['Interstellar', 'Inception', 'The Dark Knight', 'Squid Game', 'Dear John', 'The Karate Kid', 'Attack on Titan', 'Legally Blonde','How to Train Your Dragon 2'];
 
   useEffect(() => {
     const fetchFeaturedMovies = async () => {

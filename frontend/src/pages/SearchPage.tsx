@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MoviePoster from '../components/movieCards/MoviePoster';
 import { getTotalMovies, getGenres, searchMovies } from '../api/MoviesAPI';
 import { getImage } from '../api/ImageAPI';
+import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
 
 function sanitizeTitle(title: string): string {
@@ -45,13 +46,15 @@ const SearchPage: React.FC = () => {
         const genreList = selectedGenres.length > 0 ? selectedGenres : [];
 
         let newMovies;
+        
         if (searchTerm.trim() === '' && genreList.length === 0) {
-          // fallback to getAllMovies
-          newMovies = await getTotalMovies(25, page);
+          const result = await getTotalMovies(25, page);
+          newMovies = result ?? []; // Fallback if null
         } else {
-          // normal search
-          newMovies = await searchMovies(searchTerm.trim(), 25, page, genreList);
+          const result = await searchMovies(searchTerm.trim(), 25, page, genreList);
+          newMovies = result ?? []; // Fallback if null
         }
+        
 
         setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
         setHasMore(newMovies.length > 0);
@@ -210,8 +213,9 @@ const SearchPage: React.FC = () => {
                 <div key={movie.title} ref={lastMovieElementRef} style={{ padding: '0 10px' }}>
                   <MoviePoster
                     title={movie.title}
-                    imageUrl={movieImages[movie.title] || '/images/default.jpg'}
-                  />
+                    imageUrl={movieImages[movie.title] || '/images/default.jpg'} onClick={function (): void {
+                      throw new Error('Function not implemented.');
+                    } }                  />
                 </div>
               );
             } else {
@@ -219,8 +223,9 @@ const SearchPage: React.FC = () => {
                 <div key={movie.title} style={{ padding: '0 10px' }}>
                   <MoviePoster
                     title={movie.title}
-                    imageUrl={movieImages[movie.title] || '/images/default.jpg'}
-                  />
+                    imageUrl={movieImages[movie.title] || '/images/default.jpg'} onClick={function (): void {
+                      throw new Error('Function not implemented.');
+                    } }                  />
                 </div>
               );
             }
