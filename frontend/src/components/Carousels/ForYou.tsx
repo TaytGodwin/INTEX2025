@@ -9,6 +9,29 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import MoviePoster from '../movieCards/MoviePoster';
 
+const Spinner = () => (
+  <div style={{ textAlign: 'center', padding: '2rem' }}>
+    <div className="spinner" />
+    <style>
+      {`
+            .spinner {
+              border: 4px solid rgba(255, 255, 255, 0.2);
+              border-top: 4px solid #57C8F4;
+              border-radius: 50%;
+              width: 40px;
+              height: 40px;
+              animation: spin 0.8s linear infinite;
+              margin: 0 auto;
+            }
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}
+    </style>
+  </div>
+);
+
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
@@ -85,6 +108,15 @@ const ForYou: React.FC<GenreRecProps> = ({ userId }) => {
     throw new Error('Function not implemented.');
   }
 
+  if (loading) {
+    return (
+      <div className="genre-rec">
+        <h3>Your Top 10</h3>
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <div className="genre-rec">
       <h2>
@@ -121,7 +153,7 @@ const ForYou: React.FC<GenreRecProps> = ({ userId }) => {
               />
             </div> */}
 
-            <MoviePoster
+            {/* <MoviePoster
               key={movie.show_id}
               imageUrl={movieImages[movie.title] || defaultImageUrl}
               title={movie.title}
@@ -131,14 +163,14 @@ const ForYou: React.FC<GenreRecProps> = ({ userId }) => {
                   movieImages[movie.title] || '/images/default.jpg'
                 );
               }} // Handle the click to open the modal
-            />
-            {/* <MovietopTen
+            /> */}
+            <MovietopTen
               key={movie.show_id}
               posterUrl={movieImages[movie.title] || '/images/default.jpg'}
               title={movie.title}
               onClick={() => handlePosterClick(movie)}
               rank={index + 1} // optional: shows 1-10
-            /> */}
+            />
           </div>
         ))}
       </Slider>
