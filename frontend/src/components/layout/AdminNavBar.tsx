@@ -1,27 +1,32 @@
-import { Link } from 'react-router-dom';
 import logo from '../../assets/Website_Logo.png'
 import '../../css/theme.css'; // For custom tweaks
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { logout as apiLogout } from '../../api/IdentityAPI';
 
 const AdminNavbar = () => {
-  const [showModal, setShowModal] = useState(false);
-
-  // Confirm Logout function to display modal
-  const confirmLogout = () => {
-    setShowModal(true); // Display logout confirmation modal
-  };
-
-  // Function to close the logout confirmation modal
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
-  // Function to handle actual logout
-  const handleLogout = () => {
-    // Implement actual logout logic here (e.g., clearing session, making API call, etc.)
-    console.log("Logging out...");
-    setShowModal(false); // Close the modal after logging out
-  };
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const [showModal, setModal] = useState(false);
+  
+    const handleLogout = async () => {
+      const result = await apiLogout();
+      if (result) {
+        logout();
+        navigate('/login');
+      } else {
+        console.error('Logout failed');
+      }
+    };
+  
+    const confirmLogout = () => {
+      setModal(true); // Show the modal
+    };
+  
+    const closeModal = () => {
+      setModal(false); // Hide the modal
+    };
 
   return (
     <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'transparent' }}>
