@@ -92,7 +92,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, relatedMovies }) => 
 
         {/* Recommendations */}
         <div className="related-section">
-          <h3>If you’ll like this, you’d definitely love…</h3>
           <div className="scrollable-related">
             {/*INSERT CONNETION TO GET TOP REC */}
             <GetTopRec showId= {movie.show_id} />
