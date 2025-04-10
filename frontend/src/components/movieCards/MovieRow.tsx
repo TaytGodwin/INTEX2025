@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
-import { getAllMovies } from '../../api/AllMoviesAPI'; // New API call to fetch all movies
+import { getAllMovies } from '../../api/MoviesAPI'; // New API call to fetch all movies
 import { getImage } from '../../api/ImageAPI';
 import MoviePoster from '../movieCards/MoviePoster';
 import { Movie } from '../../types/Movie';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function MovieRow() {
   const [movies, setMovies] = useState<Movie[]>([]);
   // Using the movie title as the key to store the fetched image URL
-  const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
+  const [movieImages, setMovieImages] = useState<{ [title: string]: string }>(
+    {}
+  );
   const [loading, setLoading] = useState<boolean>(true);
 
   // A default image URL in case fetching fails
@@ -28,7 +30,6 @@ function MovieRow() {
 
           // For each movie, fetch its image using the movie title
           const imagePromises = topTenMovies.map(async (movie) => {
-            
             const sanitizedTitle = movie.title.replace(/^#/, '');
             const blob = await getImage(sanitizedTitle);
             if (blob) {
@@ -55,11 +56,11 @@ function MovieRow() {
   }, []);
 
   const sliderSettings = {
-    dots: true,           // Show navigation dots
-    infinite: false,      // Do not loop infinitely; change to true if desired
-    speed: 500,           // Transition speed in milliseconds
-    slidesToShow: 5,      // Number of movie posters to show at once
-    slidesToScroll: 5,    // Number of posters to scroll at a time
+    dots: true, // Show navigation dots
+    infinite: false, // Do not loop infinitely; change to true if desired
+    speed: 500, // Transition speed in milliseconds
+    slidesToShow: 5, // Number of movie posters to show at once
+    slidesToScroll: 5, // Number of posters to scroll at a time
     responsive: [
       {
         breakpoint: 1024,
@@ -85,11 +86,16 @@ function MovieRow() {
       <h2>Featured on MyFlix</h2>
       <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
-          <div key={index} className="carousel-item" style={{ padding: '0 5px' }}>
+          <div
+            key={index}
+            className="carousel-item"
+            style={{ padding: '0 5px' }}
+          >
             <MoviePoster
               imageUrl={movieImages[movie.title] || defaultImageUrl}
-              title={movie.title}
-            />
+              title={movie.title} onClick={function (): void {
+                throw new Error('Function not implemented.');
+              } }            />
           </div>
         ))}
       </Slider>

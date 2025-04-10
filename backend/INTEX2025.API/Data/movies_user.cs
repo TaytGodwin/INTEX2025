@@ -3,10 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace INTEX.API.Data
 {
+    [Table("movies_users")]
     public class movies_user
     {
         [Key]
-        public int user_id { get; set; }
+        [Column("user_id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UserId{ get; set; }
 
         [Required]
         public string name { get; set; }
@@ -60,5 +63,6 @@ namespace INTEX.API.Data
 
         [Required]
         public int zip { get; set; }
+
     }
 }

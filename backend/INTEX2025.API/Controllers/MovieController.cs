@@ -28,8 +28,61 @@ namespace INTEX.API.Controllers
             return Ok("I am working");
         }
 
+        // This is a Search Route
+        [HttpGet("Search")]
+            
+        public IActionResult SearchMovies(
+                [FromQuery] string query = "",
+                [FromQuery] int pageSize = 25,
+                [FromQuery] int pageNum = 1,
+                [FromQuery] List<string>? genrelist = null)
+                
+                {
+                    var queryResult = _movieContext.Movies
+                    .Include(m => m.MovieGenres)
+                    .ThenInclude(mg => mg.Genre)
+                    .AsQueryable();
+
+                // Filter by search query if provided
+                if (!string.IsNullOrWhiteSpace(query))
+                {
+                    queryResult = queryResult.Where(m => m.title.Contains(query));
+                }
+
+                // Filter by genre list if provided
+                if (genrelist != null && genrelist.Any())
+                {
+                    var genreIDs = _movieContext.GenreNames
+                        .Where(g => genrelist.Contains(g.GenreName))
+                        .Select(g => g.GenreID)
+                        .ToList();
+                    queryResult = queryResult.Where(m => m.MovieGenres.Any(mg => genreIDs.Contains(mg.GenreID)));
+                }
+
+                var movies = queryResult
+                    .OrderBy(m => m.title)
+                    .Skip((pageNum - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(m => new
+                    {
+                        m.show_id,
+                        title = m.title ?? "",
+                        type = m.type ?? "",
+                        director = m.director ?? "",
+                        cast = m.cast ?? "",
+                        country = m.country ?? "",
+                        release_year = m.release_year,
+                        rating = m.rating ?? "",
+                        duration = m.duration ?? "",
+                        description = m.description ?? "",
+                        Genres = m.MovieGenres.Select(mg => mg.Genre.GenreName ?? "").ToList()
+                    })
+                    .ToList();
+
+                return Ok(new { Movies = movies });
+            }
         [HttpGet("AllMovies")]
-        public IActionResult GetMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null)
+        public IActionResult AllMovies(int pageSize = 25, int pageNum = 1, string sortBy = "title", [FromQuery] List<string>? genrelist = null)
         {
             var query = _movieContext.Movies
                 .Include(m => m.MovieGenres)
@@ -46,14 +99,15 @@ namespace INTEX.API.Controllers
                 query = query.Where(m => m.MovieGenres.Any(mg => genreIDs.Contains(mg.GenreID)));
             }
 
-            var allowedSortFields = new[] { "title", "release_year", "rating", "duration" };
+            var allowedSortFields = new[] { "title", "director", "type" };
             if (!allowedSortFields.Contains(sortBy))
             {
                 sortBy = "title";
             }
 
             var AllMovies = query
-                .OrderBy(sortBy)
+                .OrderBy(m => sortBy == "title" ? (m.title ?? "") : // Handles nulls
+                         sortBy == "director" ? (m.director ?? "") : "") // For strings
                 .Skip((pageNum - 1) * pageSize)
                 .Take(pageSize)
                 .Select(m => new
@@ -77,15 +131,20 @@ namespace INTEX.API.Controllers
             return Ok(new {Movies = AllMovies, totalNumMovies});
         }
 
+
         // ✅ Get distinct genre names
         [HttpGet("GetGenres")]
         // [Authorize]
         public IActionResult GetGenres()
         {
             var allGenres = _movieContext.GenreNames
-                .Select(g => g.GenreName)
-                .Distinct()
-                .ToList();
+                        .Select(g => new
+                        {
+                            g.GenreID,
+                            g.GenreName
+                        })
+                        .Distinct()
+                        .ToList();
 
             return Ok(allGenres);
         }
@@ -134,19 +193,19 @@ namespace INTEX.API.Controllers
                 _movieContext.SaveChanges();
             }
 
-            return Ok(newMovie);
+            return Ok();
         }
 
 
 
         // ✅ Update a movie
-        [HttpPut("UpdateMovie/{show_id}")]
+        [HttpPut("UpdateMovie")]
         [Authorize] // Requires users to be logged in
-        public IActionResult UpdateMovie(int show_id, [FromBody] MovieUpdateDto updatedMovie)
+        public IActionResult UpdateMovie([FromBody] MovieUpdateDto updatedMovie)
         {
             var existingMovie = _movieContext.Movies
                 .Include(m => m.MovieGenres)
-                .FirstOrDefault(m => m.show_id == show_id);
+                .FirstOrDefault(m => m.show_id == updatedMovie.show_id);
 
             if (existingMovie == null)
             {
@@ -165,7 +224,7 @@ namespace INTEX.API.Controllers
             existingMovie.description = updatedMovie.description;
             
             // Remove old links
-            var existingGenres = _movieContext.MovieGenres.Where(mg => mg.show_id == show_id);
+            var existingGenres = _movieContext.MovieGenres.Where(mg => mg.show_id == updatedMovie.show_id);
             _movieContext.MovieGenres.RemoveRange(existingGenres);
             
             // ✅ Update genres
@@ -181,7 +240,7 @@ namespace INTEX.API.Controllers
                 {
                     _movieContext.MovieGenres.Add(new movies_genre
                     {
-                        show_id = show_id,
+                        show_id = updatedMovie.show_id,
                         GenreID = genreID
                     });
                 }
@@ -189,27 +248,41 @@ namespace INTEX.API.Controllers
 
             _movieContext.SaveChanges();
 
-            return Ok(existingMovie);
+            return Ok();
         }
 
 
         // ✅ Delete a movie
-        [HttpDelete("DeleteMovie/{show_id}")]
         [Authorize] // Requires users to be logged in
-        public IActionResult DeleteMovie(string show_id)
+        [HttpDelete("DeleteMovie")]
+        public async Task<IActionResult> DeleteMovie([FromBody] int showIdToDelete)
         {
-            var movie = _movieContext.Movies.Find(show_id);
+            // Find the movie by its show_id
+            var movie = await _movieContext.Movies.FindAsync(showIdToDelete);
 
             if (movie == null)
             {
                 return NotFound(new { message = "Movie not found" });
             }
 
-            _movieContext.Movies.Remove(movie);
-            _movieContext.SaveChanges();
+            // Delete associated ratings in the movies_ratings table
+            var ratings = _movieContext.Ratings.Where(r => r.show_id == showIdToDelete);
+            _movieContext.Ratings.RemoveRange(ratings);
 
-            return NoContent();
+            // Delete associated genres in the movies_genres table
+            var genres = _movieContext.MovieGenres.Where(g => g.show_id == showIdToDelete);
+            _movieContext.MovieGenres.RemoveRange(genres);
+
+            // Delete the movie itself from the movies_titles table
+            _movieContext.Movies.Remove(movie);
+
+            // Save all changes to the database in one transaction
+            await _movieContext.SaveChangesAsync();
+
+            return Ok(new { message = "Movie and associated data deleted successfully" });
         }
+
+
 
     }
 }

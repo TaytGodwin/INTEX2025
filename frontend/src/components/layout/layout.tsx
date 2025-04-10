@@ -12,13 +12,12 @@ const Layout = () => {
   const { user } = useAuth();
 
   // Hide navbar on specific routes (e.g., /login)
-  const hideNavbarRoutes = ['/login'];
+  const hideNavbarRoutes = ['/login', '/register'];
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
 
   // For routes where we hide the navbar, simply render the Outlet and Footer
   if (shouldHideNavbar) {
     return (
-
 
       <div className="layout">
         <TopHeader/>
@@ -36,12 +35,21 @@ const Layout = () => {
   if (user && user.roles.includes('User')) {
     return (
       <div className="layout d-flex">
+        
         <aside className="side-navbar">
           <UserNavBar />
         </aside>
         <div className="main-content" style={{ marginLeft: '80px', flex: 1 }}>
+      
+        
+        <main>
           <Outlet />
+        </main>
+
+        <footer>
           <Footer />
+        </footer>
+          
         </div>
       </div>
     );

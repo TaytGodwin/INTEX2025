@@ -1,16 +1,24 @@
 // TopHeader.tsx
+import { Link } from 'react-router-dom';
 import logo from '../../assets/Website_logo.png';
 
 function TopHeader() {
   return (
-    <header className="top-header bg-dark text-white d-flex align-items-center p-2">
-      <div className="logo-container d-flex align-items-center">
-        <img
-          src={logo}
-          alt="Logo"
-          style={{ width: '60px', height: 'auto', marginRight: '0.5rem' }}
-        />
-        <span className="fs-4 fw-bold">CineNiche</span>
+    <header
+      className="top-header"
+      style={{
+        position: 'fixed',
+        top: 0,
+        width: '100%',
+        backgroundColor: 'transparent',
+        zIndex: 1000,
+        padding: '1rem 0'
+      }}
+    >
+      <div className="container-fluid d-flex justify-content-start align-items-center">
+        <Link to="/" className="navbar-brand">
+          <img src={logo} alt="My Logo" style={{ width: '150px', height: 'auto' }} />
+        </Link>
       </div>
     </header>
   );

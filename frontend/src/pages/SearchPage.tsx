@@ -1,121 +1,232 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MoviePoster from '../components/movieCards/MoviePoster';
-import { getAllMovies } from '../api/AllMoviesAPI'; 
-import { Movie } from '../types/Movie';
-import '../css/theme.css';
+import { getTotalMovies, getGenres, searchMovies } from '../api/MoviesAPI';
 import { getImage } from '../api/ImageAPI';
+import { Movie } from '../types/Movie';
 
 function sanitizeTitle(title: string): string {
-  // Remove these characters: -, ?, #, (, )
-  return title.replace(/[-?#()]/g, '');
-}
-function isAscii(str: string): boolean {
-  // This regex returns true if all characters are within the ASCII range (0-127)
-  return /^[\x00-\x7F]*$/.test(str);
+  return title.replace(/[-?#()'":’‘“”.!]/g, '');
 }
 
 const SearchPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [allMovies, setAllMovies] = useState<Movie[]>([]);
-  const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  
-  
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [movieImages, setMovieImages] = useState<{ [title: string]: string }>({});
+
+
+  // Genre dropdown state
+  const [genres, setGenres] = useState<string[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+
+  // Reset the movie list and pagination when the search term changes.
   useEffect(() => {
-    const fetchData = async () => {
+    setMovies([]);
+    setPage(1);
+    setHasMore(true);
+  }, [searchTerm, selectedGenres]);
+  // Gets Genres
+  useEffect(() => {
+    const fetchGenres = async () => {
+      const fetchedGenres = await getGenres();
+      console.log('Fetched genres:', fetchedGenres)
+      setGenres(fetchedGenres);
+    };
+    fetchGenres();
+  }, []);
+
+  // Fetch movies whenever the search term or page changes.
+  useEffect(() => {
+    const fetchMovies = async () => {
+      setLoading(true);
       try {
-        const moviesData = await getAllMovies();
-        // Filter out movies whose title is not all ASCII
-        const asciiMovies = moviesData.filter(movie => isAscii(movie.title));
-        
-        setAllMovies(asciiMovies);
-        setFilteredMovies(asciiMovies);
+        const genreList = selectedGenres.length > 0 ? selectedGenres : [];
+
+        let newMovies;
+        if (searchTerm.trim() === '' && genreList.length === 0) {
+          // fallback to getAllMovies
+          newMovies = await getTotalMovies(25, page);
+        } else {
+          // normal search
+          newMovies = await searchMovies(searchTerm.trim(), 25, page, genreList);
+        }
+
+        setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
+        setHasMore(newMovies.length > 0);
       } catch (error) {
-        console.error('Failed to fetch movies:', error);
+        console.error('Error fetching search results:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
-  }, []);
+    fetchMovies();
+  }, [searchTerm, selectedGenres, page]);
+  // Infinite scrolling: attach an observer to the last movie element.
+  
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastMovieElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore]
+  );
 
-  useEffect(() => {
-    const fetchMoviesWithImages = async () => {
-      try {
-        const moviesData = await getAllMovies();
-        // For each movie, fetch the image using the sanitized title
-        const imagePromises = moviesData.map(async (movie) => {
-          // Remove any leading '#' and encode the title
-          const sanitizedTitle = sanitizeTitle(movie.title);
-          const encodedTitle = encodeURIComponent(sanitizedTitle);
+
+// Fetch images for the movies when the movies array changes.
+   useEffect(() => {
+    const fetchImages = async () => {
+      const imagePromises = movies.map(async (movie) => {
+        const sanitizedTitle = sanitizeTitle(movie.title);
+        const encodedTitle = encodeURIComponent(sanitizedTitle);
+        try {
           const blob = await getImage(encodedTitle);
           if (blob) {
-            return { ...movie, imageUrl: URL.createObjectURL(blob) };
+            return { key: movie.title, url: URL.createObjectURL(blob) };
           } else {
-            // Use a default image if fetching fails
-            return { ...movie, imageUrl: '/images/default.jpg' };
+            return { key: movie.title, url: '/images/default.jpg' };
           }
-        });
-        const moviesWithImages = await Promise.all(imagePromises);
-        setAllMovies(moviesWithImages);
-        setFilteredMovies(moviesWithImages);
-      } catch (error) {
-        console.error('Failed to fetch movies with images:', error);
-      } finally {
-        setLoading(false);
-      }
+        } catch (error) {
+          console.error(`Error fetching image for ${movie.title}:`, error);
+          return { key: movie.title, url: '/images/default.jpg' };
+        }
+      });
+      const images = await Promise.all(imagePromises);
+      const imageMap: { [key: string]: string } = {};
+      images.forEach((img) => {
+        imageMap[img.key] = img.url;
+      });
+      setMovieImages(imageMap);
     };
-  
-    fetchMoviesWithImages();
-  }, []);
 
-  useEffect(() => {
-    const results = allMovies.filter(movie =>
-      movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredMovies(results);
-  }, [searchTerm, allMovies]);
-
-  if (loading) return <div>Loading movies...</div>;
+    if (movies.length > 0) {
+      fetchImages();
+    }
+  }, [movies]);
 
   return (
-    <div className="search-page" style={{ padding: '2rem', minHeight: '100vh' }}>
+    <div className="search-page" style={{ padding: '2rem', minHeight: '100vh', background: 'radial-gradient(ellipse at center, rgba(87,200,244,0.1) 0%, rgba(21,21,21,0.99) 60%)'}}>
       {/* Search Bar */}
-      <div className="search-bar-container" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Search movies..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            padding: '0.75rem 1rem',
-            width: '100%',
-            maxWidth: '500px',
-            borderRadius: '8px',
-            fontSize: '1rem',
-            border: 'none',
-          }}
-        />
-      </div>
-
-      {/* Movies Grid */}
       <div
-        className="search-results-grid"
+              className="form-group mb-3"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '40vh',
+                gap: '1.5rem',
+                textAlign: 'center',
+              }}
+            >
+              {/* 🔍 Styled Search Bar */}
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search for a movie..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  backgroundColor: '#303030',
+                  border: 'none',
+                  borderRadius: '4px',
+                  color: '#fff',
+                  marginBottom: '1rem',
+
+                }}
+              />
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
+  {genres.map((genre) => {
+    const isSelected = selectedGenres.includes(genre);
+
+    return (
+      <button
+        key={genre}
+        type="button"
+        onClick={() => {
+          if (isSelected) {
+            setSelectedGenres(selectedGenres.filter(g => g !== genre));
+          } else {
+            setSelectedGenres([...selectedGenres, genre]);
+          }
+        }}
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-          gap: '1.5rem',
+          padding: '0.4rem 0.75rem',
+          borderRadius: '20px',
+          border: isSelected ? '2px solid #57c8f4' : '1px solid #ccc',
+          backgroundColor: isSelected ? '#57c8f4' : 'transparent',
+          color: isSelected ? '#fff' : '#fff',
+          cursor: 'pointer',
+          fontSize: '0.9rem',
+          letterSpacing: '0.3px',
+          lineHeight: '1.2',
+          fontFamily: 'poppins',
+          margin: '0.25rem',
+          transition: 'all 0.3s ease',
         }}
       >
-        {filteredMovies.length > 0 ? (
-          filteredMovies.map(movie => (
-            <MoviePoster key={movie.show_id} title={movie.title} imageUrl={movie.imageUrl} />
-          ))
-        ) : (
-          <p style={{ textAlign: 'center' }}>No movies found.</p>
-        )}
-      </div>
+        {genre}
+      </button>
+    );
+  })}
+</div>
+</div>
+      {searchTerm === '' && selectedGenres.length === 0 && (
+        <p style={{ color: '#ccc' }}>Showing all movies...</p>
+      )}
+
+      {searchTerm === '' && selectedGenres.length > 0 && (
+        <p style={{ color: '#ccc' }}>Showing all movies in genre(s): {selectedGenres.join(', ')}</p>
+      )}
+
+      {searchTerm !== '' && (
+        <p style={{ color: '#ccc' }}>
+          Searching for: "<strong>{searchTerm}</strong>"{selectedGenres.length > 0 ? ` in genre(s): ${selectedGenres.join(', ')}` : ''}
+        </p>
+      )}
+      {/* Movies Grid */}
+      <div
+          className="search-results-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+            gap: '3rem'
+          }}
+        >
+          {movies.map((movie, index) => {
+            
+            if (movies.length === index + 1) {
+              return (
+                <div key={movie.title} ref={lastMovieElementRef} style={{ padding: '0 10px' }}>
+                  <MoviePoster
+                    title={movie.title}
+                    imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+                  />
+                </div>
+              );
+            } else {
+              return (
+                <div key={movie.title} style={{ padding: '0 10px' }}>
+                  <MoviePoster
+                    title={movie.title}
+                    imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+                  />
+                </div>
+              );
+            }
+          })}
+        </div>
+      {loading && <div>Loading...</div>}
     </div>
   );
 };
