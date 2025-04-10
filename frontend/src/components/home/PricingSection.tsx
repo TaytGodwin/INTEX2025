@@ -1,6 +1,92 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import PricingCard from './PricingCard';
+import { features } from 'process';
 
+const PricingSection: React.FC = () => {
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+
+  const handleToggle = (cycle: 'monthly' | 'yearly') => {
+    setBillingCycle(cycle);
+  };
+
+  const pricingData = [
+    {
+      planId: 'basic',
+      title:'Basic',
+      monthlyPrice: 0,
+      yearlyPrice: 0,
+      features: [
+        'Access to limited catalog',
+        'SD streaming quality',
+        '1 device at a time',
+      ],
+      buttonText: 'Try Free',
+    },
+    {
+      planId: 'standard',
+      title:'Standard',
+      monthlyPrice: 20,
+      yearlyPrice: 16,
+      features: [
+        'Personalized recommendations',
+        'Full catalog access',
+        'HD streaming quality',
+        '2 devices at a time',
+        'Download for offline',
+      ],
+      buttonText: 'Get Standard',
+      isHighlighted: true,
+    },
+    {
+      planId: 'premium',
+      title:'Premium',
+      monthlyPrice: 20,
+      yearlyPrice: 16,
+      features: [
+        'AI-powered recommendations',
+        'Full catalog access',
+        '4 devices at a time',
+        'Exclusive premiers',
+      ],
+      buttonText: 'Get Premium',
+    }, 
+  ];
+
+  const displayData = pricingData.map((plan) => {
+    const price = billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice;
+    return { ...plan, price };
+  });
+
+  return(
+    <section
+      style={{
+        backgroundColor: '#1C1C1C',
+        padding: '60px 30px',
+        color: '#fff',
+        fontFamily: 'Poppins, sans-serif',
+      }}
+    >
+      <h2
+        style={{
+          fontSize: '2.5rem',
+          fontWeight: 'bold',
+          textAlign: 'center',
+          marginBottom: '20px',
+        }}
+      >
+        Choose Your Plan
+      </h2>
+
+      <div
+        style={}
+      >
+
+      </div>
+      </section>
+  )
+
+}
 interface PricingCardProps {
   title: string;
   price: number;
