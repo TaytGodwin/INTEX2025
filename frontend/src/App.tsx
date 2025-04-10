@@ -29,7 +29,7 @@ function App() {
             <Route path="terms-of-use" element={<TermsOfUse />} />
             <Route path="menu" element={<HomePage />} />
             <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage identityApiUrl={Identity_API_URL} />} />
+            <Route path="register" element={<RegisterPage />} />
             
           </Route>
 
