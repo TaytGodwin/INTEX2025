@@ -112,7 +112,7 @@ public class RecommenderController : ControllerBase
     // For each positively rated movie, it queries the content_recs1 table via raw SQL to get recommendations.
     [HttpGet("content_recs1")]
     [Authorize] // Accessible to all logged-in users
-    public async Task<IActionResult> GetUserRecommendedLists([FromQuery] int userId)
+    public async Task<IActionResult> GetUserRecommendedLists([FromQuery] int userId=43)
     {
         // Retrieve movies that the user rated above 3 from the movies rating table.
         var ratings = await _movieDb.Ratings
