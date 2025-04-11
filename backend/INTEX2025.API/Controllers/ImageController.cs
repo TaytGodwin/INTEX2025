@@ -41,6 +41,37 @@ namespace INTEX.API.Controllers
         public async Task<IActionResult> GetImage(string imageName)
         {
             // Build the relative path by appending the folder and file extension
+            string imagePath = "Movie Posters/" + imageName;
+
+            // Get a client for the container specified by _containerName
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+            // Get a client for the blob (i.e. the specific image file) using the constructed path
+            var blobClient = containerClient.GetBlobClient(imagePath);
+
+            // Check if the blob (image file) exists in storage
+            if (!await blobClient.ExistsAsync())
+            {
+                // Return a 404 Not Found response if the image does not exist
+                return NotFound();
+            }
+
+            // Download the image file from blob storage
+            var blobDownloadInfo = await blobClient.DownloadAsync();
+
+            // Define the content type to be returned; here it is set for JPEG images
+            var contentType = "image/jpeg"; // Optionally, determine content type by file extension
+
+            // Return the image file stream with the appropriate content type
+            return File(blobDownloadInfo.Value.Content, contentType);
+        }
+        
+        // GET image from blob storage by image name for admin so it doesn't break the other stuff for images
+        [HttpGet("GetAdminImage/{imageName}")]
+        // No authorization needed as images are publicly displayed on the home page
+        public async Task<IActionResult> GetAdminImage(string imageName)
+        {
+            // Build the relative path by appending the folder and file extension
             string imagePath = "Movie Posters/" + imageName + ".jpg";
 
             // Get a client for the container specified by _containerName
