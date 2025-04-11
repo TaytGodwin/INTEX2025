@@ -193,9 +193,10 @@ const AdminDatabasePage = () => {
             genres={genres}
             onClose={() => {
               setShowAddModal(false);
-              window.location.reload();
             }}
-            onMovieAdded={(updatedMovies) => setMovies(updatedMovies)}
+            onMovieAdded={(updatedMovies) => {
+              setMovies(updatedMovies), window.location.reload();
+            }}
           />
         )}
 
@@ -206,7 +207,6 @@ const AdminDatabasePage = () => {
             onClose={() => {
               setShowEditModal(false);
               setMovieToEdit(null);
-              window.location.reload();
             }}
             onMovieUpdated={(updatedMovies) => setMovies(updatedMovies)}
           />
