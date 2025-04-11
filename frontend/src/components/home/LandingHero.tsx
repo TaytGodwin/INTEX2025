@@ -73,7 +73,8 @@ const LandingHero: React.FC = () => {
                 maxWidth: '1000px', // The image won't exceed 600px in width
                 height: '60vh',
                 objectFit: 'cover',
-                margin: '0 auto'
+                margin: '0 auto',
+                borderRadius: '15px' //
               }}
             />
           </div>
