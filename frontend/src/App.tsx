@@ -13,6 +13,7 @@ import SearchPage from './pages/SearchPage';
 import AdminDatabasePage from './pages/AdminDatabasePage';
 import Logout from './components/authentication/Logout';
 import ForgotPass from './pages/ForgotPass';
+import FavoritesPage from './pages/FavoritesPage';
 
 function App() {
   return (

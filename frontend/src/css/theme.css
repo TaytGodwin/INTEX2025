@@ -246,6 +246,9 @@ button:hover {
   background-color: #45b1da;
 }
 
+.hero-slide {
+  background-color: transparent !important;
+}
 /* Landing Sections */
 .landing-header {
   display: flex;

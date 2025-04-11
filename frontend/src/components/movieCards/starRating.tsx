@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { right } from '@popperjs/core';
 
 interface StarRatingProps {
   userId: number;
@@ -70,9 +71,18 @@ const StarRating: React.FC<StarRatingProps> = ({ userId, showId }) => {
   ));
 
   return (
+    <>
+
+
     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-      {ratingButtons}
+          
+          
+          {ratingButtons}
     </div>
+    <h6 style={{display:'flex', gap: '4px', justifyContent: 'right'}}>Rating:</h6>
+    
+    </>
+    
   );
 };
 

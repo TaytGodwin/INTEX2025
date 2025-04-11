@@ -27,7 +27,7 @@ const LandingHero: React.FC = () => {
   return (
     <section 
       className="landing-hero" 
-      style={{ position: 'relative', overflow: 'hidden', marginTop: '-70px'}}
+      style={{ position: 'relative', overflow: 'hidden', marginTop: '-15px'}}
     >
       {/* Overlay with welcome message */}
       <div
@@ -73,8 +73,7 @@ const LandingHero: React.FC = () => {
                 maxWidth: '1000px', // The image won't exceed 600px in width
                 height: '60vh',
                 objectFit: 'cover',
-                margin: '0 auto',
-                borderRadius: '15px' //
+                margin: '0 auto'
               }}
             />
           </div>
