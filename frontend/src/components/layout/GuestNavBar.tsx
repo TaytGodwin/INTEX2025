@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../../assets/Website_Logo.svg'
+import logo from '../../assets/logos/Website_Logo.svg'
 import '../../css/theme.css'; // For custom tweaks
 
 const GuestNavbar = () => {

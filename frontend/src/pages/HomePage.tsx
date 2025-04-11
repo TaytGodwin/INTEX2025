@@ -33,7 +33,6 @@ function HomePage() {
       <LandingHero />
       <FeaturedSection/>
       <TestimonialsSection />
-      
       <FAQSection />
       <PricingSection/>
 

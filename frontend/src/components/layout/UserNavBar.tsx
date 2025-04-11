@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout as apiLogout } from '../../api/IdentityAPI';
-import logo from '../../assets/Website_Logo.svg';
+import logo from '../../assets/logos/Website_Logo.svg';
 import '../../css/theme.css'; // Custom CSS for the sidebar
 import { useAuth } from '../../context/AuthContext';
 
