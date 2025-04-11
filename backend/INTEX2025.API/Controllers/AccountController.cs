@@ -49,6 +49,7 @@ public class AccountController : ControllerBase
     // GET: api/Account/userId?email=<email>
     // This endpoint retrieves the user ID based on the provided email from the movies_users table
     [HttpGet("userId")]
+    [Authorize]
     public async Task<IActionResult> GetUserIdByEmailAsync(string email)
     {
         // Execute SQL query to retrieve the user_id column for the given email
@@ -69,6 +70,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("GetUserName")]
+    [Authorize]
     public async Task<IActionResult> GetUserName(int user_id)
     {
         // Select only the user name for the given user_id

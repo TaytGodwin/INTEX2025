@@ -308,6 +308,7 @@ namespace INTEX.API.Controllers
         // GET: api/Movie/GetRating
         // Retrieves the rating of a movie by a specific user
         [HttpGet("GetRating")]
+        [Authorize]
         public async Task<IActionResult> GetRating([FromQuery] int userId, int showId)
         {
             // Find the rating record for the given user and movie
@@ -324,6 +325,7 @@ namespace INTEX.API.Controllers
         // POST: api/Movie/AddRating
         // Adds a new rating for a movie from a user
         [HttpPost("AddRating")]
+        [Authorize]
         public async Task<IActionResult> AddRating([FromQuery] int rating, [FromQuery] int userId, [FromQuery] int showId)
         {
             // Create a new rating record from the provided values

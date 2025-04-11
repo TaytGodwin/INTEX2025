@@ -68,7 +68,7 @@ namespace INTEX.API.Controllers
         
         // GET image from blob storage by image name for admin so it doesn't break the other stuff for images
         [HttpGet("GetAdminImage/{imageName}")]
-        [Authorize]
+        [Authorize(Roles = "Administrator")]
         // No authorization needed as images are publicly displayed on the home page
         public async Task<IActionResult> GetAdminImage(string imageName)
         {
