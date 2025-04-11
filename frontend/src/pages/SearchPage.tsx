@@ -6,7 +6,7 @@ import { getImage } from '../api/ImageAPI';
 import { Movie } from '../types/Movie';
 import { Genre } from '../types/Genre';
 import LazyImage from '../components/movieCards/LazyImage';
-import MoviePoster from '../components/movieCards/MoviePoster';
+
 
 const Spinner = () => (
   <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -172,14 +172,16 @@ const SearchPage: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
-                  width: '100%',
-                  padding: '0.75rem 1rem',
-                  backgroundColor: '#303030',
+                  width: '50%',
+                  padding: '1rem 1.25rem',
+                  backgroundColor: '#404040', // slightly lighter than #303030
                   border: 'none',
-                  borderRadius: '4px',
+                  borderRadius: '8px',
                   color: '#fff',
+                  fontSize: '1.1rem',
                   marginBottom: '1rem',
-
+                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+                  transition: 'box-shadow 0.3s ease',
                 }}
               />
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
@@ -219,15 +221,15 @@ const SearchPage: React.FC = () => {
 </div>
 </div>
       {searchTerm === '' && selectedGenres.length === 0 && (
-        <h3 style={{ color: '#ccc' }}>Showing all movies...</h3>
+        <h3 style={{ color: '#fff' , padding: '1rem' }}>Showing all movies...</h3>
       )}
 
       {searchTerm === '' && selectedGenres.length > 0 && (
-        <h3 style={{ color: '#ccc' }}>Showing all movies in genre(s): {selectedGenres.join(', ')}</h3>
+        <h3 style={{ color: '#fff', padding: '1rem'  }}>Showing all movies in genre(s): {selectedGenres.join(', ')}</h3>
       )}
 
       {searchTerm !== '' && (
-        <h3 style={{ color: '#ccc' }}>
+        <h3 style={{ color: '#fff' , padding: '1rem' }}>
           Searching for: "<strong>{searchTerm}</strong>"{selectedGenres.length > 0 ? ` in genre(s): ${selectedGenres.join(', ')}` : ''}
         </h3>
       )}

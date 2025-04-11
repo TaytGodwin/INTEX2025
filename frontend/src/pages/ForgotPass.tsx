@@ -110,7 +110,7 @@ function ForgotPass() {
             <div style={{ textAlign: 'center' }}>
                 <p style={{ color: '#333' }}>
                 {accountExists
-                    ? "An account with that email exists, you'll receive an email shortly. Redirecting to login..."
+                    ? "An account with that email exists, you'll receive an email shortly with password reset instructions. Redirecting to login..."
                     : 'This email is not associated with any account.'}
                 </p>
                 <button

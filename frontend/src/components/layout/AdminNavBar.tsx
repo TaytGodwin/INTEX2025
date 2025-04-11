@@ -1,4 +1,4 @@
-import logo from '../../assets/Website_Logo.png'
+import logo from '../../assets/Cineniche.svg'
 import '../../css/theme.css'; // For custom tweaks
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -32,7 +32,7 @@ const AdminNavbar = () => {
     <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'transparent' }}>
       <div className="container-fluid d-flex align-items-center">
         <Link to="/" className="navbar-brand">
-          <img src={logo} alt="My Logo" style={{ width: '50px', height: 'auto' }} />
+          <img src={logo} alt="My Logo" style={{ width: '70px', height: 'auto' }} />
         </Link>
 
         <div className="nav-main flex-grow-1 d-flex flex-row justify-content-between align-items-center">
@@ -57,7 +57,7 @@ const AdminNavbar = () => {
             </li>
             {/* Movie Database Button */}
             <li className="nav-item my-3">
-              <Link to="/movie-database" className="nav-link text-white">
+              <Link to="/admin" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-film fs-2"></i>
                   <span style={labelStyle}>Movie Database</span>
@@ -68,7 +68,7 @@ const AdminNavbar = () => {
 
           {/* Centered heading for "Administration" placed after Movie Database and before Privacy Policy */}
           <div style={adminTitleStyle}>
-            <h4 className="text-center" style={{ color: 'white', margin: 0 }}>
+            <h4 style={{ color: 'white', margin: 0, textAlign: 'center' }}>
               ADMINISTRATOR SETTINGS
             </h4>
           </div>
