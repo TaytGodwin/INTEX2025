@@ -5,7 +5,7 @@ const Footer = () => {
     <footer style={footerStyle}>
       <div style={containerStyle}>
         <p style={{ margin: 0 }}>
-          &copy; {new Date().getFullYear()} This is Intex
+          &copy; {new Date().getFullYear()} CineNiche
         </p>
         <div style={linkContainerStyle}>
           <Link to="/privacy" style={linkStyle}>Privacy Policy</Link>

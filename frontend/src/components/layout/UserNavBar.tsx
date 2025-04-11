@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout as apiLogout, pingAuth } from '../../api/IdentityAPI';
-import logo from '../../assets/Website_Logo.png';
-import '../../css/theme.css';
+import logo from '../../assets/logos/Website_Logo.svg';
+import '../../css/theme.css'; // Custom CSS for the sidebar
 import { useAuth } from '../../context/AuthContext';
 
 function UserNavbar() {
@@ -99,7 +99,8 @@ function UserNavbar() {
                 </div>
               </Link>
             </li>
-            <li className="nav-item" style={navItemStyle}>
+            {/* Add Movie */}
+            <li className="nav-item my-3">
               <Link to="/add" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-plus fs-2"></i>
