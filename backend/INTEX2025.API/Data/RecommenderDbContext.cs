@@ -17,6 +17,9 @@ public class RecommenderDbContext : DbContext
     // Table: top10_userId - Top 10 similar users based on distance metric
     public DbSet<Top10UserId> Top10UserIds { get; set; }
 
+    //table:top10_userID
+
+        
     // Table: top5_showIds - Static mapping from shows to five recommendations
     public DbSet<Top5ShowIds> Top5ShowIds { get; set; }
     

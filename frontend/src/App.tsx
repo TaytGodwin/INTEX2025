@@ -13,6 +13,7 @@ import SearchPage from './pages/SearchPage';
 import AdminDatabasePage from './pages/AdminDatabasePage';
 import Logout from './components/authentication/Logout';
 import ForgotPass from './pages/ForgotPass';
+import FavoritesPage from './pages/FavoritesPage';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           >
             <Route element={<Layout />}>
               <Route path="movies" element={<MoviePage />} />
+              <Route path="favorites" element={<FavoritesPage/>}/>
               {/* <Route path="movieDetails" element={<MovieDetailPage />} />*/}
               <Route path="search" element={<SearchPage />} />
               <Route path="logout" element={<Logout />} />

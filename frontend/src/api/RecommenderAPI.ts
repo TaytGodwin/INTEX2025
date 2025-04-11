@@ -165,3 +165,28 @@ export const getTopRec = async (showId: number): Promise<Movie[] | null> => {
     return null;
   }
 };
+
+
+// FAVORITES 
+
+export const getFavorites = async (userId: number): Promise<Movie[]> => {
+  try {
+    const response = await fetch(
+      `${Recommender_API_URL}/api/recommender/top25_userId?userId=${userId}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data as Movie[];
+    } else {
+      console.error('Error fetching favorites: ', response.status);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching favorites: ', error);
+    return [];
+  }
+};
