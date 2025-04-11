@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import ForYou from '../ForYou';
-//This is a spinner
+//This is a spinner for displaying UI when movies haven't loaded yet
 const Spinner = () => (
   <div style={{ textAlign: 'center', padding: '2rem' }}>
     <div className="spinner" />
@@ -25,10 +25,12 @@ const Spinner = () => (
   </div>
 );
 
+// General function that take user id to then call the appropriate API for movie recommendations just for them
 const LazyForYou = ({ userId }: { userId: number }) => {
   const [showComponent, setShowComponent] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
+  // This dynamcially loads more movies as the user scrolles (10% threshold of visability)
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -47,6 +49,7 @@ const LazyForYou = ({ userId }: { userId: number }) => {
     return () => observer.disconnect();
   }, []);
 
+  // Renders the compenent or spinner
   return (
     <div ref={ref} style={{ minHeight: '300px' }}>
       {showComponent ? (

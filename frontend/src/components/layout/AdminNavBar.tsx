@@ -1,32 +1,22 @@
 import logo from '../../../public/assets/Cineniche.svg';
 import '../../css/theme.css'; // For custom tweaks
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { logout as apiLogout } from '../../api/IdentityAPI';
+import { Link} from 'react-router-dom';
+
+import Logout from '../authentication/Logout';
 
 const AdminNavbar = () => {
-  const navigate = useNavigate();
-  const { logout } = useAuth();
+  
   const [showModal, setModal] = useState(false);
-
-  const handleLogout = async () => {
-    const result = await apiLogout();
-    if (result) {
-      logout();
-      navigate('/login');
-    } else {
-      console.error('Logout failed');
-    }
-  };
-
-  const confirmLogout = () => {
-    setModal(true); // Show the modal
-  };
-
-  const closeModal = () => {
-    setModal(false); // Hide the modal
-  };
+  
+  
+    const confirmLogout = () => {
+      setModal(true); // Show the modal
+    };
+  
+    const closeModal = () => {
+      setModal(false); // Hide the modal
+    };
 
   return (
     <nav
@@ -111,44 +101,9 @@ const AdminNavbar = () => {
 
       {/* Confirmation Modal */}
       {showModal && (
-        <div
-          className="modal show"
-          style={{ display: 'block' }}
-          tabIndex={-1}
-          aria-labelledby="logoutModal"
-          aria-hidden="true"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="logoutModal">
-                  Are you sure you want to log out?
-                </h5>
-              </div>
-              <div className="modal-body">
-                <p>Do you really want to log out?</p>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={closeModal}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+          
+          <Logout setShowCookieModal={closeModal}/>
+)}
     </nav>
   );
 };
