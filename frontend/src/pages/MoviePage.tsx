@@ -96,60 +96,63 @@ function MoviePage() {
   }, [user_id, userName]); // Run this effect only when user_id changes or is available
 
   return (
-    <div style={{ marginLeft: '75px' }}> {/* This creates space for the sidebar */}
+    <div style={{ marginLeft: '75px' }}>
+      {' '}
+      {/* This creates space for the sidebar */}
       <div className="movie-page">
-    <div className="movie-page">
-      {showCookieModal && (
-        <CookiesModal setShowCookieModal={setShowCookieModal} />
-      )}
-      <LandingMovieHero userName={userName} />
+        <div className="movie-page">
+          {showCookieModal && (
+            <CookiesModal setShowCookieModal={setShowCookieModal} />
+          )}
+          <LandingMovieHero userName={userName} />
 
-        <div
-          style={{
-            width: '100%',
-            height: '4px',
-            backgroundColor: '#57c8f4',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            paddingRight: '2rem',
-            position: 'relative',
-            top: 0,
-            zIndex: 100,
-          }}
-        ></div>
+          <div
+            style={{
+              width: '100%',
+              height: '4px',
+              backgroundColor: '#57c8f4',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              paddingRight: '2rem',
+              position: 'relative',
+              top: 0,
+              zIndex: 100,
+            }}
+          ></div>
 
-        {user_id !== null && (
-          <>
-            <LazyForYou userId={user_id} />
-            <GetContentRec userId={user_id} />
-          </>
-        )}
-      <div
-        style={{
-          width: '100%',
-          height: '4px', // You can adjust height
-          backgroundColor: '#57c8f4', // Nice blue color
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          paddingRight: '2rem',
-          position: 'relative', // or 'fixed' if you want it to stay on top while scrolling
-          top: 0,
-          zIndex: 100,
-        }}
-      ></div>
-      {user_id !== null && (
-        <>
-          <LazyForYou userId={user_id} />
-          <GetContentRec userId={user_id} />
-        </>
-      )}
+          {user_id !== null && (
+            <>
+              <LazyForYou userId={user_id} />
+              <GetContentRec userId={user_id} />
+            </>
+          )}
+          <div
+            style={{
+              width: '100%',
+              height: '4px', // You can adjust height
+              backgroundColor: '#57c8f4', // Nice blue color
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              paddingRight: '2rem',
+              position: 'relative', // or 'fixed' if you want it to stay on top while scrolling
+              top: 0,
+              zIndex: 100,
+            }}
+          ></div>
+          {user_id !== null && (
+            <>
+              <LazyForYou userId={user_id} />
+              <GetContentRec userId={user_id} />
+            </>
+          )}
 
-        <div className="genre-recs-wrapper">
-          {genres.slice(0, visibleCount).map((genre, index) => (
-            <LazyGenreRec key={index} genre={genre.genreName} />
-          ))}
+          <div className="genre-recs-wrapper">
+            {genres.slice(0, visibleCount).map((genre, index) => (
+              <LazyGenreRec key={index} genre={genre.genreName} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
