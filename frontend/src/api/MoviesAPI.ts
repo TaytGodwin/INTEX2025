@@ -24,14 +24,12 @@ export const getAllMovies = async (): Promise<Movie[]> => {
     return [];
   }
 };
-export const loadImage = async (imageName: string): Promise<string | null> => {
+
+export const loadImage = async (imageName: string): Promise<Blob | null> => {
   try {
     const response = await fetch(
       `${MOVIE_API_URL}/api/Image/GetImage/${encodeURIComponent(imageName)}`,
-      {
-        method: 'GET',
-        credentials: 'include'
-      }
+      { method: 'GET', credentials: 'include' }
     );
 
     if (!response.ok) {
@@ -39,13 +37,14 @@ export const loadImage = async (imageName: string): Promise<string | null> => {
       return null;
     }
 
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
+    // Return the blob so you have the actual file object.
+    return await response.blob();
   } catch (error) {
     console.error('Error loading image:', error);
     return null;
   }
 };
+
 export const uploadImage = async (
   imageName: string,
   file: File
@@ -182,6 +181,8 @@ export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
     });
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
+    } else {
+      console.log(`Added movie to database: ${MovieToAdd}`);
     }
     // This returns true if the movie was successfully added
     return true;
@@ -190,7 +191,26 @@ export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
     return false;
   }
 };
+export const deleteImage = async (imageName: string): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${MOVIE_API_URL}/api/Image/DeleteImage/${encodeURIComponent(imageName)}`,
+      {
+        method: 'DELETE',
+        credentials: 'include',
+      }
+    );
 
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    return false;
+  }
+};
 // This will delete a movie
 export const deleteMovie = async (ShowIdToDelete: number): Promise<boolean> => {
   try {

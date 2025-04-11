@@ -25,7 +25,7 @@ export default defineConfig({
         "default-src 'self'; " +
         "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com; " +
-        "img-src 'self' data:; " +
+        "img-src 'self' data: blob:; " +
         "frame-ancestors 'none'; " +
         "font-src 'self' fonts.gstatic.com data:; " +
         "connect-src 'self' https://localhost:5000 https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net'; " +
