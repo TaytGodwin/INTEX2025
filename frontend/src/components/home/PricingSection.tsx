@@ -52,6 +52,11 @@ const PricingSection: React.FC = () => {
     const price = billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice;
     return { ...plan, price };
   });
+  
+  // Renders the pricing section:
+  // - Displays toggle buttons for monthly/yearly billing
+  // - Dynamically calculates prices based on selected billing cycle
+  // - Maps each plan to a styled PricingCard component
   return (
     <section
       style={{

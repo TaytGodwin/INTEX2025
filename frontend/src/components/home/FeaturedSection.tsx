@@ -59,6 +59,9 @@ function FeaturedSection() {
     ],
   };
 
+  // Renders the "Featured on MyFlix" section:
+  // - Displays a carousel of featured movies using the Slider component
+  // - Each slide shows a movie poster and title
   return (
     <section
       className="featured-section"
