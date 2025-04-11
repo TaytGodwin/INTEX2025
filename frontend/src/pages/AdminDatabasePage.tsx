@@ -9,6 +9,7 @@ import { Genre } from '../types/Genre';
 import AdminPagination from '../components/admin/AdminPagination';
 import { deleteImage } from '../api/ImageAPI';
 
+// Main admin console
 const AdminDatabasePage = () => {
   const [allMovies, setMovies] = useState<Movie[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -21,8 +22,10 @@ const AdminDatabasePage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
 
+  // First - track the movies. Including several ways to fitler
   useEffect(() => {
     const fetchData = async () => {
+        // All movies
       if (searchTerm.trim() === '') {
         const { movies, totalNumMovies } = await getTotalMovies(
           pageSize,
@@ -30,7 +33,8 @@ const AdminDatabasePage = () => {
           sortByPreference
         );
         setMovies(movies);
-        setTotalPages(Math.ceil(totalNumMovies / pageSize));
+        setTotalPages(Math.ceil(totalNumMovies / pageSize)); // track dynamic pagination
+        // Search movies
       } else {
         const newMovies = await searchMovies(
           searchTerm.trim(),
@@ -38,15 +42,18 @@ const AdminDatabasePage = () => {
           currentPage
         );
         setMovies(newMovies);
-        setTotalPages(Math.ceil(newMovies.length / pageSize));
+        setTotalPages(Math.ceil(newMovies.length / pageSize)); // dynamic pagination
       }
+      // Filter by genre
       const genreData: Genre[] = await getGenres();
       setGenres(genreData);
     };
     fetchData();
   }, [pageSize, currentPage, sortByPreference, searchTerm]);
 
+  // For deleting the movie and image for the movie
   const handleDelete = async (show_id: number, imageName: string) => {
+    // validates with user
     const confirmDelete = window.confirm(
       'Are you sure you want to delete this movie? It will also delete all ratings and the associated image.'
     );
@@ -79,12 +86,12 @@ const AdminDatabasePage = () => {
       alert('An error occurred. Please try again later.');
     }
   };
-
+// This helps handle the modals
   const handleOpenEdit = (movie: Movie) => {
     setMovieToEdit(movie);
     setShowEditModal(true);
   };
-
+// Helps us know and track genres
   const handleGenres = (movie: Movie) => {
     return (
       <>
@@ -98,7 +105,9 @@ const AdminDatabasePage = () => {
     );
   };
 
+  // Display the complete page for admin for accesing supplementary models
   return (
+    // Only admin can see this page
     <AuthorizeView allowedRoles={['Administrator']}>
       <div style={adminPageStyle}>
         <main style={contentStyle}>
@@ -118,12 +127,12 @@ const AdminDatabasePage = () => {
             <button style={searchButtonStyle}>Search</button>
             <button
               style={addButtonStyle}
-              onClick={() => setShowAddModal(true)}
+              onClick={() => setShowAddModal(true)} // For displaying adding moving
             >
               + Add Movie
             </button>
           </div>
-
+              {/* Table dispalying all the tables and information and movies queried */}
           <div className="table-responsive">
             <table style={tableStyle}>
               <thead>
@@ -143,6 +152,7 @@ const AdminDatabasePage = () => {
                 </tr>
               </thead>
               <tbody>
+                {/* Dynamiclly load the movie information up for all movies */}
                 {allMovies.map((movie) => (
                   <tr key={movie.show_id}>
                     <td style={tdStyle}>{movie.title}</td>
@@ -174,6 +184,7 @@ const AdminDatabasePage = () => {
             </table>
           </div>
 
+                {/* Calls compenent for pagination */}
           <AdminPagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -188,6 +199,7 @@ const AdminDatabasePage = () => {
           />
         </main>
 
+{/* Manages adding movie modal and passes the correct values.  */}
         {showAddModal && (
           <AddMovieModal
             genres={genres}
@@ -195,11 +207,13 @@ const AdminDatabasePage = () => {
               setShowAddModal(false);
             }}
             onMovieAdded={(updatedMovies) => {
-              setMovies(updatedMovies), window.location.reload();
+                // Changes list of movies to included added movie and reloads for effect
+              setMovies(updatedMovies), window.location.reload(); 
             }}
           />
         )}
 
+{/* Edit movie information modal, updates list with changed information after updating in database */}
         {showEditModal && movieToEdit && (
           <EditMovieModal
             movie={movieToEdit}
@@ -216,6 +230,8 @@ const AdminDatabasePage = () => {
   );
 };
 
+
+// Admin specific styling because of the uniqueness of the page
 const adminPageStyle = {
   display: 'flex',
   minHeight: '100vh',
