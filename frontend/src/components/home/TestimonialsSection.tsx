@@ -91,4 +91,4 @@ const testimonialColumnStyle: React.CSSProperties = {
   flexBasis: '48%',
   marginBottom: '20px',
 };
-export default TestimonialsSection;
+export default React.memo(TestimonialsSection);

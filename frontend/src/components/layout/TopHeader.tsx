@@ -1,6 +1,7 @@
 // TopHeader.tsx
 import { Link } from 'react-router-dom';
 import logo from '../../assets/Cineniche.svg';
+import React from 'react';
 
 function TopHeader() {
   return (
@@ -49,4 +50,4 @@ function TopHeader() {
   );
 }
 
-export default TopHeader;
+export default React.memo(TopHeader);

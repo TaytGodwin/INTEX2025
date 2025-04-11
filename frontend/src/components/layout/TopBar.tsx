@@ -24,4 +24,4 @@ const TopBar: React.FC<TopBarProps> = ({ userName }) => {
   );
 };
 
-export default TopBar;
+export default React.memo(TopBar);

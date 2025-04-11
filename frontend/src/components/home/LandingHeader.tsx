@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 function LandingHeader() {
@@ -15,4 +16,4 @@ function LandingHeader() {
   );
 }
 
-export default LandingHeader;
+export default React.memo(LandingHeader);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+
 import Slider from 'react-slick';
 import MoviePoster from '../movieCards/MoviePoster';
 import 'slick-carousel/slick/slick.css';
@@ -13,6 +13,8 @@ import SavedByTheBell from '../../assets/Featured/Saved by the Bell.jpg';
 import ScaryMovie5 from '../../assets/Featured/Scary Movie 5.jpg';
 import SevenPounds from '../../assets/Featured/Seven Pounds.jpg';
 import StrangerThings from '../../assets/Featured/Stranger Things.jpg';
+import { useState } from 'react';
+import React from 'react';
 
 
 // Hardcoded array of featured movies
@@ -75,4 +77,4 @@ function FeaturedSection() {
   );
 }
 
-export default FeaturedSection;
+export default React.memo(FeaturedSection);
