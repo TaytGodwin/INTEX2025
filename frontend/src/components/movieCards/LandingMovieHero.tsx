@@ -9,7 +9,6 @@ import '../../css/theme.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Link } from 'react-router-dom';
-import AnimatedButton from '../Animations/AnimatedButton';
 
 
 interface LandingHeroProps {
@@ -56,6 +55,8 @@ const LandingMovieHero: React.FC<LandingHeroProps> = ({ userName }) => {
           padding: '0 1rem',
         }}
       >
+        
+
         <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
           Welcome {userName}
         </h1>
@@ -64,18 +65,16 @@ const LandingMovieHero: React.FC<LandingHeroProps> = ({ userName }) => {
         </p>
         <Link
           to="/search"
-          // className="nav-link sign-in-button"
-          // style={{
-          //   fontSize: '2rem',
-          //   borderRadius: '50px',
-          //   padding: '0.5rem 1.5rem',
-          // }}
+          className="nav-link sign-in-button"
+          style={{
+            fontSize: '2rem',
+            borderRadius: '50px',
+            padding: '0.5rem 1.5rem',
+          }}
         >
-          <AnimatedButton/>
+          
           Explore
         </Link>
-        
-        <AnimatedButton/>
       </div>
       <Slider {...sliderSettings}>
         {slides.map((slide, index) => (
