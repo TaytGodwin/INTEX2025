@@ -1,4 +1,4 @@
-import logo from '../../assets/Cineniche.svg'
+import logo from '../../../public/assets/Cineniche.svg';
 import '../../css/theme.css'; // For custom tweaks
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,30 +9,37 @@ const AdminNavbar = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [showModal, setModal] = useState(false);
-  
-    const handleLogout = async () => {
-      const result = await apiLogout();
-      if (result) {
-        logout();
-        navigate('/login');
-      } else {
-        console.error('Logout failed');
-      }
-    };
-  
-    const confirmLogout = () => {
-      setModal(true); // Show the modal
-    };
-  
-    const closeModal = () => {
-      setModal(false); // Hide the modal
-    };
+
+  const handleLogout = async () => {
+    const result = await apiLogout();
+    if (result) {
+      logout();
+      navigate('/login');
+    } else {
+      console.error('Logout failed');
+    }
+  };
+
+  const confirmLogout = () => {
+    setModal(true); // Show the modal
+  };
+
+  const closeModal = () => {
+    setModal(false); // Hide the modal
+  };
 
   return (
-    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'transparent' }}>
+    <nav
+      className="navbar navbar-expand-lg"
+      style={{ backgroundColor: 'transparent' }}
+    >
       <div className="container-fluid d-flex align-items-center">
         <Link to="/" className="navbar-brand">
-          <img src={logo} alt="My Logo" style={{ width: '70px', height: 'auto' }} />
+          <img
+            src={logo}
+            alt="My Logo"
+            style={{ width: '70px', height: 'auto' }}
+          />
         </Link>
 
         <div className="nav-main flex-grow-1 d-flex flex-row justify-content-between align-items-center">
@@ -79,14 +86,18 @@ const AdminNavbar = () => {
               <li className="nav-item my-3">
                 <Link to="/privacy" className="nav-link text-white">
                   <div style={iconWrapperStyle}>
-                    <i className="bi bi-shield-lock fs-2"></i> {/* Lock icon for Privacy Policy */}
+                    <i className="bi bi-shield-lock fs-2"></i>{' '}
+                    {/* Lock icon for Privacy Policy */}
                     <span style={labelStyle}>Privacy</span>
                   </div>
                 </Link>
               </li>
               {/* Logout */}
               <li className="nav-item my-3">
-                <button onClick={confirmLogout} className="nav-link text-white btn btn-link">
+                <button
+                  onClick={confirmLogout}
+                  className="nav-link text-white btn btn-link"
+                >
                   <div style={iconWrapperStyle}>
                     <i className="bi bi-box-arrow-right fs-2"></i>
                     <span style={labelStyle}>Logout</span>
@@ -111,14 +122,28 @@ const AdminNavbar = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="logoutModal">Are you sure you want to log out?</h5>
+                <h5 className="modal-title" id="logoutModal">
+                  Are you sure you want to log out?
+                </h5>
               </div>
               <div className="modal-body">
                 <p>Do you really want to log out?</p>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
-                <button type="button" className="btn btn-danger" onClick={handleLogout}>Logout</button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={closeModal}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
               </div>
             </div>
           </div>

@@ -1,10 +1,10 @@
 import React from 'react';
 import Slider from 'react-slick';
 
-import genericBg from '../../assets/Solo A Star Wars Story.jpg';
-import poster1 from '../../assets/The Music of Silence.jpg';
-import poster2 from '../../assets/The Secret Life of Pets 2.jpg';
-import poster3 from '../../assets/Jaws.jpg';
+import genericBg from '../../../public/assets/Solo A Star Wars Story.jpg';
+import poster1 from '../../../public/assets/The Music of Silence.jpg';
+import poster2 from '../../../public/assets/The Secret Life of Pets 2.jpg';
+import poster3 from '../../../public/assets/Jaws.jpg';
 import '../../css/theme.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
