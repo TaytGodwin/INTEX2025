@@ -7,9 +7,7 @@
   import MovieDetails from '../components/movieCards/MovieDetails';
  
   import { getFavorites } from '../api/RecommenderAPI';
-import { pingAuth,  } from '../api/IdentityAPI';
-import LandingMovieHero from '../components/movieCards/LandingMovieHero';
-  
+import { pingAuth,  } from '../api/IdentityAPI';  
 function sanitizeTitle(title: string): string {
     return title.replace(/[\/\-?#()'":’‘“”.!&]/g, '');
   }
