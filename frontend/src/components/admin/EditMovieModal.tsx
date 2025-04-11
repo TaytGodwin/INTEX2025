@@ -21,13 +21,17 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
     selectedGenres: movie.genres || [], // Ensure genres are initialized as an array
   });
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<Blob | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchImage = async () => {
-      const url = await loadImage(formData.title);
-      setImageUrl(url);
+      const blob = await loadImage(formData.title);
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        setImageUrl(url);
+        setImageFile(blob); // Now imageFile holds the blob, not a promise or URL.
+      }
     };
     fetchImage();
   }, [formData.title]);
@@ -62,6 +66,7 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
 
     // Validate that the title is provided, which we use as the image name
     const imageName = formData.title.trim();
+
     if (!imageName) {
       alert('Image title is required!');
       return;
@@ -106,7 +111,7 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
             onError={(e) => {
               e.currentTarget.src = '/images/default.jpg';
             }}
-            style={{ maxWidth: '100%', height: 'auto' }}
+            style={{ maxWidth: '45%', height: 'auto', alignSelf: 'center' }}
           />
           {[
             'title',

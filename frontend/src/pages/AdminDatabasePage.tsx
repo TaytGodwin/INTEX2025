@@ -7,6 +7,7 @@ import AddMovieModal from '../components/admin/AddMovieModal';
 import EditMovieModal from '../components/admin/EditMovieModal';
 import { Genre } from '../types/Genre';
 import AdminPagination from '../components/admin/AdminPagination';
+import { deleteImage } from '../api/ImageAPI';
 
 const AdminDatabasePage = () => {
   const [allMovies, setMovies] = useState<Movie[]>([]);
@@ -45,20 +46,36 @@ const AdminDatabasePage = () => {
     fetchData();
   }, [pageSize, currentPage, sortByPreference, searchTerm]);
 
-  const handleDelete = async (show_id: number) => {
+  const handleDelete = async (show_id: number, imageName: string) => {
     const confirmDelete = window.confirm(
-      'Are you sure you want to delete this movie? It will also delete all ratings associated with this movie'
+      'Are you sure you want to delete this movie? It will also delete all ratings and the associated image.'
     );
+
     if (!confirmDelete) return;
 
     try {
-      const success = await deleteMovie(show_id);
-      if (success) {
+      // First, delete the movie.
+      const movieDeleteSuccess = await deleteMovie(show_id);
+
+      if (movieDeleteSuccess) {
+        // Then, delete the associated image using your deleteImage API.
+        try {
+          await deleteImage(imageName);
+        } catch (imageError) {
+          console.error('Error deleting image:', imageError);
+          // Continue with state update despite image deletion failure
+        }
+
+        // Update local state to remove the movie regardless of image deletion result
         setMovies(allMovies.filter((m) => m.show_id !== show_id));
+
+        // Show success message to user
+        alert('Movie deleted successfully');
       } else {
         alert('Failed to delete the movie. Please try again.');
       }
     } catch (error) {
+      console.error('An error occurred during movie deletion:', error);
       alert('An error occurred. Please try again later.');
     }
   };
@@ -84,7 +101,6 @@ const AdminDatabasePage = () => {
   return (
     <AuthorizeView allowedRoles={['Administrator']}>
       <div style={adminPageStyle}>
-
         <main style={contentStyle}>
           <h2 style={headerStyle}>🎬 Movie Database</h2>
 
@@ -100,7 +116,10 @@ const AdminDatabasePage = () => {
               style={searchInputStyle}
             />
             <button style={searchButtonStyle}>Search</button>
-            <button style={addButtonStyle} onClick={() => setShowAddModal(true)}>
+            <button
+              style={addButtonStyle}
+              onClick={() => setShowAddModal(true)}
+            >
               + Add Movie
             </button>
           </div>
@@ -109,8 +128,17 @@ const AdminDatabasePage = () => {
             <table style={tableStyle}>
               <thead>
                 <tr>
-                  {['Title', 'Type', 'Genres', 'Year', 'Director', 'Actions'].map((header, idx) => (
-                    <th key={idx} style={thStyle}>{header}</th>
+                  {[
+                    'Title',
+                    'Type',
+                    'Genres',
+                    'Year',
+                    'Director',
+                    'Actions',
+                  ].map((header, idx) => (
+                    <th key={idx} style={thStyle}>
+                      {header}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -132,7 +160,9 @@ const AdminDatabasePage = () => {
                         </button>
                         <button
                           style={actionButtonStyle.delete}
-                          onClick={() => handleDelete(movie.show_id)}
+                          onClick={() =>
+                            handleDelete(movie.show_id, movie.title)
+                          }
                         >
                           🗑 Delete
                         </button>
@@ -161,7 +191,10 @@ const AdminDatabasePage = () => {
         {showAddModal && (
           <AddMovieModal
             genres={genres}
-            onClose={() => setShowAddModal(false)}
+            onClose={() => {
+              setShowAddModal(false);
+              window.location.reload();
+            }}
             onMovieAdded={(updatedMovies) => setMovies(updatedMovies)}
           />
         )}
@@ -173,6 +206,7 @@ const AdminDatabasePage = () => {
             onClose={() => {
               setShowEditModal(false);
               setMovieToEdit(null);
+              window.location.reload();
             }}
             onMovieUpdated={(updatedMovies) => setMovies(updatedMovies)}
           />
@@ -188,12 +222,6 @@ const adminPageStyle = {
   backgroundColor: '#121212',
   fontFamily: 'Poppins, sans-serif',
 };
-
-
-
-
-
-
 
 const contentStyle = {
   flex: 1,
