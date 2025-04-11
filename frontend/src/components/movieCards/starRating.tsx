@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { right } from '@popperjs/core';
 
 interface StarRatingProps {
   userId: number;
