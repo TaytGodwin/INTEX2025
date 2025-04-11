@@ -3,7 +3,7 @@ import { Movie } from '../types/Movie';
 import { NewMovie } from '../types/NewMovie';
 
 const MOVIE_API_URL = // 'https://localhost:5000';
- 'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 // Gets an object back full of all movie info
 export const getAllMovies = async (): Promise<Movie[]> => {
@@ -31,7 +31,7 @@ export const getAllMovies = async (): Promise<Movie[]> => {
 export const loadImage = async (imageName: string): Promise<Blob | null> => {
   try {
     const response = await fetch(
-      `${MOVIE_API_URL}/api/Image/GetImage/${encodeURIComponent(imageName)}`,
+      `${MOVIE_API_URL}/api/Image/GetAdminImage/${encodeURIComponent(imageName)}`,
       { method: 'GET', credentials: 'include' }
     );
     // Returns the file in blob format to pass on to the edit page
