@@ -6,7 +6,7 @@ import AdminNavBar from './AdminNavBar';
 import Footer from './Footer';
 import TopHeader from './TopHeader';
 
-
+// Compenetnt to track and display layout of things for logged in userss
 const Layout = () => {
   const location = useLocation();
   const { user } = useAuth();

@@ -42,6 +42,7 @@ logout();
     }, 500);
   };
 
+  // Display THe logout modal
   return (
     <div
       style={{

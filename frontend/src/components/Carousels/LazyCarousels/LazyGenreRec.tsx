@@ -2,10 +2,12 @@
 import { useEffect, useRef, useState } from 'react';
 import GenreRec from '../GenreRec'; // Adjust path if needed
 
+// Builds the base for how we will pass in genres to get a recommended carosael (sp?)
 interface LazyGenreRecProps {
   genre: string;
 }
 
+// A loading image, spinner circle for when movies don't load
 const Spinner = () => (
   <div style={{ textAlign: 'center', padding: '2rem' }}>
     <div className="spinner" />
@@ -30,11 +32,12 @@ const Spinner = () => (
   </div>
 );
 
-
+// Manges the view of the genre carselous
 const LazyGenreRec: React.FC<LazyGenreRecProps> = ({ genre }) => {
   const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  // Keeps track of how far the use scrolls to dynamcially render more movie information
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -53,13 +56,10 @@ const LazyGenreRec: React.FC<LazyGenreRecProps> = ({ genre }) => {
     return () => observer.disconnect();
   }, []);
 
+  // Sets up genre view based on a specific genre or displays a loading spinner (one for the entire element)
   return (
     <div ref={containerRef} style={{ minHeight: '300px' }}>
-      {isVisible ? (
-        <GenreRec genre={genre} />
-      ) : (
-        <Spinner />
-      )}
+      {isVisible ? <GenreRec genre={genre} /> : <Spinner />}
     </div>
   );
 };

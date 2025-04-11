@@ -25,6 +25,13 @@ const Spinner = () => (
   </div>
 );
 
+// ForgotPass component state:
+// - loading: indicates if the request is in progress
+// - submitted: tracks whether the form was submitted
+// - accountExists: tracks if the entered email is linked to an account
+// - email: stores the user's input
+// - error: stores any error messages
+// - navigate: used to redirect the user after successful action
 function ForgotPass() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);

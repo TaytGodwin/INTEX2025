@@ -10,6 +10,8 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 const LandingHero: React.FC = () => {
+  // Settings for the featured movie carousel (react-slick):
+  // - Enables autoplay, navigation arrows, and pagination dots
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -49,14 +51,17 @@ const LandingHero: React.FC = () => {
           padding: '0',
         }}
       >
-
-        {/* Custom welcome page for the user */}
-        <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+        {/* // Hero section content:
+        // - Displays main welcome message and brief platform description */}
+        <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}> 
           Welcome to CineNiche
         </h1>
         <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>
           Stream your favorite shows and movies anytime, anywhere.
         </p>
+        {/* // "Get Started" button:
+        // - Styled navigation link that routes users to the registration page
+        */}
         <Link
           to="/register"
           className="nav-link sign-in-button"
@@ -69,6 +74,9 @@ const LandingHero: React.FC = () => {
           Get Started
         </Link>
       </div>
+      {/* // Renders hero image carousel using react-slick:
+      // - Loops through slide images and displays them with consistent styling
+      */}
       <Slider {...sliderSettings}>
         {slides.map((slide, index) => (
           <div key={index} className="hero-slide">

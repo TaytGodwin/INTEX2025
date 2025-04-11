@@ -1,3 +1,7 @@
+// User interface:
+// - Represents a user's profile, including personal info, contact details, and streaming platform usage
+// - Platform fields indicate subscription status (true/false) for various services
+
 export interface User{
     // User details to be put here 
     user_id: number;

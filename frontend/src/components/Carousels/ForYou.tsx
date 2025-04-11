@@ -9,7 +9,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import MovieDetails from '../movieCards/MovieDetails';
 
-
+// A loading spinner for waiting while images and title load for music
 const Spinner = () => (
   <div style={{ textAlign: 'center', padding: '2rem' }}>
     <div className="spinner" />
@@ -32,12 +32,18 @@ const Spinner = () => (
     </style>
   </div>
 );
+
+// Helps clean up titles that are stored dirty
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
+
+// sets up tracking userId for specifc recomendations. 
 interface GenreRecProps {
   userId: number;
 }
+
+// User_id passed from parent to the API call to get recommended movies
 const ForYou: React.FC<GenreRecProps> = ({ userId }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [selectedPosterUrl, setSelectedPosterUrl] = useState<string>('');
@@ -49,6 +55,7 @@ const ForYou: React.FC<GenreRecProps> = ({ userId }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const defaultImageUrl = '/images/default.jpg';
 
+  // Gets movies and tracks information for them
   useEffect(() => {
     const fetchMovies = async () => {
       setLoading(true);
@@ -107,12 +114,13 @@ const ForYou: React.FC<GenreRecProps> = ({ userId }) => {
     );
   } 
 
-
+  // Display of the element, the title and the way they are displayed 
   return (
     <div className="genre-rec">
       <h2>
         Your Top 10<strong>{}</strong>
       </h2>
+      {/* // Display setting to click through */}
       <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
           <div
@@ -120,7 +128,7 @@ const ForYou: React.FC<GenreRecProps> = ({ userId }) => {
             className="carousel-item"
             style={{ padding: '0 5px' }}
           >
-          
+          {/* // Another element to help track the correct movies  */}
             <MovietopTen
               key={movie.show_id}
               posterUrl={movieImages[movie.title] || '/images/default.jpg'}
