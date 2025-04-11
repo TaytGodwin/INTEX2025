@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { Genre } from '../../types/Genre';
-import { uploadImage } from '../../api/MoviesAPI';
+import { loadImage, uploadImage } from '../../api/MoviesAPI';
 
 interface EditMovieModalProps {
   movie: any; // Replace with correct type
@@ -22,6 +22,15 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
   });
 
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      const url = await loadImage(formData.title);
+      setImageUrl(url);
+    };
+    fetchImage();
+  }, [formData.title]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -65,7 +74,9 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
     }
 
     // Create a new File object with the title as the new file name
-    const renamedFile = new File([imageFile], `${imageName}.jpg`, { type: imageFile.type });
+    const renamedFile = new File([imageFile], `${imageName}`, {
+      type: imageFile.type,
+    });
 
     // Call the API function from MoviesAPI to upload the image
     const uploadSuccess = await uploadImage(imageName, renamedFile);
@@ -89,6 +100,14 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
           </button>
         </div>
         <form onSubmit={handleSubmit} style={formStyle}>
+          <img
+            src={imageUrl || '/images/default.jpg'}
+            alt="Movie Poster"
+            onError={(e) => {
+              e.currentTarget.src = '/images/default.jpg';
+            }}
+            style={{ maxWidth: '100%', height: 'auto' }}
+          />
           {[
             'title',
             'type',
@@ -140,10 +159,10 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
           />
           <div style={{ marginTop: '1rem' }}>
             <label style={labelStyle}>Upload Image (JPG only)</label>
-            <input 
-              type="file" 
-              accept=".jpg, image/jpeg" 
-              onChange={handleFileUpload} 
+            <input
+              type="file"
+              accept=".jpg, image/jpeg"
+              onChange={handleFileUpload}
               style={inputStyle}
             />
           </div>

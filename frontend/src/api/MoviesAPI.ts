@@ -2,8 +2,8 @@ import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
 import { NewMovie } from '../types/NewMovie';
 
-const MOVIE_API_URL = //'https://localhost:5000';
-  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const MOVIE_API_URL = 'https://localhost:5000';
+// 'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 export const getAllMovies = async (): Promise<Movie[]> => {
   try {
@@ -24,7 +24,28 @@ export const getAllMovies = async (): Promise<Movie[]> => {
     return [];
   }
 };
+export const loadImage = async (imageName: string): Promise<string | null> => {
+  try {
+    const response = await fetch(
+      `${MOVIE_API_URL}/api/Image/GetImage/${encodeURIComponent(imageName)}`,
+      {
+        method: 'GET',
+        credentials: 'include'
+      }
+    );
 
+    if (!response.ok) {
+      console.error(`Failed to load image: ${response.statusText}`);
+      return null;
+    }
+
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+  } catch (error) {
+    console.error('Error loading image:', error);
+    return null;
+  }
+};
 export const uploadImage = async (
   imageName: string,
   file: File
