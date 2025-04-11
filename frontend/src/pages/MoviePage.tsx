@@ -156,7 +156,6 @@ function MoviePage() {
         </div>
       </div>
     </div>
-  </div>
   );
 }
 
