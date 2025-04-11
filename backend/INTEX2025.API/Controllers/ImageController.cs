@@ -6,113 +6,119 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace INTEX.API.Controllers
 {
+    // Define the route and mark as API controller
     [Route("api/[controller]")]
     [ApiController]
     public class ImageController : ControllerBase
     {
+        // BlobServiceClient is used to interact with Azure Blob Storage
         private readonly BlobServiceClient _blobServiceClient;
+        // Name of the container in Azure Blob Storage
         private readonly string _containerName;
 
-        // This will simply show the images for each movie (needs to be called each time)
+        // Constructor: Initialize the BlobServiceClient and container name using environment variables
         public ImageController(IConfiguration configuration)
         {
-            // Load connection string and container name from environment variables
+            // Retrieve the connection string and container name from environment variables
             var connectionString = Environment.GetEnvironmentVariable("BLOB_CONNECTION");
             var containerName = Environment.GetEnvironmentVariable("CONTAINER_NAME");
 
-
-            // If environment variables are null, throw an exception or handle appropriately
+            // Ensure both environment variables are available; throw exception if any are missing
             if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(containerName))
             {
                 throw new InvalidOperationException("Blob connection string or container name is missing.");
             }
 
-            // Initialize BlobServiceClient using the connection string
+            // Create a BlobServiceClient using the connection string
             _blobServiceClient = new BlobServiceClient(connectionString);
+            // Assign the container name for later use
             _containerName = containerName;
         }
 
-        // Get image from blob storage
-        [HttpGet("GetImage/{imageName}")] 
-        // This does not have an authorized tag because it displays some on the home page
+        // GET image from blob storage by image name
+        [HttpGet("GetImage/{imageName}")]
+        // No authorization needed as images are publicly displayed on the home page
         public async Task<IActionResult> GetImage(string imageName)
         {
-            // Append the folder name correctly (no URL encoding here)
-            string imagePath = "Movie Posters/" + imageName;
+            // Build the relative path by appending the folder and file extension
+            string imagePath = "Movie Posters/" + imageName + ".jpg";
 
-            // Get the container client
+            // Get a client for the container specified by _containerName
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
-            // Get the blob client for the requested image
+            // Get a client for the blob (i.e. the specific image file) using the constructed path
             var blobClient = containerClient.GetBlobClient(imagePath);
 
-            // Check if the blob exists
+            // Check if the blob (image file) exists in storage
             if (!await blobClient.ExistsAsync())
             {
-                return NotFound(); // Return 404 if not found
+                // Return a 404 Not Found response if the image does not exist
+                return NotFound();
             }
 
-            // Download the image
+            // Download the image file from blob storage
             var blobDownloadInfo = await blobClient.DownloadAsync();
 
-            // Set the content type for the response
-            var contentType = "image/jpeg"; // You can improve this by checking file extension
+            // Define the content type to be returned; here it is set for JPEG images
+            var contentType = "image/jpeg"; // Optionally, determine content type by file extension
 
+            // Return the image file stream with the appropriate content type
             return File(blobDownloadInfo.Value.Content, contentType);
         }
 
-
-        // Update image under same name
+        // POST request to upload a new image or update an existing one
         [HttpPost("AddImage/{imageName}")]
-        [Authorize(Roles = "Administrator")] // Only lets admin do this
+        [Authorize(Roles = "Administrator")] // Allow only Administrators to upload images
         public async Task<IActionResult> UploadImage(string imageName, IFormFile file)
         {
+            // Check if the file is provided and is not empty
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");
             }
 
-            // Append the folder name correctly (no URL encoding here)
-            string imagePath = "Movie Posters/" + imageName;
+            // Build the path where the image will be stored
+            string imagePath = "Movie Posters/" + imageName + ".jpg";
 
-            // Get the container client
+            // Get the container client for the specified container
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
-            // Get the blob client for the requested image (this will overwrite an existing image with the same name)
+            // Get the blob client for the target file path. This will overwrite if the image already exists.
             var blobClient = containerClient.GetBlobClient(imagePath);
 
-            // Upload the new image and overwrite the existing one
+            // Upload the file stream to the blob storage and allow overwriting
             await blobClient.UploadAsync(file.OpenReadStream(), overwrite: true);
-
-            return Ok(new { message = "Image uploaded successfully." });
+            
+            // Return a success response with the URL of the uploaded image
+            return Ok(new { message = "Image uploaded successfully.", blobUrl = blobClient.Uri.ToString() });
         }
 
-
-        // Deletes an image
+        // DELETE request to remove an image from blob storage
         [HttpDelete("DeleteImage/{imageName}")]
-        [Authorize(Roles = "Administrator")] // Only lets admin do this
+        [Authorize(Roles = "Administrator")] // Allow only Administrators to delete images
         public async Task<IActionResult> DeleteImage(string imageName)
         {
-            // Append the folder name correctly (no URL encoding here)
-            string imagePath = "Movie Posters/" + imageName;
+            // Build the file path for the image to be deleted
+            string imagePath = "Movie Posters/" + imageName + ".jpg";
 
-            // Get the container client
+            // Get the container client using the stored container name
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
-            // Get the blob client for the requested image
+            // Get the blob client for the image file
             var blobClient = containerClient.GetBlobClient(imagePath);
 
-            // Check if the blob exists
+            // Check if the image exists in blob storage
             if (!await blobClient.ExistsAsync())
             {
-                return NotFound(); // Return 404 if not found
+                // Return a 404 Not Found if the image does not exist
+                return NotFound();
             }
 
-            // Delete the blob (image)
+            // Delete the blob if it exists
             await blobClient.DeleteIfExistsAsync();
 
+            // Return a success response indicating deletion
             return Ok(new { message = "Image deleted successfully." });
         }
-
     }
 }

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { Genre } from '../../types/Genre';
-import { uploadImage } from '../../api/MoviesAPI';
+import { loadImage, updateMovie, uploadImage } from '../../api/MoviesAPI';
 
 interface EditMovieModalProps {
   movie: any; // Replace with correct type
   genres: Genre[];
   onClose: () => void;
-  onMovieUpdated: (updatedMovies: any[]) => void;
+  onMovieUpdated: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const EditMovieModal: React.FC<EditMovieModalProps> = ({
@@ -21,7 +21,20 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
     selectedGenres: movie.genres || [], // Ensure genres are initialized as an array
   });
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<Blob | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      const blob = await loadImage(formData.title);
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        setImageUrl(url);
+        setImageFile(blob); // Now imageFile holds the blob, not a promise or URL.
+      }
+    };
+    fetchImage();
+  }, [formData.title]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -53,6 +66,7 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
 
     // Validate that the title is provided, which we use as the image name
     const imageName = formData.title.trim();
+
     if (!imageName) {
       alert('Image title is required!');
       return;
@@ -65,7 +79,9 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
     }
 
     // Create a new File object with the title as the new file name
-    const renamedFile = new File([imageFile], `${imageName}.jpg`, { type: imageFile.type });
+    const renamedFile = new File([imageFile], `${imageName}`, {
+      type: imageFile.type,
+    });
 
     // Call the API function from MoviesAPI to upload the image
     const uploadSuccess = await uploadImage(imageName, renamedFile);
@@ -74,8 +90,15 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
       return;
     }
 
+    const updateSuccess = await updateMovie(formData);
+    if (!updateSuccess) {
+      alert('Movie update failed.');
+      return;
+    }
     // Proceed with updating the movie
-    onMovieUpdated([formData]);
+    onMovieUpdated((prevMovies: any[]) =>
+      prevMovies.map((m) => (m.show_id === formData.show_id ? formData : m))
+    );
     onClose();
   };
 
@@ -89,6 +112,14 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
           </button>
         </div>
         <form onSubmit={handleSubmit} style={formStyle}>
+          <img
+            src={imageUrl || '/images/default.jpg'}
+            alt="Movie Poster"
+            onError={(e) => {
+              e.currentTarget.src = '/images/default.jpg';
+            }}
+            style={{ maxWidth: '45%', height: 'auto', alignSelf: 'center' }}
+          />
           {[
             'title',
             'type',
@@ -140,10 +171,10 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
           />
           <div style={{ marginTop: '1rem' }}>
             <label style={labelStyle}>Upload Image (JPG only)</label>
-            <input 
-              type="file" 
-              accept=".jpg, image/jpeg" 
-              onChange={handleFileUpload} 
+            <input
+              type="file"
+              accept=".jpg, image/jpeg"
+              onChange={handleFileUpload}
               style={inputStyle}
             />
           </div>

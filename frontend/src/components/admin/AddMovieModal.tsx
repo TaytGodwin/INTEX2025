@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
 import { Genre } from '../../types/Genre';
-import { uploadImage } from '../../api/MoviesAPI';
+import { addMovie, uploadImage } from '../../api/MoviesAPI';
 
 interface AddMovieModalProps {
   genres: Genre[];
   onClose: () => void;
-  onMovieAdded: (updatedMovies: any[]) => void;
+  onMovieAdded: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const AddMovieModal: React.FC<AddMovieModalProps> = ({
@@ -72,7 +72,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
 
     // Create a new File object with the title as the new file name
     // This replaces the front part of the original file name with the title.
-    const renamedFile = new File([imageFile], `${imageName}.jpg`, { type: imageFile.type });
+    const renamedFile = new File([imageFile], `${imageName}.jpg`, {
+      type: imageFile.type,
+    });
 
     // Call the API function from MoviesAPI to upload the image
     const uploadSuccess = await uploadImage(imageName, renamedFile);
@@ -81,8 +83,28 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
       return;
     }
 
+    const newMovie = {
+      title: formData.title,
+      type: formData.type,
+      director: formData.director,
+      cast: formData.cast,
+      country: formData.country,
+      release_year: Number(formData.release_year),
+      rating: formData.rating,
+      duration: formData.duration,
+      description: formData.description,
+      genres: formData.selectedGenres, // adjust as required by your backend
+    };
+
+    // Submit the movie record to the backend
+    const addMovieSuccess = await addMovie(newMovie);
+    if (!addMovieSuccess) {
+      alert('Failed to add the movie to the database.');
+      return;
+    }
+
     // Proceed with additional actions like updating the movie list and closing the modal
-    onMovieAdded([]);
+    onMovieAdded((prevMovies) => [...prevMovies, newMovie]);
     onClose();
   };
 

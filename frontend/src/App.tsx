@@ -12,7 +12,8 @@ import MoviePage from './pages/MoviePage';
 import SearchPage from './pages/SearchPage';
 import AdminDatabasePage from './pages/AdminDatabasePage';
 import Logout from './components/authentication/Logout';
-
+import ForgotPass from './pages/ForgotPass';
+import FavoritesPage from './pages/FavoritesPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="menu" element={<HomePage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
+            <Route path="forgot-password" element={<ForgotPass />} />
           </Route>
 
           {/* Protected Routes for all authenticated users (User and Administrator) */}
@@ -35,7 +37,9 @@ function App() {
           >
             <Route element={<Layout />}>
               <Route path="movies" element={<MoviePage />} />
+              {/* <Route path="movieDetails" element={<MovieDetailPage />} />*/}
               <Route path="search" element={<SearchPage />} />
+              <Route path="favorites" element={<FavoritesPage />} />
               <Route path="logout" element={<Logout />} />
             </Route>
           </Route>
