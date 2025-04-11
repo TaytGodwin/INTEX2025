@@ -7,7 +7,9 @@ interface FAQ {
   answer: string;
 }
 
-
+// FAQSection component:
+// - Defines a list of frequently asked questions and their answers
+// - Each item will be rendered using the FAQItem component
 const FAQSection: React.FC = () => {
   const faqs: FAQ[] = [
     {
@@ -45,6 +47,8 @@ const FAQSection: React.FC = () => {
   ];
 
 
+  // Renders the FAQ section layout:
+  // - Includes a styled header and a responsive grid of FAQItem components 
   return (
     <section
       style={{

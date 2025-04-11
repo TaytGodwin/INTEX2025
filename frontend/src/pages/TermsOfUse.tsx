@@ -4,6 +4,9 @@ function TermsOfUse() {
       className="max-w-4xl mx-auto py-8 text-gray-800"
       style={{ paddingLeft: '20%', paddingRight: '20%' }}
     >
+      {/* // Renders the Terms of Use page header:
+      // - Includes the page title and the effective date
+      */}
       <header className="text-center mb-8">
         <h1 className="text-4xl font-semibold text-blue-600 mb-4">
           Terms of Use
@@ -13,6 +16,9 @@ function TermsOfUse() {
         </p>
       </header>
 
+      {/* // Section 1: Service Overview
+      // - Describes the CineNiche streaming service and user agreement upon account creation
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           1. Service Overview
@@ -22,6 +28,9 @@ function TermsOfUse() {
         </p>
       </section>
 
+      {/* // Section 2: Membership and Account
+      // - Outlines renewal policy, age requirement, and user responsibility for account activity
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           2. Membership and Account
@@ -33,6 +42,9 @@ function TermsOfUse() {
         </ul>
       </section>
 
+      {/* // Section 3: Billing and Cancellation
+      // - Details payment requirements, billing frequency, cancellation process, and refund policy
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           3. Billing and Cancellation
@@ -45,6 +57,9 @@ function TermsOfUse() {
         </ul>
       </section>
 
+      {/* // Section 4: Use of Service
+      // - Defines usage restrictions, including personal use, regional availability, and prohibited actions like redistribution or reverse-engineering
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           4. Use of Service
@@ -57,6 +72,9 @@ function TermsOfUse() {
         </ul>
       </section>
 
+      {/* // Section 5: Passwords and Access
+      // - Emphasizes password security, warns against account sharing, and encourages reporting unauthorized use
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           5. Passwords and Access
@@ -66,6 +84,9 @@ function TermsOfUse() {
         </p>
       </section>
 
+      {/* // Section 7: Arbitration and Disputes
+      // - Explains that users agree to resolve disputes via arbitration or small claims court, waiving jury trial and class action rights
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           6. Disclaimers and Liability
@@ -77,6 +98,10 @@ function TermsOfUse() {
         </ul>
       </section>
 
+
+      {/* // Section 7: Arbitration and Disputes
+      // - Explains that users agree to resolve disputes via arbitration or small claims court, waiving jury trial and class action rights
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           7. Arbitration and Disputes
@@ -85,7 +110,10 @@ function TermsOfUse() {
           By using our service, you agree to resolve disputes through binding arbitration or small claims court, waiving your right to a jury trial or class action.
         </p>
       </section>
-
+      
+      {/* // Section 8: Miscellaneous
+      // - Covers governing law, terms modification, use of user feedback, and severability of provisions
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           8. Miscellaneous

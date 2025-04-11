@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { logout as apiLogout, pingAuth } from '../../api/IdentityAPI';
-import logo from '../../assets/logos/Website_Logo.svg';
+import { Link } from 'react-router-dom';
+import {pingAuth } from '../../api/IdentityAPI';
+import logo from '../../../public/assets/Cineniche.svg';
 import '../../css/theme.css'; // Custom CSS for the sidebar
-import { useAuth } from '../../context/AuthContext';
+
+import Logout from '../authentication/Logout';
+
 
 function UserNavbar() {
-  const navigate = useNavigate();
-  const { logout } = useAuth();
   const [showModal, setModal] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
@@ -21,15 +21,7 @@ function UserNavbar() {
     checkAuth();
   }, []);
 
-  const handleLogout = async () => {
-    const result = await apiLogout();
-    if (result) {
-      logout();
-      navigate('/login');
-    } else {
-      console.error('Logout failed');
-    }
-  };
+
 
   const confirmLogout = () => setModal(true);
   const closeModal = () => setModal(false);
@@ -40,7 +32,7 @@ function UserNavbar() {
       <nav
         className="side-navbar d-flex flex-column text-white"
         style={{
-          backgroundColor: '#111',
+          backgroundColor: 'transparent',
           width: '130px',
           position: 'fixed',
           top: 0,
@@ -55,7 +47,11 @@ function UserNavbar() {
             {/* Logo */}
             <li className="nav-item mt-3 mb-2">
               <Link to="/" className="navbar-brand">
-                <img src={logo} alt="My Logo" style={{ width: '70px', height: 'auto' }} />
+                <img
+                  src={logo}
+                  alt="My Logo"
+                  style={{ width: '70px', height: 'auto' }}
+                />
               </Link>
             </li>
 
@@ -113,7 +109,10 @@ function UserNavbar() {
               </Link>
             </li>
             <li className="nav-item" style={navItemStyle}>
-              <button onClick={confirmLogout} className="nav-link text-white btn btn-link">
+              <button
+                onClick={confirmLogout}
+                className="nav-link text-white btn btn-link"
+              >
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-box-arrow-right fs-2"></i>
                   <span style={labelStyle}>Logout</span>
@@ -125,29 +124,8 @@ function UserNavbar() {
       </nav>
 
       {showModal && (
-        <div
-          className="modal show"
-          style={{ display: 'block' }}
-          tabIndex={-1}
-          aria-labelledby="logoutModal"
-          aria-hidden="true"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="logoutModal">Are you sure you want to log out?</h5>
-              </div>
-              <div className="modal-body">
-                <p>Do you really want to log out?</p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>
-                <button type="button" className="btn btn-danger" onClick={handleLogout}>Logout</button>
-              </div>
-            </div>
-          </div>
-        </div>
+          
+                <Logout setShowCookieModal={closeModal}/>
       )}
     </>
   );

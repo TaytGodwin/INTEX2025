@@ -2,11 +2,13 @@ import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
 import { NewMovie } from '../types/NewMovie';
 
-const MOVIE_API_URL = 'https://localhost:5000';
-// 'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const MOVIE_API_URL = // 'https://localhost:5000';
+  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
+// Gets an object back full of all movie info
 export const getAllMovies = async (): Promise<Movie[]> => {
   try {
+    // Gets everything from the movie_title base
     const response = await fetch(`${MOVIE_API_URL}/api/Movie/AllMovies`, {
       method: 'GET',
       credentials: 'include',
@@ -25,13 +27,14 @@ export const getAllMovies = async (): Promise<Movie[]> => {
   }
 };
 
+// Gets the blob of the image file based on the title of the movie passed in as image name
 export const loadImage = async (imageName: string): Promise<Blob | null> => {
   try {
     const response = await fetch(
-      `${MOVIE_API_URL}/api/Image/GetImage/${encodeURIComponent(imageName)}`,
+      `${MOVIE_API_URL}/api/Image/GetAdminImage/${encodeURIComponent(imageName)}`,
       { method: 'GET', credentials: 'include' }
     );
-
+    // Returns the file in blob format to pass on to the edit page
     if (!response.ok) {
       console.error(`Failed to load image: ${response.statusText}`);
       return null;
@@ -45,10 +48,12 @@ export const loadImage = async (imageName: string): Promise<Blob | null> => {
   }
 };
 
+// When Admin edits or adds a move this takes the new or changed titled name as the image name as well as jpg file
 export const uploadImage = async (
   imageName: string,
   file: File
 ): Promise<boolean> => {
+  // these are passed on to backend to update filename in blob storage based on movie title and photo storage
   try {
     const formPayload = new FormData();
     formPayload.append('file', file);
@@ -75,7 +80,7 @@ export const uploadImage = async (
   }
 };
 
-// This call gets all movies and works with pagination
+// This call gets all movies and works with pagination. Sets defaults
 export const getTotalMovies = async (
   pageSize: number = 25,
   pageNum: number = 1,
@@ -111,6 +116,7 @@ export const getTotalMovies = async (
   }
 };
 
+// Manages the search query for movies using defaults for page size and number of page
 export const searchMovies = async (
   query: string,
   pageSize: number = 25,
@@ -125,7 +131,7 @@ export const searchMovies = async (
         url += `&genrelist=${encodeURIComponent(genre)}`;
       });
     }
-
+    // Get's back the movie info in list of lists
     const response = await fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -145,10 +151,10 @@ export const searchMovies = async (
   }
 };
 
-// GenreAPI.ts
-
+// For genre filtering we need to get a list of genres that exist. Nothing is passed
 export const getGenres = async (): Promise<Genre[]> => {
   try {
+    // Recieves a list of the genres
     const response = await fetch(`${MOVIE_API_URL}/api/Movie/getgenres`, {
       method: 'GET',
       credentials: 'include',
@@ -171,6 +177,7 @@ export const getGenres = async (): Promise<Genre[]> => {
 // This API call adds a movie to the database
 export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
   try {
+    // Takes movie object information from form and sends to backend for processing into database
     const response = await fetch(`${MOVIE_API_URL}/api/Movie/AddMovie`, {
       method: 'POST',
       credentials: 'include',
@@ -191,8 +198,11 @@ export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
     return false;
   }
 };
+
+// When a movie is deleted this also needs to run to delete the image
 export const deleteImage = async (imageName: string): Promise<boolean> => {
   try {
+    // To access the movie we need to get the movie title (here as image name) to find it in blob storay
     const response = await fetch(
       `${MOVIE_API_URL}/api/Image/DeleteImage/${encodeURIComponent(imageName)}`,
       {
@@ -200,7 +210,7 @@ export const deleteImage = async (imageName: string): Promise<boolean> => {
         credentials: 'include',
       }
     );
-
+    // Returns only success/failure
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
     }
@@ -211,9 +221,11 @@ export const deleteImage = async (imageName: string): Promise<boolean> => {
     return false;
   }
 };
+
 // This will delete a movie
 export const deleteMovie = async (ShowIdToDelete: number): Promise<boolean> => {
   try {
+    // Take show_id to delete all information on that movie or tv show in the movies_titles
     const response = await fetch(`${MOVIE_API_URL}/api/Movie/DeleteMovie`, {
       method: 'DELETE',
       credentials: 'include',
@@ -238,6 +250,7 @@ export const deleteMovie = async (ShowIdToDelete: number): Promise<boolean> => {
 // This will publish edits to a movie
 export const updateMovie = async (movieToEdit: Movie): Promise<boolean> => {
   try {
+    // Need object of movie data to PUT the data in the movies_titles
     const response = await fetch(`${MOVIE_API_URL}/api/Movie/UpdateMovie`, {
       method: 'PUT',
       credentials: 'include',
@@ -259,8 +272,10 @@ export const updateMovie = async (movieToEdit: Movie): Promise<boolean> => {
   }
 };
 
+// This helps us know which user is logged in
 export const getUserId = async (email: string): Promise<number | null> => {
   try {
+    // Takes email from auth and returns the id for the user
     const response = await fetch(
       `${MOVIE_API_URL}/api/Account/userId?email=${encodeURIComponent(email)}`,
       {
@@ -271,6 +286,7 @@ export const getUserId = async (email: string): Promise<number | null> => {
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
     }
+    // Returns just userId. For ratings in modals
     const data = await response.json();
     return data.userId;
   } catch (error) {
@@ -279,6 +295,7 @@ export const getUserId = async (email: string): Promise<number | null> => {
   }
 };
 
+// Takes the user_id of logeged in user to get back the email
 export const getUserName = async (user_id: any): Promise<string> => {
   try {
     const response = await fetch(

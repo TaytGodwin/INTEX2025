@@ -34,7 +34,7 @@ export const getGenreMovies = async (
 };
 
 // MAIN PAGE API
-
+// Gets recommendations based on user who's accesing the system
 export const getContentRecs = async (
   userId: number
 ): Promise<ContentRecGroup[] | null> => {
@@ -49,7 +49,8 @@ export const getContentRecs = async (
         },
       }
     );
-
+    // The recommendation is based on similarity of show_ids though.
+    // We use user ID to find recently rated shows
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -101,8 +102,10 @@ export const getContentRecs = async (
 
 // Gets the for you page calls your top 10 recommended by userID
 
+// Recommender for custom list of movies
 export const getForYou = async (userId: number): Promise<Movie[] | null> => {
   try {
+    // Take user id to return list of movies trageted based on user ratings and content similiarty of movies
     const response = await fetch(
       `${Recommender_API_URL}/api/Recommender/top10_userId?userId=${userId}`,
       {
@@ -132,7 +135,7 @@ export const getForYou = async (userId: number): Promise<Movie[] | null> => {
 };
 
 // IN MOVIE DETAIL PAGE
-//Gets top 5 handpicked off of a different filtering system
+//Gets top 5 handpicked off of a collab filtering system
 export const getTopRec = async (showId: number): Promise<Movie[] | null> => {
   try {
     const response = await fetch(
@@ -145,7 +148,7 @@ export const getTopRec = async (showId: number): Promise<Movie[] | null> => {
         },
       }
     );
-
+    // Returns a list from a row in a table based on the showId. Gives the movies recommender made for them
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -163,11 +166,11 @@ export const getTopRec = async (showId: number): Promise<Movie[] | null> => {
   }
 };
 
-
-// FAVORITES 
-
+// FAVORITES
+// Accesses list of favorites based on user experince
 export const getFavorites = async (userId: number): Promise<Movie[]> => {
   try {
+    // Takes user id for querying database
     const response = await fetch(
       `${Recommender_API_URL}/api/recommender/top25_userId?userId=${userId}`,
       {
@@ -175,6 +178,7 @@ export const getFavorites = async (userId: number): Promise<Movie[]> => {
         credentials: 'include',
       }
     );
+    // Returns a list of Movie objects that would be perfect for the user
     if (response.ok) {
       const data = await response.json();
       return data as Movie[];

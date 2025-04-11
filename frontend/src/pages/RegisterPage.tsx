@@ -153,6 +153,11 @@ function RegisterPage() {
       peacock,
     };
 
+    // Handles the full registration flow:
+    // - Registers the user, logs them in, creates a profile, assigns a role
+    // - Waits briefly to allow auth propagation
+    // - Retrieves user data and navigates based on role
+    // - Catches and displays any errors, and stops loading state when complete
     try {
       const authSuccess = await register(email, password);
       if (!authSuccess) {
@@ -225,6 +230,9 @@ function RegisterPage() {
           backgroundColor: 'transparent',
         }}
       >
+        {/* // Renders the registration page header and subtext:
+        // - Includes title, description, and a link for users who already have an account
+        */}
         <h2
           style={{ textAlign: 'center', marginBottom: '1rem', color: '#333' }}
         >

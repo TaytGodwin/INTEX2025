@@ -1,15 +1,17 @@
 import React from 'react';
 import Slider from 'react-slick';
 import { Link } from 'react-router-dom';
-import poster4 from '../../assets/Posters/4.svg';
-import poster1 from '../../assets/Posters/1.svg';
-import poster2 from '../../assets/Posters/2.svg';
-import poster3 from '../../assets/Posters/3.svg';
+import poster4 from '../../../public/assets/Posters/4.svg';
+import poster1 from '../../../public/assets/Posters/1.svg';
+import poster2 from '../../../public/assets/Posters/2.svg';
+import poster3 from '../../../public/assets/Posters/3.svg';
 import '../../css/theme.css';
-import "slick-carousel/slick/slick.css"; 
-import "slick-carousel/slick/slick-theme.css";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const LandingHero: React.FC = () => {
+  // Settings for the featured movie carousel (react-slick):
+  // - Enables autoplay, navigation arrows, and pagination dots
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -17,7 +19,7 @@ const LandingHero: React.FC = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000,  // 5 seconds per slide
+    autoplaySpeed: 5000, // 5 seconds per slide
     arrows: true,
   };
 
@@ -25,9 +27,9 @@ const LandingHero: React.FC = () => {
   const slides = [poster1, poster2, poster3, poster4];
 
   return (
-    <section 
-      className="landing-hero" 
-      style={{ position: 'relative', overflow: 'hidden', marginTop: '-15px'}}
+    <section
+      className="landing-hero"
+      style={{ position: 'relative', overflow: 'hidden', marginTop: '-15px' }}
     >
       {/* Overlay with welcome message */}
       <div
@@ -46,22 +48,35 @@ const LandingHero: React.FC = () => {
           alignItems: 'center',
           color: '#fff',
           textAlign: 'center',
-          padding: '0'
+          padding: '0',
         }}
       >
-        <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>Welcome to CineNiche</h1>
+        {/* // Hero section content:
+        // - Displays main welcome message and brief platform description */}
+        <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}> 
+          Welcome to CineNiche
+        </h1>
         <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>
           Stream your favorite shows and movies anytime, anywhere.
         </p>
-        <Link to="/register" className="nav-link sign-in-button" style={{
-                  fontSize: '2rem',
-                  borderRadius: '50px',
-                  padding: '0.5rem 1.5rem',
-                  
-                }}>
-                Get Started
+        {/* // "Get Started" button:
+        // - Styled navigation link that routes users to the registration page
+        */}
+        <Link
+          to="/register"
+          className="nav-link sign-in-button"
+          style={{
+            fontSize: '2rem',
+            borderRadius: '50px',
+            padding: '0.5rem 1.5rem',
+          }}
+        >
+          Get Started
         </Link>
       </div>
+      {/* // Renders hero image carousel using react-slick:
+      // - Loops through slide images and displays them with consistent styling
+      */}
       <Slider {...sliderSettings}>
         {slides.map((slide, index) => (
           <div key={index} className="hero-slide">
@@ -73,7 +88,9 @@ const LandingHero: React.FC = () => {
                 maxWidth: '1000px', // The image won't exceed 600px in width
                 height: '60vh',
                 objectFit: 'cover',
-                margin: '0 auto'
+                margin: '0 auto',
+                borderRadius: '16px',
+                boxShadow:'0 4px 8px rgba(0, 0, 0, 0.2)'
               }}
             />
           </div>

@@ -1,21 +1,19 @@
-
 import Slider from 'react-slick';
 import MoviePoster from '../movieCards/MoviePoster';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 // Import your asset images from the Featured directory
-import Hook from '../../assets/Featured/Hook.jpg';
-import HowToTrainYourDragon2 from '../../assets/Featured/How to Train Your Dragon 2.jpg';
-import IpMan2 from '../../assets/Featured/Ip Man 2.jpg';
-import KungFuPanda2 from '../../assets/Featured/Kung Fu Panda 2.jpg';
-import SavedByTheBell from '../../assets/Featured/Saved by the Bell.jpg';
-import ScaryMovie5 from '../../assets/Featured/Scary Movie 5.jpg';
-import SevenPounds from '../../assets/Featured/Seven Pounds.jpg';
-import StrangerThings from '../../assets/Featured/Stranger Things.jpg';
+import Hook from '../../../public/assets/Featured/Hook.jpg';
+import HowToTrainYourDragon2 from '../../../public/assets/Featured/How to Train Your Dragon 2.jpg';
+import IpMan2 from '../../../public/assets/Featured/Ip Man 2.jpg';
+import KungFuPanda2 from '../../../public/assets/Featured/Kung Fu Panda 2.jpg';
+import SavedByTheBell from '../../../public/assets/Featured/Saved by the Bell.jpg';
+import ScaryMovie5 from '../../../public/assets/Featured/Scary Movie 5.jpg';
+import SevenPounds from '../../../public/assets/Featured/Seven Pounds.jpg';
+import StrangerThings from '../../../public/assets/Featured/Stranger Things.jpg';
 import { useState } from 'react';
 import React from 'react';
-
 
 // Hardcoded array of featured movies
 const hardcodedMovies = [
@@ -61,14 +59,24 @@ function FeaturedSection() {
     ],
   };
 
+  // Renders the "Featured on MyFlix" section:
+  // - Displays a carousel of featured movies using the Slider component
+  // - Each slide shows a movie poster and title
   return (
-    <section className="featured-section" style={{ padding: '2rem', background: '#151515' }}>
+    <section
+      className="featured-section"
+      style={{ padding: '2rem', background: '#151515' }}
+    >
       <h2 style={{ color: '#fff', textAlign: 'center', marginBottom: '1rem' }}>
         Featured on MyFlix
       </h2>
       <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
-          <div key={index} className="carousel-item" style={{ padding: '0 10px' }}>
+          <div
+            key={index}
+            className="carousel-item"
+            style={{ padding: '0 10px' }}
+          >
             <MoviePoster imageUrl={movie.posterUrl} title={movie.title} />
           </div>
         ))}

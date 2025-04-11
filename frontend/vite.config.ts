@@ -23,15 +23,16 @@ export default defineConfig({
     headers: {
       'Content-Security-Policy':
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
-        "style-src 'self' 'unsafe-inline' fonts.googleapis.com; " +
-        "img-src 'self' data: blob:; " +
+        "script-src 'self'; " +
+        "style-src 'self' 'unsafe-inline'; " + // We kept the inline styles because we have a few
+        "img-src 'self' https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net; " + // This is for the blob storage
         "frame-ancestors 'none'; " +
-        "font-src 'self' fonts.gstatic.com data:; " +
-        "connect-src 'self' https://localhost:5000 https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net; " +
+        "font-src 'self'; " + // ✅ No Google Fonts needed
+        "connect-src 'self' https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net; " + //Api URL
         "object-src 'none'; " +
         "base-uri 'self'; " +
-        "form-action 'self';",
+        "form-action 'self'; " +
+        'upgrade-insecure-requests;',
     },
   },
 });

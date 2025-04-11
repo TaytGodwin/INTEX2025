@@ -7,6 +7,8 @@ interface Testimonial {
   imageUrl: string;
 }
 const TestimonialsSection: React.FC = () => {
+  // Array of testimonial data:
+  // - Each object includes a quote, user name, description, and image for display in the testimonials section
   const testimonials: Testimonial[] = [
     {
       quote: 'I’ve discovered so many new genres and movies I never would have found on my own!',
@@ -46,6 +48,9 @@ const TestimonialsSection: React.FC = () => {
     },
   ];
   return (
+    // Renders the testimonials section:
+    // - Displays a header and description
+    // - Maps over testimonial data to render individual TestimonialCard components in a responsive layout
     <section style={sectionStyle}>
       <h2 style={sectionHeaderStyle}>Why should you join?</h2>
       <p style={sectionDescStyle}>Hear some of our testimonials</p>

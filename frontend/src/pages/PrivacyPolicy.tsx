@@ -13,6 +13,9 @@ function PrivacyPolicy() {
         <strong>Effective (& Updated) Date: </strong>April 9, 2025
       </p>
 
+      {/* // Contact information section:
+      // - Introduces CineNiche, Inc. and provides email, physical address, and phone number
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           1. Who We Are
@@ -39,6 +42,9 @@ function PrivacyPolicy() {
         </p>
       </section>
 
+      {/* // Section 2: Data Subject Categories
+      // - Identifies whose data is collected, including registered users and site visitors
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           2. Data Subject Categories
@@ -53,6 +59,12 @@ function PrivacyPolicy() {
         </ul>
       </section>
 
+      {/* // Section 3: What Data We Collect
+      // - Lists personal and usage data collected by CineNiche
+      // - Explains optional data collection for personalization
+      // - Notes data sources and child data protection policy
+      // - Describes actions that trigger data collection
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           3. What Data We Collect
@@ -93,6 +105,9 @@ function PrivacyPolicy() {
         </p>
       </section>
 
+      {/* // Section 4: Why We Collect Your Data
+      // - Explains the purposes for data collection, including personalization, service improvement, account management, and legal compliance
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           4. Why We Collect Your Data
@@ -105,6 +120,9 @@ function PrivacyPolicy() {
         </ul>
       </section>
 
+      {/* // Section 5: Legal Basis for Processing
+      // - Lists the lawful grounds under which CineNiche processes user data (consent, contract, legitimate interests, and legal obligations)
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           5. Legal Basis for Processing
@@ -125,6 +143,10 @@ function PrivacyPolicy() {
         </ul>
       </section>
 
+      {/* // Section 6: Cookies and Tracking
+      // - Describes how CineNiche uses cookies for session management, analytics, and recommendations
+      // - Mentions the use of a cookie banner for managing user consent
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           6. Cookies and Tracking
@@ -141,6 +163,9 @@ function PrivacyPolicy() {
         </p>
       </section>
 
+      {/* // Section 7: Data Security
+      // - Explains the measures CineNiche uses to protect user data, including HTTPS, secure databases, and access controls
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           7. Data Security
@@ -151,6 +176,11 @@ function PrivacyPolicy() {
         </p>
       </section>
 
+      {/* // Section 8: Sharing Your Data
+      // - Details how and why CineNiche shares user data with third-party providers
+      // - Covers data sharing for analytics, hosting, communication, legal compliance, and business transfers
+      // - Emphasizes GDPR-compliant practices and user notification in case of policy changes
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           8. Sharing Your Data
@@ -180,10 +210,14 @@ function PrivacyPolicy() {
           terms, or protect the rights and safety of our users and the public.
         </p>
       </section>
-
+      {/* // Section 9: Advertising & Personalization
+      // - Explains use of non-identifiable data for content recommendations
+      // - States that identifiable user data is not shared for advertising
+      // - Notes users can opt out of personalization through account settings
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          8. Advertising & Personalization
+          9. Advertising & Personalization
         </h2>
         <p className="privacy-policy-subtext">
           We may use non-identifiable data to personalize content or recommend
@@ -192,10 +226,15 @@ function PrivacyPolicy() {
           settings.
         </p>
       </section>
-
+      
+      {/* // Section 10: Your Rights Under GDPR
+      // - Outlines user rights such as access, correction, deletion, objection, and data portability
+      // - Describes how users can manage privacy preferences and exercise rights
+      // - Provides contact information for submitting GDPR-related requests
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          9. Your Rights Under GDPR
+          10. Your Rights Under GDPR
         </h2>
         <ul className="list-disc pl-6 space-y-2 privacy-policy-subtext">
           <li>Access, correct, or delete your data</li>
@@ -242,9 +281,14 @@ function PrivacyPolicy() {
         </p>
       </section>
 
+      {/* // Section 11: Data Retention
+      // - Explains how long user data is stored and under what conditions
+      // - Mentions user-initiated deletion and storage location in the U.S.
+      // - Notes compliance with international data transfer standards
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          10. Data Retention
+          11. Data Retention
         </h2>
         <p className="privacy-policy-subtext">
           We retain your data as long as your account is active or as legally
@@ -254,9 +298,13 @@ function PrivacyPolicy() {
         </p>
       </section>
 
+      {/* // Section 12: International Data Transfers
+      // - Explains how CineNiche protects user data when transferring it outside the EEA
+      // - Mentions safeguards like Standard Contractual Clauses and adequacy decisions
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          11. International Data Transfers
+          12. International Data Transfers
         </h2>
         <p className="privacy-policy-subtext">
           If we transfer your data outside of the European Economic Area (EEA),
@@ -265,9 +313,12 @@ function PrivacyPolicy() {
         </p>
       </section>
 
+      {/* // Section 13: Automated Decision-Making
+      // - States that CineNiche does not use automated decision-making or profiling in processing personal data
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          12. Automated Decision-Making
+          13. Automated Decision-Making
         </h2>
         <p className="privacy-policy-subtext">
           We do not currently use automated decision-making or profiling in our
@@ -275,9 +326,12 @@ function PrivacyPolicy() {
         </p>
       </section>
 
+      {/* // Section 14: Updates
+      // - Informs users that the privacy policy may change and updates will be reflected with a new revision date
+      */}
       <section className="bg-gray-50 p-8 mb-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          13. Updates
+          14. Updates
         </h2>
         <p className="privacy-policy-subtext">
           We may update this policy. Changes will be posted on this page with a

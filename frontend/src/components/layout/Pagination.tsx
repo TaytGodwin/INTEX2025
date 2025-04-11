@@ -6,6 +6,7 @@ interface PaginationProps {
   onPageSizeChange: (newSize: number) => void;
 }
 
+// Pagination for Admin console
 const Pagination = ({
   currentPage,
   totalPages,
@@ -28,7 +29,7 @@ const Pagination = ({
           key={i + 1}
           onClick={() => onPageChange(i + 1)}
           disabled={currentPage === i + 1}
-          className={`btn mx-1 ${currentPage === i + 1 ? "btn-secondary" : "btn-dark"}`}
+          className={`btn mx-1 ${currentPage === i + 1 ? 'btn-secondary' : 'btn-dark'}`}
         >
           {i + 1}
         </button>
@@ -51,7 +52,7 @@ const Pagination = ({
             onPageChange(1);
           }}
           className="form-select d-inline-block ms-2"
-          style={{ width: "auto" }}
+          style={{ width: 'auto' }}
         >
           <option value="3">3</option>
           <option value="5">5</option>

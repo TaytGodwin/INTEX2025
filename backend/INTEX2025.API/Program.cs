@@ -8,7 +8,7 @@ using DotNetEnv;
 using Azure.Storage.Blobs;
 
 // Load environment variables (useful for development) so that settings are available
-DotNetEnv.Env.Load();
+// DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,7 +81,7 @@ builder.Services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, CustomUser
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true; // Ensures the authentication cookie is not accessible via JavaScript (for security)
-    options.Cookie.SameSite = SameSiteMode.Strict; // Allows cookies to be sent with cross-site requests (needed for some frontend setups)
+    options.Cookie.SameSite = SameSiteMode.None; // Allows cookies to be sent with cross-site requests (needed for some frontend setups)
     options.Cookie.Name = ".AspNetCore.Identity.Application"; // Sets a custom name for the authentication cookie
     options.LoginPath = "/login"; // The path users are redirected to when not authenticated
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Ensures the cookie is only sent over HTTPS
@@ -113,7 +113,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("https://localhost:3030", "http://localhost:3030", "https://wonderful-smoke-08f7f441e.6.azurestaticapps.net/z")
+            policy.WithOrigins("https://localhost:3030", "http://localhost:3030", "https://wonderful-smoke-08f7f441e.6.azurestaticapps.net")
                 .AllowCredentials() // Cookies enabled with this
                 .AllowAnyHeader()
                 .AllowAnyMethod();

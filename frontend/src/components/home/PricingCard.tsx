@@ -20,6 +20,11 @@ const PricingCard: React.FC<PricingCardProps> = ({
   isHighlighted = false,
   planId,
 }) => {
+  // Renders a pricing card:
+  // - Displays plan title, monthly price, and a list of features
+  // - Highlights card styling if isHighlighted is true
+  // - Includes a styled button linking to the registration page with selected plan
+
   return (
     <div
       style={{

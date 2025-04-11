@@ -1,35 +1,15 @@
 import React from 'react';
 import Slider from 'react-slick';
 
-import genericBg from '../../assets/Solo A Star Wars Story.jpg';
-import poster1 from '../../assets/The Music of Silence.jpg';
-import poster2 from '../../assets/The Secret Life of Pets 2.jpg';
-import poster3 from '../../assets/Jaws.jpg';
+import poster4 from '../../../public/assets/Posters/4.svg';
+import poster1 from '../../../public/assets/Posters/1.svg';
+import poster2 from '../../../public/assets/Posters/2.svg';
+import poster3 from '../../../public/assets/Posters/3.svg';
 import '../../css/theme.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-const CustomArrow = (props: any) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        borderRadius: '50%',
-        width: '50px',
-        height: '50px',
-        zIndex: 3,
-        fontSize: '2rem',
-        color: '#57c8f4',
-      }}
-      onClick={onClick}
-    />
-  );
-};
+import { Link } from 'react-router-dom';
+
 
 interface LandingHeroProps {
   userName: string;
@@ -39,18 +19,16 @@ const LandingMovieHero: React.FC<LandingHeroProps> = ({ userName }) => {
   const sliderSettings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 600,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000, // 5 seconds per slide
+    autoplaySpeed: 5000,
     arrows: true,
-    nextArrow: <CustomArrow />,
-    prevArrow: <CustomArrow />,
   };
 
   // Array of images for the slider; first is generic background.
-  const slides = [genericBg, poster1, poster2, poster3];
+  const slides = [poster1, poster2, poster3, poster4];
 
   return (
     <section
@@ -77,9 +55,26 @@ const LandingMovieHero: React.FC<LandingHeroProps> = ({ userName }) => {
           padding: '0 1rem',
         }}
       >
+        
+
         <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
           Welcome {userName}
         </h1>
+        <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>
+          Stream your favorite shows and movies anytime, anywhere.
+        </p>
+        <Link
+          to="/search"
+          className="nav-link sign-in-button"
+          style={{
+            fontSize: '2rem',
+            borderRadius: '50px',
+            padding: '0.5rem 1.5rem',
+          }}
+        >
+          
+          Explore
+        </Link>
       </div>
       <Slider {...sliderSettings}>
         {slides.map((slide, index) => (
@@ -89,10 +84,12 @@ const LandingMovieHero: React.FC<LandingHeroProps> = ({ userName }) => {
               alt={`Slide ${index + 1}`}
               style={{
                 width: '100%',
-                maxWidth: '400px', // The image won't exceed 600px in width
-                height: '50vh',
+                maxWidth: '1000px', // The image won't exceed 600px in width
+                height: '60vh',
                 objectFit: 'cover',
                 margin: '0 auto',
+                borderRadius: '16px',
+                boxShadow:'0 4px 8px rgba(0, 0, 0, 0.2)'
               }}
             />
           </div>
