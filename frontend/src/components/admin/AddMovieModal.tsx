@@ -72,7 +72,9 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
 
     // Create a new File object with the title as the new file name
     // This replaces the front part of the original file name with the title.
-    const renamedFile = new File([imageFile], `${imageName}.jpg`, { type: imageFile.type });
+    const renamedFile = new File([imageFile], `${imageName}.jpg`, {
+      type: imageFile.type,
+    });
 
     // Call the API function from MoviesAPI to upload the image
     const uploadSuccess = await uploadImage(imageName, renamedFile);
