@@ -3,12 +3,19 @@ import Select from 'react-select';
 import { Genre } from '../../types/Genre';
 import { addMovie, uploadImage } from '../../api/MoviesAPI';
 
+// Props for the AddMovieModal component:
+// - genres: list of available genres for the dropdown
+// - onClose: function to close the modal
+// - onMovieAdded: function to update the parent component when a movie is added
 interface AddMovieModalProps {
   genres: Genre[];
   onClose: () => void;
   onMovieAdded: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
+// Main AddMovieModal component:
+// - Initializes form state for movie details including title, type, director, etc.
+// - selectedGenres holds the genre names chosen by the user
 const AddMovieModal: React.FC<AddMovieModalProps> = ({
   genres,
   onClose,
@@ -27,6 +34,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     selectedGenres: [] as string[],
   });
 
+  // Handles changes to text, number, and textarea inputs by updating formData state
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -36,13 +44,18 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     setFormData({ ...formData, [name]: value });
   };
 
+  // Updates selectedGenres in formData when genres are selected from the dropdown
   const handleGenreChange = (selected: any) => {
     const genreValues = selected.map((s: any) => s.value);
     setFormData({ ...formData, selectedGenres: genreValues });
   };
 
+  // Stores the uploaded image file (JPG only) for the movie poster
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  // Handles image file upload:
+  // - Accepts only JPG files
+  // - Updates imageFile state if valid
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -54,6 +67,11 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     }
   };
 
+  // Handles form submission:
+  // - Validates required fields
+  // - Renames and uploads image
+  // - Submits new movie data to backend
+  // - Updates parent movie list and closes modal
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -83,6 +101,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
       return;
     }
 
+    // Constructs the new movie object from formData to be sent to the backend
     const newMovie = {
       title: formData.title,
       type: formData.type,
@@ -108,6 +127,11 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     onClose();
   };
 
+  // Renders the modal UI:
+  // - Includes inputs for movie details
+  // - Genre multi-select dropdown
+  // - JPG image upload
+  // - Cancel and Submit buttons
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
@@ -187,6 +211,8 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
   );
 };
 
+// Inline style definitions for modal layout and components:
+// - Includes styles for overlay, modal container, headers, form inputs, buttons, and react-select customization
 const overlayStyle: React.CSSProperties = {
   position: 'fixed',
   top: 0,
