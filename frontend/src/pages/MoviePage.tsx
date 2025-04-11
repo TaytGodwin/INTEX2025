@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react';
 import LazyGenreRec from '../components/Carousels/LazyCarousels/LazyGenreRec';
-import { getGenres, getUserId } from '../api/MoviesAPI';
+import { getGenres, getUserId, getUserName } from '../api/MoviesAPI';
 import { Genre } from '../types/Genre';
 import GetContentRec from '../components/Carousels/GetContentRec';
 import LandingMovieHero from '../components/movieCards/LandingMovieHero';
 import LazyForYou from '../components/Carousels/LazyCarousels/LazyForYou';
 import { pingAuth } from '../api/IdentityAPI';
+import CookiesModal from '../components/authentication/CookiesModal';
 
 function MoviePage() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [user_id, setUserId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(3);
+  const [userName, setUserName] = useState<string>('to CineNiche');
+  const [showCookieModal, setShowCookieModal] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,9 +52,57 @@ function MoviePage() {
   }, []);
   // Adds scrolling ability
 
+  // Fetch and set user name once user_id is available
+  useEffect(() => {
+    if (user_id !== null) {
+      const fetchUserName = async () => {
+        const name = await getUserName(user_id);
+        setUserName(name); // Set the userName after fetching from the API
+      };
+
+      fetchUserName();
+    }
+  }, [user_id]); // This effect depends on user_id
+
+  // Function to get the value of a specific cookie by name
+  const getCookieValue = (cookieName: string): string | undefined => {
+    const cookies = document.cookie.split('; ').reduce(
+      (acc, cookie) => {
+        const [key, value] = cookie.split('=');
+        acc[key] = value;
+        return acc;
+      },
+      {} as { [key: string]: string }
+    );
+
+    return cookies[cookieName];
+  };
+
+  // Check cookie consent and show modal if not present
+  useEffect(() => {
+    const cookieConsentValue = getCookieValue('CookieConsent');
+    if (!cookieConsentValue) {
+      setShowCookieModal(true); // Show modal if CookieConsent is not present
+    } else if (cookieConsentValue === 'No') {
+      setUserName('to CineNiche'); // Set default user name if consent is No
+    } else if (cookieConsentValue === 'Yes') {
+      // If consent is Yes, set user name to the actual user name
+      if (user_id !== null) {
+        const fetchUserName = async () => {
+          const name = await getUserName(user_id);
+          setUserName(name); // Set user name if consent is Yes
+        };
+        fetchUserName();
+      }
+    }
+  }, [user_id, userName]); // Run this effect only when user_id changes or is available
+
   return (
     <div className="movie-page">
-      <LandingMovieHero />
+      {showCookieModal && (
+        <CookiesModal setShowCookieModal={setShowCookieModal} />
+      )}
+      <LandingMovieHero userName={userName} />
       <div
         style={{
           width: '100%',
@@ -66,18 +117,14 @@ function MoviePage() {
           zIndex: 100,
         }}
       ></div>
-      {user_id !== null && (<>
-      
-      <LazyForYou userId={user_id} />
-      <GetContentRec userId={user_id} />
-      </>
-        
+      {user_id !== null && (
+        <>
+          <LazyForYou userId={user_id} />
+          <GetContentRec userId={user_id} />
+        </>
+      )}
 
-        )}
-
-{/* Because you liked..... Title .... this is this .... */}
-
-
+      {/* Because you liked..... Title .... this is this .... */}
 
       <div className="genre-recs-wrapper">
         {genres.slice(0, visibleCount).map((genre, index) => (

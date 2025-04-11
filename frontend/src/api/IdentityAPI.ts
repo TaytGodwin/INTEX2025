@@ -140,16 +140,26 @@ export const assignUserRole = async (
   }
 };
 
-// This sets the cookie preferences
-export const SetCookie = async (): Promise<boolean> => {
+// Set the cookie consent in both the server and browser
+export const SetCookie = async (consent: boolean): Promise<boolean> => {
   try {
-    const response = await fetch(`${Identity_API_URL}/api/identity/SetCookie`, {
-      method: 'GET',
-      credentials: 'include', // still needed to ensure browser accepts it
-    });
-    return response.ok;
+    const response = await fetch(
+      `${Identity_API_URL}/api/identity/SetCookie?consent=${consent}`,
+      {
+        method: 'GET',
+        credentials: 'include', // This is important for cross-origin cookie handling
+        headers: {
+          'Content-Type': 'application/json', // Ensure the correct content type
+        },
+      }
+    );
+
+    if (response.ok) {
+      return true; // Return true if the cookie is set or deleted
+    }
+    return false;
   } catch (error) {
-    console.error('Set Cookie failed:', error);
+    console.error('Error setting cookie consent:', error);
     return false;
   }
 };

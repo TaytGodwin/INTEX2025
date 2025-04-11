@@ -55,4 +55,24 @@ public class AccountController : ControllerBase
         
         return Ok(new { userId }); // Updated return statement
     }
+
+    [HttpGet("GetUserName")]
+    public async Task<IActionResult> GetUserName(int user_id)
+    {
+        // Select only the user name for the given user_id
+        var userName = await _movieDbContext.MovieUsers
+            .Where(u => u.UserId == user_id)
+            .Select(u => u.name)
+            .FirstOrDefaultAsync();
+
+        // If no user is found, return a proper message or response
+        if (userName == null)
+        {
+            return NotFound("User not found in CineNiche");
+        }
+
+        // Return the username if found
+        return Ok(userName);
+    }
+
 }

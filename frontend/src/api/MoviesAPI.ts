@@ -237,3 +237,23 @@ export const getUserId = async (email: string): Promise<number | null> => {
     return null;
   }
 };
+
+export const getUserName = async (user_id: any): Promise<string> => {
+  try {
+    const response = await fetch(
+      `${MOVIE_API_URL}/api/Account/GetUserName?user_id=${encodeURIComponent(user_id)}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching user id:', error);
+    throw error;
+  }
+};
