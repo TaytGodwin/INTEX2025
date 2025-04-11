@@ -39,6 +39,7 @@ function App() {
               <Route path="movies" element={<MoviePage />} />
               {/* <Route path="movieDetails" element={<MovieDetailPage />} />*/}
               <Route path="search" element={<SearchPage />} />
+              <Route path="favorites" element={<FavoritesPage />} />
               <Route path="logout" element={<Logout />} />
             </Route>
           </Route>
