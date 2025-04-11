@@ -1,140 +1,142 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout as apiLogout } from '../../api/IdentityAPI';
 import { useAuth } from '../../context/AuthContext';
 import { useState } from 'react';
 
-function Logout() {
+type LogoutProps = {
+  setShowCookieModal: (show: boolean) => void;
+};
+
+const Logout: React.FC<LogoutProps> = ({ setShowCookieModal }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const [showModal, setModal] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
 
   const handleLogout = async () => {
-    // Call your backend logout endpoint
     const result = await apiLogout();
     if (result) {
       // Clear the AuthContext
-      logout();
-      // Navigate to the login page or home
-      navigate('/login');
+logout();
+ // Navigate to the login page or home
+  navigate('/login');
     } else {
       console.error('Logout failed');
     }
   };
+    // Function to show the confirmation modal
 
-  // Function to show the confirmation modal
-  const confirmLogout = () => {
-    setModal(true); // Show the modal
+  const handleLogoutClick = () => {
+    setFadeOut(true);
+    setTimeout(() => {
+      handleLogout();
+      setShowCookieModal(false);
+    }, 500); // Duration matches the CSS transition below
   };
-
   // Function to close the modal without logging out
+ 
   const closeModal = () => {
-    setModal(false); // Hide the modal
+    setFadeOut(true);
+    setTimeout(() => {
+      setShowCookieModal(false);
+    }, 500);
   };
 
   return (
-    <>
-      {/* Button to trigger logout */}
-      <div className="nav-bottom">
-        <ul className="nav flex-column text-center">
-          <li className="nav-item my-3">
-            <button
-              onClick={confirmLogout}
-              className="nav-link text-white btn btn-link"
-              
-            >
-              <i className="bi bi-box-arrow-right fs-2"></i>
-            </button>
-          </li>
-        </ul>
-      </div>
-
-      {/* Confirmation Modal */}
-      {showModal && (
+    <div
+      style={{
+        position: 'fixed',
+        top: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 1050,
+        opacity: fadeOut ? 0 : 1,
+        transition: 'opacity 0.5s ease-out',
+        animation: 'slideDown 1s ease-out',
+      }}
+      tabIndex={-1}
+      aria-labelledby="logoutModal"
+      aria-hidden="true"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <style>
+        {`
+          @keyframes slideDown {
+            from {
+              transform: translateY(-100%) translateX(-50%);
+              opacity: 0;
+            }
+            to {
+              transform: translateY(0) translateX(-50%);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+      <div style={{ maxWidth: '400px' }}>
         <div
-          className="modal show"
           style={{
-            display: 'block',
-            backgroundColor: '#151515',
+            width: '400px',
+            height: 'auto',
+            backgroundColor: 'rgba(21,21,21,0.9)',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            overflow: 'hidden',
           }}
-          tabIndex={-1}
-          aria-labelledby="logoutModal"
-          aria-hidden="true"
-          onClick={(e) => e.stopPropagation()}
         >
-          <div className="modal-dialog" style={{ maxWidth: '400px' }}>
-            <div className="modal-content" 
+          <div
             style={{
-                border: 'none',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-              <div className="modal-header"
+              backgroundColor: 'rgba(87,200,244,0.9)',
+              padding: '1.2rem',
+            }}
+          >
+            <h5 style={{ margin: 0, color: '#fff', fontSize: '1.2rem' }}>
+              Are you sure you want to log out?
+            </h5>
+          </div>
+        
+          <div
+            style={{
+              padding: '0.75rem 1.2rem',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              backgroundColor: 'rgba(32,32,32,0.9)',
+            }}
+          >
+            <button
+              type="button"
+              onClick={closeModal}
               style={{
-                backgroundColor: '#57c8f4',
-                color: '#fff',
-                padding: '1rem 1.5rem',
+                backgroundColor: '#ccc',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '1rem',
               }}
             >
-                <h5 className="modal-title" id="logoutModal">
-                  Are you sure you want to log out?
-                </h5>
-              </div>
-              <div className="modal-body"
-                  style={{
-                      backgroundColor: '#fff',
-                      color: '#333',
-                      padding: '1.5rem',
-                    }}
-                  >
-                <p>Do you really want to log out?</p>
-              </div>
-              <div
-                className="modal-footer"
-                style={{
-                  backgroundColor: '#151515',
-                  padding: '1rem 1.5rem',
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  gap: '0.5rem',
-                }}
-              >
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={closeModal}
-                  style={{
-                    backgroundColor: '#ccc',
-                    border: 'none',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={handleLogout}
-                  style={{
-                    backgroundColor: '#d9534f',
-                    border: 'none',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleLogoutClick}
+              style={{
+                backgroundColor: '#d9534f',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                marginLeft: '0.5rem',
+              }}
+            >
+              Logout
+            </button>
           </div>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
-}
+};
 
 export default Logout;
