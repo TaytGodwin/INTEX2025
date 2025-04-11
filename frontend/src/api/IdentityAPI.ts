@@ -1,6 +1,7 @@
-const Identity_API_URL = 'https://localhost:5000';
-//'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const Identity_API_URL = //'https://localhost:5000';
+  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
+// Manage the json connection for pingAuth
 interface LoggedInUser {
   email: string;
   roles: string[];
@@ -9,10 +10,12 @@ interface LoggedInUser {
 // API call to ping the backend to check if the user is logged in
 export const pingAuth = async (): Promise<LoggedInUser | null> => {
   try {
+    // Sends empty api request to verify user information
     const response = await fetch(`${Identity_API_URL}/api/Identity/pingauth`, {
       method: 'GET',
       credentials: 'include',
     });
+    // Get's back user email address and role assigned to them in the identity database
     console.log('pingAuth status:', response.status);
     const contentType = response.headers.get('content-type');
 
@@ -22,8 +25,10 @@ export const pingAuth = async (): Promise<LoggedInUser | null> => {
       throw new Error('Invalid response format from server');
     }
 
+    // Saves the infpormation (email/role)
     const data = await response.json();
 
+    // Verifies if visitor is a registered user
     if (data.email && data.roles) {
       return { email: data.email, roles: data.roles }; // return full object
     } else {
@@ -38,24 +43,27 @@ export const pingAuth = async (): Promise<LoggedInUser | null> => {
   }
 };
 
-// This call logs the user in
+// This call logs the user in. It keeps track of information they enter
 export const login = async (
   email: string,
   password: string,
   rememberme: boolean
 ): Promise<boolean> => {
+  // If rememberme is true, the login uses standard cookies; otherwise, session cookies.
+
   const loginUrl = rememberme
     ? `${Identity_API_URL}/login?useCookies=true`
     : `${Identity_API_URL}/login?useSessionCookies=true`;
 
   try {
+    // Posts the email and password in JSON format to the login URL
     const response = await fetch(loginUrl, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
-
+    // If the server returns content, optionally parse it (e.g., for messages or tokens)
     const contentLength = response.headers.get('content-length');
     if (contentLength && parseInt(contentLength, 10) > 0) {
       await response.json(); // you can parse this if needed
@@ -86,12 +94,14 @@ export const logout = async (): Promise<boolean> => {
   }
 };
 
-// This will register a user - we may need to determine whether its admin or not
+// This will register a user. The roles are assigned on login. Admins will be able to edit user roles
 export const register = async (
   email: string,
   password: string
 ): Promise<boolean> => {
   try {
+    // We use the register route to sent email and password to the identity table based on user email and password entered
+    // The user role was automatically assinged on the register page
     const response = await fetch(`${Identity_API_URL}/register`, {
       method: 'POST',
       headers: {
@@ -107,6 +117,7 @@ export const register = async (
   }
 };
 
+// This adds a user to the Movies_user table in the movies database rather than just creating the password info for them
 export const createUserProfile = async (
   profileData: object
 ): Promise<boolean> => {
@@ -123,10 +134,12 @@ export const createUserProfile = async (
   }
 };
 
+// Pairs with the backend to add role
 export const assignUserRole = async (
   userEmail: string,
   roleName: string
 ): Promise<boolean> => {
+  // Takes user email and the role (Right now: Administrator or User). Returns ok or error
   try {
     const response = await fetch(`${Identity_API_URL}/Role/AssignRoleToUser`, {
       method: 'POST',
@@ -143,6 +156,7 @@ export const assignUserRole = async (
 // Set the cookie consent in both the server and browser
 export const SetCookie = async (consent: boolean): Promise<boolean> => {
   try {
+    // Pass true/false value on if user consents to cookies to get the cooki
     const response = await fetch(
       `${Identity_API_URL}/api/identity/SetCookie?consent=${consent}`,
       {

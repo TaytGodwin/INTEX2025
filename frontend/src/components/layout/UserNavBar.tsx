@@ -47,7 +47,11 @@ function UserNavbar() {
             {/* Logo */}
             <li className="nav-item mt-3 mb-2">
               <Link to="/" className="navbar-brand">
-                <img src={logo} alt="My Logo" style={{ width: '70px', height: 'auto' }} />
+                <img
+                  src={logo}
+                  alt="My Logo"
+                  style={{ width: '70px', height: 'auto' }}
+                />
               </Link>
             </li>
 
@@ -105,7 +109,10 @@ function UserNavbar() {
               </Link>
             </li>
             <li className="nav-item" style={navItemStyle}>
-              <button onClick={confirmLogout} className="nav-link text-white btn btn-link">
+              <button
+                onClick={confirmLogout}
+                className="nav-link text-white btn btn-link"
+              >
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-box-arrow-right fs-2"></i>
                   <span style={labelStyle}>Logout</span>

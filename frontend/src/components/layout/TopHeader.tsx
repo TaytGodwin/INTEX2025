@@ -1,6 +1,6 @@
 // TopHeader.tsx
 import { Link } from 'react-router-dom';
-import logo from '../../assets/Cineniche.svg';
+import logo from '../../../public/assets/Cineniche.svg';
 import React from 'react';
 
 function TopHeader() {
@@ -29,7 +29,7 @@ function TopHeader() {
               justifyContent: 'center',
               backgroundColor: '#151515',
               outline: 'none',
-              border: '#151515' // optional: background color
+              border: '#151515', // optional: background color
             }}
           >
             <img
@@ -40,7 +40,7 @@ function TopHeader() {
                 height: '95%',
                 objectFit: 'contain',
                 border: '#151515',
-                outline: 'none'
+                outline: 'none',
               }}
             />
           </div>

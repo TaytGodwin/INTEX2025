@@ -8,7 +8,7 @@ using DotNetEnv;
 using Azure.Storage.Blobs;
 
 // Load environment variables (useful for development) so that settings are available
-DotNetEnv.Env.Load();
+// DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
