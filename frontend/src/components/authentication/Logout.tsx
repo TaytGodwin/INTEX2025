@@ -40,6 +40,7 @@ function Logout() {
             <button
               onClick={confirmLogout}
               className="nav-link text-white btn btn-link"
+              
             >
               <i className="bi bi-box-arrow-right fs-2"></i>
             </button>
@@ -51,27 +52,65 @@ function Logout() {
       {showModal && (
         <div
           className="modal show"
-          style={{ display: 'block' }}
+          style={{
+            display: 'block',
+            backgroundColor: '#151515',
+          }}
           tabIndex={-1}
           aria-labelledby="logoutModal"
           aria-hidden="true"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
+          <div className="modal-dialog" style={{ maxWidth: '400px' }}>
+            <div className="modal-content" 
+            style={{
+                border: 'none',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+              }}
+            >
+              <div className="modal-header"
+              style={{
+                backgroundColor: '#57c8f4',
+                color: '#fff',
+                padding: '1rem 1.5rem',
+              }}
+            >
                 <h5 className="modal-title" id="logoutModal">
                   Are you sure you want to log out?
                 </h5>
               </div>
-              <div className="modal-body">
+              <div className="modal-body"
+                  style={{
+                      backgroundColor: '#fff',
+                      color: '#333',
+                      padding: '1.5rem',
+                    }}
+                  >
                 <p>Do you really want to log out?</p>
               </div>
-              <div className="modal-footer">
+              <div
+                className="modal-footer"
+                style={{
+                  backgroundColor: '#151515',
+                  padding: '1rem 1.5rem',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  gap: '0.5rem',
+                }}
+              >
                 <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={closeModal}
+                  style={{
+                    backgroundColor: '#ccc',
+                    border: 'none',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                  }}
                 >
                   Cancel
                 </button>
@@ -79,6 +118,13 @@ function Logout() {
                   type="button"
                   className="btn btn-danger"
                   onClick={handleLogout}
+                  style={{
+                    backgroundColor: '#d9534f',
+                    border: 'none',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                  }}
                 >
                   Logout
                 </button>

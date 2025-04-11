@@ -12,7 +12,7 @@ const Layout = () => {
   const { user } = useAuth();
 
   // Hide navbar on specific routes (e.g., /login)
-  const hideNavbarRoutes = ['/login', '/register'];
+  const hideNavbarRoutes = ['/login', '/register', '/forgot-password'];
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
 
   // For routes where we hide the navbar, simply render the Outlet and Footer

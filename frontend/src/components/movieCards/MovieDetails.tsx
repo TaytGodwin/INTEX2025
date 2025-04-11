@@ -5,6 +5,11 @@ import StarRating from './starRating';
 import { getUserId } from '../../api/MoviesAPI';
 import { pingAuth } from '../../api/IdentityAPI';
 
+// import GenreRec from '../Carousels/GenreRec';
+// import LazyGenreRec from '../Carousels/LazyCarousels/LazyGenreRec';
+
+import { Genre } from '../../types/Genre';
+
 
 interface MovieDetailsProps {
   movie: Movie;
@@ -27,6 +32,7 @@ const pillStyle: React.CSSProperties = {
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, posterUrl, onClose, isTopModal}) => {
 const [user_id, setUserId] = useState<number | null>(null);
+const [genres, setGenres] = useState<Genre[]>([]);
 useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -55,6 +61,14 @@ useEffect(() => {
 
   fetchUserEmailAndId();
 }, []);
+useEffect(() => {
+    const fetchGenres = async () => {
+      const allGenres = genres;
+      setGenres(allGenres);
+      console.log(allGenres);
+    };
+    fetchGenres();
+  }, []);
   
   return (
 <div style={{ 
@@ -161,6 +175,7 @@ useEffect(() => {
     {/* Carousel for Recommendations */}
     <div style={{ minHeight: '300px', marginTop: '2rem' }}>
       <GetTopRec showId={movie.show_id} />
+      {/* <LazyGenreRec genre={movie.genres[0].genreName || ''}/> */}
     </div>
   </div>
 </div>

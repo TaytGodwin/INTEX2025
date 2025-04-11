@@ -176,6 +176,23 @@ public class RecommenderController : ControllerBase
         return Ok(movieDetails);
     }
 
+    [HttpGet("top25_userId")]
+    [Authorize] // Used by all logged in
+    public async Task<IActionResult> GetTop25UserIds([FromQuery] int userId)
+    {
+        var results = _context.Top10UserIds
+            .Where(u => u.UserId == userId)
+            .OrderByDescending(u => u.Distance)
+            .Take(25)
+            .Select(u => u.ShowId)
+            .ToList();
+
+        var movieDetails = await GetMovieDetailsByShowIds(results);
+
+        return Ok(movieDetails);
+    }
+
+
     // Endpoint: /api/recommender/top5_showIds?showId={showId}
     // This method returns 5 hand-picked recommendations for a show.
     // It assumes that a curated table (top5_showids) exists with these recommendations.
