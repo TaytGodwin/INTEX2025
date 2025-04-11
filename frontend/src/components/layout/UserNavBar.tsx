@@ -1,14 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { logout as apiLogout } from '../../api/IdentityAPI';
+import { logout as apiLogout, pingAuth } from '../../api/IdentityAPI';
 import logo from '../../assets/Website_Logo.png';
-import '../../css/theme.css'; // Custom CSS for the sidebar
+import '../../css/theme.css';
 import { useAuth } from '../../context/AuthContext';
 
 function UserNavbar() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [showModal, setModal] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user = await pingAuth();
+      if (user?.email) {
+        setUserEmail(user.email);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const handleLogout = async () => {
     const result = await apiLogout();
@@ -20,17 +31,16 @@ function UserNavbar() {
     }
   };
 
-  const confirmLogout = () => {
-    setModal(true); // Show the modal
-  };
-
-  const closeModal = () => {
-    setModal(false); // Hide the modal
-  };
+  const confirmLogout = () => setModal(true);
+  const closeModal = () => setModal(false);
+  const username = userEmail?.split('@')[0] ?? null;
 
   return (
     <>
-      <nav className="side-navbar d-flex flex-column text-white" style={{ background: 'transparent' }}>
+      <nav
+        className="side-navbar d-flex flex-column text-white"
+        style={{ background: 'transparent', width: '130px', position: 'relative', height: '100vh' }}
+      >
         <div className="nav-top">
           <ul className="nav flex-column text-center">
             <li className="nav-item my-3">
@@ -40,9 +50,9 @@ function UserNavbar() {
             </li>
           </ul>
         </div>
+
         <div className="nav-main flex-grow-1 d-flex flex-column justify-content-center">
           <ul className="nav flex-column text-center">
-            {/* Search */}
             <li className="nav-item my-3">
               <Link to="/search" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
@@ -51,7 +61,6 @@ function UserNavbar() {
                 </div>
               </Link>
             </li>
-            {/* Home */}
             <li className="nav-item my-3">
               <Link to="/movies" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
@@ -60,7 +69,6 @@ function UserNavbar() {
                 </div>
               </Link>
             </li>
-            {/* Favorites */}
             <li className="nav-item my-3">
               <Link to="/favorites" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
@@ -69,7 +77,6 @@ function UserNavbar() {
                 </div>
               </Link>
             </li>
-            {/* Add Movie */}
             <li className="nav-item my-3">
               <Link to="/add" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
@@ -80,13 +87,23 @@ function UserNavbar() {
             </li>
           </ul>
         </div>
+
         <div className="nav-bottom">
           <ul className="nav flex-column text-center">
-            {/* Privacy Policy */}
+            {username && (
+              <li className="nav-item my-3">
+                <div className="nav-link text-white">
+                  <div style={iconWrapperStyle}>
+                    <i className="bi bi-person-check fs-2"></i>
+                    <span style={labelStyle}>{username}</span>
+                  </div>
+                </div>
+              </li>
+            )}
             <li className="nav-item my-3">
               <Link to="/privacy" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
-                  <i className="bi bi-shield-lock fs-2"></i> {/* Lock icon for Privacy Policy */}
+                  <i className="bi bi-shield-lock fs-2"></i>
                   <span style={labelStyle}>Privacy</span>
                 </div>
               </Link>
@@ -103,9 +120,15 @@ function UserNavbar() {
         </div>
       </nav>
 
-      {/* Confirmation Modal */}
       {showModal && (
-        <div className="modal show" style={{ display: 'block' }} tabIndex={-1} aria-labelledby="logoutModal" aria-hidden="true" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal show"
+          style={{ display: 'block' }}
+          tabIndex={-1}
+          aria-labelledby="logoutModal"
+          aria-hidden="true"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
