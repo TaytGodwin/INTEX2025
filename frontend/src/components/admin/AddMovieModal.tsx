@@ -6,7 +6,7 @@ import { addMovie, uploadImage } from '../../api/MoviesAPI';
 interface AddMovieModalProps {
   genres: Genre[];
   onClose: () => void;
-  onMovieAdded: (updatedMovies: any[]) => void;
+  onMovieAdded: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const AddMovieModal: React.FC<AddMovieModalProps> = ({
@@ -104,7 +104,7 @@ const AddMovieModal: React.FC<AddMovieModalProps> = ({
     }
 
     // Proceed with additional actions like updating the movie list and closing the modal
-    onMovieAdded([]);
+    onMovieAdded((prevMovies) => [...prevMovies, newMovie]);
     onClose();
   };
 

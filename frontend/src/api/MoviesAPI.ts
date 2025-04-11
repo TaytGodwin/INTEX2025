@@ -250,7 +250,7 @@ export const updateMovie = async (movieToEdit: Movie): Promise<boolean> => {
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
     }
-
+    console.log(`Movie ${movieToEdit.title} updated`);
     // Return true if the movie was successfully updated
     return true;
   } catch (error) {

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { Genre } from '../../types/Genre';
-import { loadImage, uploadImage } from '../../api/MoviesAPI';
+import { loadImage, updateMovie, uploadImage } from '../../api/MoviesAPI';
 
 interface EditMovieModalProps {
   movie: any; // Replace with correct type
   genres: Genre[];
   onClose: () => void;
-  onMovieUpdated: (updatedMovies: any[]) => void;
+  onMovieUpdated: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const EditMovieModal: React.FC<EditMovieModalProps> = ({
@@ -90,8 +90,15 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
       return;
     }
 
+    const updateSuccess = await updateMovie(formData);
+    if (!updateSuccess) {
+      alert('Movie update failed.');
+      return;
+    }
     // Proceed with updating the movie
-    onMovieUpdated([formData]);
+    onMovieUpdated((prevMovies: any[]) =>
+      prevMovies.map((m) => (m.show_id === formData.show_id ? formData : m))
+    );
     onClose();
   };
 
