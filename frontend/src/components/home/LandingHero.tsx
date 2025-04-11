@@ -49,6 +49,8 @@ const LandingHero: React.FC = () => {
           padding: '0',
         }}
       >
+
+        {/* Custom welcome page for the user */}
         <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
           Welcome to CineNiche
         </h1>
@@ -79,6 +81,8 @@ const LandingHero: React.FC = () => {
                 height: '60vh',
                 objectFit: 'cover',
                 margin: '0 auto',
+                borderRadius: '16px',
+                boxShadow:'0 4px 8px rgba(0, 0, 0, 0.2)'
               }}
             />
           </div>
