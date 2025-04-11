@@ -9,6 +9,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import MovieDetails from '../movieCards/MovieDetails';
 import MoviePoster from '../movieCards/MoviePoster';
 
+// Loading symbol when movies are rendering
 const Spinner = () => (
   <div style={{ textAlign: 'center', padding: '2rem' }}>
     <div className="spinner" />
@@ -32,15 +33,17 @@ const Spinner = () => (
   </div>
 );
 
+// Clean up titles of movies that have dirty
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
 
+// Tracks the userId for recommendation
 interface GetContentRecProps {
   userId: number;
 }
 
-
+// Takes userId from parent to then generate relevant movie recommends similar to movies they've favorable ranked before
 const GetContentRec: React.FC<GetContentRecProps> = ({ userId }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [selectedPosterUrl, setSelectedPosterUrl] = useState<string>('');
@@ -50,6 +53,7 @@ const GetContentRec: React.FC<GetContentRecProps> = ({ userId }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const defaultImageUrl = '/images/default.jpg';
 
+// Manages the API request to get movie information
   useEffect(() => {
     const fetchRecommendations = async () => {
       setLoading(true);
@@ -63,7 +67,8 @@ const GetContentRec: React.FC<GetContentRecProps> = ({ userId }) => {
   
           const recommendations = group.recommendations;
           setRecommendations(recommendations);
-  
+        
+          // Returns images and title of the recommendations
           const imagePromises = recommendations.map(async (movie) => {
             const sanitizedTitle = sanitizeTitle(movie.title);
             const blob = await getImage(sanitizedTitle);
@@ -115,14 +120,18 @@ const GetContentRec: React.FC<GetContentRecProps> = ({ userId }) => {
     );
   }
 
+  // Set up the view of it
   return (
     <div className="genre-rec">
       <h2>
         Because you liked <strong>{sourceTitle}</strong>
       </h2>
+      {/* Navigation horizontally between movies */}
       <Slider {...sliderSettings}>
         {recommendations.map((movie, index) => (
           <div key={index} className="carousel-item" style={{ padding: '0 5px' }}>
+
+            {/* Display of movie poster and title */}
             <MoviePoster
               key={movie.show_id}
               imageUrl={movieImages[movie.title] || defaultImageUrl}
