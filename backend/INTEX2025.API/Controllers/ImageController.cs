@@ -38,7 +38,7 @@ namespace INTEX.API.Controllers
         public async Task<IActionResult> GetImage(string imageName)
         {
             // Append the folder name correctly (no URL encoding here)
-            string imagePath = "Movie Posters/" + imageName;
+            string imagePath = "Movie Posters/" + imageName + ".jpg";
 
             // Get the container client
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
@@ -73,7 +73,7 @@ namespace INTEX.API.Controllers
             }
 
             // Append the folder name correctly (no URL encoding here)
-            string imagePath = "Movie Posters/" + imageName;
+            string imagePath = "Movie Posters/" + imageName + ".jpg";
 
             // Get the container client
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
@@ -83,8 +83,8 @@ namespace INTEX.API.Controllers
 
             // Upload the new image and overwrite the existing one
             await blobClient.UploadAsync(file.OpenReadStream(), overwrite: true);
-
-            return Ok(new { message = "Image uploaded successfully." });
+            
+            return Ok(new { message = "Image uploaded successfully.", blobUrl = blobClient.Uri.ToString() });
         }
 
 
@@ -94,7 +94,7 @@ namespace INTEX.API.Controllers
         public async Task<IActionResult> DeleteImage(string imageName)
         {
             // Append the folder name correctly (no URL encoding here)
-            string imagePath = "Movie Posters/" + imageName;
+            string imagePath = "Movie Posters/" + imageName + ".jpg";
 
             // Get the container client
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
