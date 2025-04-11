@@ -35,7 +35,6 @@ function MoviePage() {
     fetchGenres();
   }, []);
 
-  // Use pingAuth to get the user's email and then fetch the user id via getUserId
   useEffect(() => {
     const fetchUserEmailAndId = async () => {
       const authData = await pingAuth();
@@ -44,45 +43,41 @@ function MoviePage() {
         setUserId(id);
       }
     };
-
     fetchUserEmailAndId();
   }, []);
-  // Adds scrolling ability
 
   return (
-    <div className="movie-page">
-      <LandingMovieHero />
-      <div
-        style={{
-          width: '100%',
-          height: '4px', // You can adjust height
-          backgroundColor: '#57c8f4', // Nice blue color
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          paddingRight: '2rem',
-          position: 'relative', // or 'fixed' if you want it to stay on top while scrolling
-          top: 0,
-          zIndex: 100,
-        }}
-      ></div>
-      {user_id !== null && (<>
-      
-      <LazyForYou userId={user_id} />
-      <GetContentRec userId={user_id} />
-      </>
-        
+    <div style={{ marginLeft: '75px' }}> {/* This creates space for the sidebar */}
+      <div className="movie-page">
+        <LandingMovieHero />
 
+        <div
+          style={{
+            width: '100%',
+            height: '4px',
+            backgroundColor: '#57c8f4',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            paddingRight: '2rem',
+            position: 'relative',
+            top: 0,
+            zIndex: 100,
+          }}
+        ></div>
+
+        {user_id !== null && (
+          <>
+            <LazyForYou userId={user_id} />
+            <GetContentRec userId={user_id} />
+          </>
         )}
 
-{/* Because you liked..... Title .... this is this .... */}
-
-
-
-      <div className="genre-recs-wrapper">
-        {genres.slice(0, visibleCount).map((genre, index) => (
-          <LazyGenreRec key={index} genre={genre.genreName} />
-        ))}
+        <div className="genre-recs-wrapper">
+          {genres.slice(0, visibleCount).map((genre, index) => (
+            <LazyGenreRec key={index} genre={genre.genreName} />
+          ))}
+        </div>
       </div>
     </div>
   );
