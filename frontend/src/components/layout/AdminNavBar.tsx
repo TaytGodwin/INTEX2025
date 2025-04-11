@@ -5,6 +5,7 @@ import { Link} from 'react-router-dom';
 
 import Logout from '../authentication/Logout';
 
+// Custom navbar for admin authaticated users
 const AdminNavbar = () => {
   
   const [showModal, setModal] = useState(false);
