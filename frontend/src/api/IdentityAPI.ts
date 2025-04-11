@@ -1,5 +1,5 @@
-const Identity_API_URL = 'https://localhost:5000';
-  // 'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const Identity_API_URL = //'https://localhost:5000';
+  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 interface LoggedInUser {
   email: string;
