@@ -113,7 +113,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("https://localhost:3030", "http://localhost:3030", "https://wonderful-smoke-08f7f441e.6.azurestaticapps.net")
+            policy.WithOrigins("https://wonderful-smoke-08f7f441e.6.azurestaticapps.net")
                 .AllowCredentials() // Cookies enabled with this
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -145,6 +145,7 @@ app.UseAuthorization(); // Enable authorization middleware
 
 // Map controller endpoints to routes
 app.MapControllers();
+app.MapControllers().RequireCors("AllowReactApp");
 app.MapIdentityApi<IdentityUser>().RequireCors("AllowReactApp"); // Map Identity API with CORS policy
 
 app.Run(); // Run the application
