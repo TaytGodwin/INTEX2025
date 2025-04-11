@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { Genre } from '../../types/Genre';
+import { loadImage, uploadImage } from '../../api/MoviesAPI';
 
 interface EditMovieModalProps {
-  movie: any;  // Replace with correct type
+  movie: any; // Replace with correct type
   genres: Genre[];
   onClose: () => void;
   onMovieUpdated: (updatedMovies: any[]) => void;
@@ -17,10 +18,29 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
 }) => {
   const [formData, setFormData] = useState({
     ...movie,
-    selectedGenres: movie.genres || [],  // Ensure genres are initialized as an array
+    selectedGenres: movie.genres || [], // Ensure genres are initialized as an array
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const [imageFile, setImageFile] = useState<Blob | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      const blob = await loadImage(formData.title);
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        setImageUrl(url);
+        setImageFile(blob); // Now imageFile holds the blob, not a promise or URL.
+      }
+    };
+    fetchImage();
+  }, [formData.title]);
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -30,10 +50,49 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
     setFormData({ ...formData, selectedGenres: genreValues });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type === 'image/jpeg') {
+        setImageFile(file);
+      } else {
+        alert('Only JPG files are allowed');
+      }
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onMovieUpdated([formData]);  // Pass the updated movie to the parent
-    onClose();  // Close the modal
+
+    // Validate that the title is provided, which we use as the image name
+    const imageName = formData.title.trim();
+
+    if (!imageName) {
+      alert('Image title is required!');
+      return;
+    }
+
+    // Validate that an image file has been selected
+    if (!imageFile) {
+      alert('Please select an image file.');
+      return;
+    }
+
+    // Create a new File object with the title as the new file name
+    const renamedFile = new File([imageFile], `${imageName}`, {
+      type: imageFile.type,
+    });
+
+    // Call the API function from MoviesAPI to upload the image
+    const uploadSuccess = await uploadImage(imageName, renamedFile);
+    if (!uploadSuccess) {
+      alert('Image upload failed.');
+      return;
+    }
+
+    // Proceed with updating the movie
+    onMovieUpdated([formData]);
+    onClose();
   };
 
   return (
@@ -41,12 +100,36 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
       <div style={modalStyle}>
         <div style={modalHeaderStyle}>
           <h2 style={modalTitleStyle}>Edit Movie</h2>
-          <button onClick={onClose} style={closeButtonStyle}>×</button>
+          <button onClick={onClose} style={closeButtonStyle}>
+            ×
+          </button>
         </div>
         <form onSubmit={handleSubmit} style={formStyle}>
-          {['title', 'type', 'director', 'cast', 'country', 'release_year', 'rating', 'duration', 'description'].map((field, i) => (
+          <img
+            src={imageUrl || '/images/default.jpg'}
+            alt="Movie Poster"
+            onError={(e) => {
+              e.currentTarget.src = '/images/default.jpg';
+            }}
+            style={{ maxWidth: '45%', height: 'auto', alignSelf: 'center' }}
+          />
+          {[
+            'title',
+            'type',
+            'director',
+            'cast',
+            'country',
+            'release_year',
+            'rating',
+            'duration',
+            'description',
+          ].map((field, i) => (
             <div key={i} style={inputWrapperStyle}>
-              <label style={labelStyle}>{field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</label>
+              <label style={labelStyle}>
+                {field
+                  .replace('_', ' ')
+                  .replace(/\b\w/g, (l) => l.toUpperCase())}
+              </label>
               {field === 'description' ? (
                 <textarea
                   name={field}
@@ -68,15 +151,34 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
           <label style={labelStyle}>Genres</label>
           <Select
             isMulti
-            options={genres.map((g: Genre) => ({ value: g.genreName, label: g.genreName }))}
-            value={formData.selectedGenres.map((g: string) => ({ value: g, label: g }))}
+            options={genres.map((g: Genre) => ({
+              value: g.genreName,
+              label: g.genreName,
+            }))}
+            value={formData.selectedGenres.map((g: string) => ({
+              value: g,
+              label: g,
+            }))}
             onChange={handleGenreChange}
             styles={selectStyles}
           />
+          <div style={{ marginTop: '1rem' }}>
+            <label style={labelStyle}>Upload Image (JPG only)</label>
+            <input
+              type="file"
+              accept=".jpg, image/jpeg"
+              onChange={handleFileUpload}
+              style={inputStyle}
+            />
+          </div>
 
           <div style={buttonRowStyle}>
-            <button type="button" onClick={onClose} style={cancelButtonStyle}>Cancel</button>
-            <button type="submit" style={submitButtonStyle}>Save Changes</button>
+            <button type="button" onClick={onClose} style={cancelButtonStyle}>
+              Cancel
+            </button>
+            <button type="submit" style={submitButtonStyle}>
+              Save Changes
+            </button>
           </div>
         </form>
       </div>
@@ -104,6 +206,8 @@ const modalStyle: React.CSSProperties = {
   width: '90%',
   maxWidth: '600px',
   color: '#fff',
+  maxHeight: '80vh', // Set a maximum height for the modal
+  overflowY: 'auto', // Enable vertical scrolling for overflow content
 };
 
 const modalHeaderStyle: React.CSSProperties = {

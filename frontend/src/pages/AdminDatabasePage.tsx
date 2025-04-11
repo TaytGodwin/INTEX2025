@@ -7,7 +7,7 @@ import AddMovieModal from '../components/admin/AddMovieModal';
 import EditMovieModal from '../components/admin/EditMovieModal';
 import { Genre } from '../types/Genre';
 import AdminPagination from '../components/admin/AdminPagination';
-import UserNavbar from '../components/layout/UserNavBar'; // Import UserNavbar here
+import { deleteImage } from '../api/ImageAPI';
 
 const AdminDatabasePage = () => {
   const [allMovies, setMovies] = useState<Movie[]>([]);
@@ -46,20 +46,36 @@ const AdminDatabasePage = () => {
     fetchData();
   }, [pageSize, currentPage, sortByPreference, searchTerm]);
 
-  const handleDelete = async (show_id: number) => {
+  const handleDelete = async (show_id: number, imageName: string) => {
     const confirmDelete = window.confirm(
-      'Are you sure you want to delete this movie? It will also delete all ratings associated with this movie'
+      'Are you sure you want to delete this movie? It will also delete all ratings and the associated image.'
     );
+
     if (!confirmDelete) return;
 
     try {
-      const success = await deleteMovie(show_id);
-      if (success) {
+      // First, delete the movie.
+      const movieDeleteSuccess = await deleteMovie(show_id);
+
+      if (movieDeleteSuccess) {
+        // Then, delete the associated image using your deleteImage API.
+        try {
+          await deleteImage(imageName);
+        } catch (imageError) {
+          console.error('Error deleting image:', imageError);
+          // Continue with state update despite image deletion failure
+        }
+
+        // Update local state to remove the movie regardless of image deletion result
         setMovies(allMovies.filter((m) => m.show_id !== show_id));
+
+        // Show success message to user
+        alert('Movie deleted successfully');
       } else {
         alert('Failed to delete the movie. Please try again.');
       }
     } catch (error) {
+      console.error('An error occurred during movie deletion:', error);
       alert('An error occurred. Please try again later.');
     }
   };
@@ -85,11 +101,6 @@ const AdminDatabasePage = () => {
   return (
     <AuthorizeView allowedRoles={['Administrator']}>
       <div style={adminPageStyle}>
-        {/* Integrating UserNavbar in the sidebar section */}
-        <aside style={sidebarStyle}>
-          <UserNavbar /> {/* UserNavbar integrated here */}
-        </aside>
-
         <main style={contentStyle}>
           <h2 style={headerStyle}>🎬 Movie Database</h2>
 
@@ -105,7 +116,10 @@ const AdminDatabasePage = () => {
               style={searchInputStyle}
             />
             <button style={searchButtonStyle}>Search</button>
-            <button style={addButtonStyle} onClick={() => setShowAddModal(true)}>
+            <button
+              style={addButtonStyle}
+              onClick={() => setShowAddModal(true)}
+            >
               + Add Movie
             </button>
           </div>
@@ -114,8 +128,17 @@ const AdminDatabasePage = () => {
             <table style={tableStyle}>
               <thead>
                 <tr>
-                  {['Title', 'Type', 'Genres', 'Year', 'Director', 'Actions'].map((header, idx) => (
-                    <th key={idx} style={thStyle}>{header}</th>
+                  {[
+                    'Title',
+                    'Type',
+                    'Genres',
+                    'Year',
+                    'Director',
+                    'Actions',
+                  ].map((header, idx) => (
+                    <th key={idx} style={thStyle}>
+                      {header}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -137,7 +160,9 @@ const AdminDatabasePage = () => {
                         </button>
                         <button
                           style={actionButtonStyle.delete}
-                          onClick={() => handleDelete(movie.show_id)}
+                          onClick={() =>
+                            handleDelete(movie.show_id, movie.title)
+                          }
                         >
                           🗑 Delete
                         </button>
@@ -166,7 +191,10 @@ const AdminDatabasePage = () => {
         {showAddModal && (
           <AddMovieModal
             genres={genres}
-            onClose={() => setShowAddModal(false)}
+            onClose={() => {
+              setShowAddModal(false);
+              window.location.reload();
+            }}
             onMovieAdded={(updatedMovies) => setMovies(updatedMovies)}
           />
         )}
@@ -178,6 +206,7 @@ const AdminDatabasePage = () => {
             onClose={() => {
               setShowEditModal(false);
               setMovieToEdit(null);
+              window.location.reload();
             }}
             onMovieUpdated={(updatedMovies) => setMovies(updatedMovies)}
           />
@@ -194,17 +223,6 @@ const adminPageStyle = {
   fontFamily: 'Poppins, sans-serif',
 };
 
-// Sidebar Style (unchanged)
-const sidebarStyle: React.CSSProperties = {
-  backgroundColor: '#1e1e1e',
-  padding: '2rem 1rem',
-  width: '220px',
-  display: 'flex',
-  flexDirection: 'column',
-  borderRight: '1px solid #333',
-};
-
-// Main content and other styles (unchanged)
 const contentStyle = {
   flex: 1,
   padding: '2rem',
@@ -218,14 +236,14 @@ const headerStyle = {
   marginBottom: '1.5rem',
 };
 
-const searchControlStyle: React.CSSProperties = {
+const searchControlStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: '1rem',
   marginBottom: '1.5rem',
 };
 
-const searchInputStyle: React.CSSProperties = {
+const searchInputStyle = {
   backgroundColor: '#2a2a2a',
   border: '1px solid #444',
   color: '#fff',
@@ -234,7 +252,7 @@ const searchInputStyle: React.CSSProperties = {
   flex: 1,
 };
 
-const searchButtonStyle: React.CSSProperties = {
+const searchButtonStyle = {
   padding: '0.5rem 1rem',
   backgroundColor: '#57C8F4',
   color: '#fff',
@@ -242,7 +260,7 @@ const searchButtonStyle: React.CSSProperties = {
   borderRadius: '6px',
 };
 
-const addButtonStyle: React.CSSProperties = {
+const addButtonStyle = {
   padding: '0.5rem 1rem',
   backgroundColor: '#57C8F4',
   color: '#fff',
@@ -250,23 +268,23 @@ const addButtonStyle: React.CSSProperties = {
   borderRadius: '6px',
 };
 
-const tableStyle: React.CSSProperties = {
+const tableStyle = {
   width: '100%',
-  borderCollapse: 'collapse',
+  borderCollapse: 'collapse' as const,
   borderRadius: '10px',
   overflow: 'hidden',
 };
 
-const thStyle: React.CSSProperties = {
+const thStyle = {
   backgroundColor: '#2e2e2e',
   color: '#57C8F4',
   fontWeight: 600,
   padding: '0.75rem',
   border: '1px solid #333',
-  textAlign: 'left',
+  textAlign: 'left' as const,
 };
 
-const tdStyle: React.CSSProperties = {
+const tdStyle = {
   padding: '0.75rem',
   border: '1px solid #333',
   color: '#eee',
@@ -284,6 +302,5 @@ const actionButtonStyle = {
     backgroundColor: 'transparent',
   },
 };
-
 
 export default AdminDatabasePage;

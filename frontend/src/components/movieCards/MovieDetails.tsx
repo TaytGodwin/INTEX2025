@@ -10,6 +10,7 @@ interface MovieDetailsProps {
   movie: Movie;
   posterUrl: string;
   onClose: () => void;
+  isTopModal?: boolean;
 }
 const pillStyle: React.CSSProperties = {
   backgroundColor: '#333',
@@ -24,7 +25,7 @@ const pillStyle: React.CSSProperties = {
 
 
 
-const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, posterUrl, onClose }) => {
+const MovieDetails: React.FC<MovieDetailsProps> = ({ movie, posterUrl, onClose, isTopModal}) => {
 const [user_id, setUserId] = useState<number | null>(null);
 useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -69,7 +70,7 @@ useEffect(() => {
   style={{
     position: 'fixed',
     top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: isTopModal ? 'rgba(0,0,0,0.7)' : 'transparent',
     zIndex: 9999,
     display: 'flex',
     justifyContent: 'center',

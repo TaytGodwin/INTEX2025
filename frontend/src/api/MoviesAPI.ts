@@ -2,8 +2,8 @@ import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
 import { NewMovie } from '../types/NewMovie';
 
-const MOVIE_API_URL = // 'https://localhost:5000';
-  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const MOVIE_API_URL = 'https://localhost:5000';
+// 'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 export const getAllMovies = async (): Promise<Movie[]> => {
   try {
@@ -22,6 +22,56 @@ export const getAllMovies = async (): Promise<Movie[]> => {
   } catch (error) {
     console.error('Error fetching movies:', error);
     return [];
+  }
+};
+
+export const loadImage = async (imageName: string): Promise<Blob | null> => {
+  try {
+    const response = await fetch(
+      `${MOVIE_API_URL}/api/Image/GetImage/${encodeURIComponent(imageName)}`,
+      { method: 'GET', credentials: 'include' }
+    );
+
+    if (!response.ok) {
+      console.error(`Failed to load image: ${response.statusText}`);
+      return null;
+    }
+
+    // Return the blob so you have the actual file object.
+    return await response.blob();
+  } catch (error) {
+    console.error('Error loading image:', error);
+    return null;
+  }
+};
+
+export const uploadImage = async (
+  imageName: string,
+  file: File
+): Promise<boolean> => {
+  try {
+    const formPayload = new FormData();
+    formPayload.append('file', file);
+
+    const response = await fetch(
+      `${MOVIE_API_URL}/api/Image/AddImage/${encodeURIComponent(imageName)}`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: formPayload,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Image uploaded successfully:', data);
+    return true;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    return false;
   }
 };
 
@@ -131,6 +181,8 @@ export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
     });
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
+    } else {
+      console.log(`Added movie to database: ${MovieToAdd}`);
     }
     // This returns true if the movie was successfully added
     return true;
@@ -139,7 +191,26 @@ export const addMovie = async (MovieToAdd: NewMovie): Promise<boolean> => {
     return false;
   }
 };
+export const deleteImage = async (imageName: string): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${MOVIE_API_URL}/api/Image/DeleteImage/${encodeURIComponent(imageName)}`,
+      {
+        method: 'DELETE',
+        credentials: 'include',
+      }
+    );
 
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    return false;
+  }
+};
 // This will delete a movie
 export const deleteMovie = async (ShowIdToDelete: number): Promise<boolean> => {
   try {

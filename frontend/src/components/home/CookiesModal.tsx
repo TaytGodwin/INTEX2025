@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { SetCookie } from '../../api/IdentityAPI';
 
 type CookiesProps = {
@@ -5,14 +6,18 @@ type CookiesProps = {
 };
 
 const CookiesModal: React.FC<CookiesProps> = ({ setShowCookieModal }) => {
-  const handleAcknowledge = async () => {
-    const result = await SetCookie();
-    if (result) {
-      setShowCookieModal(false); // Hide modal only when user accepts
-    } else {
-      console.error('Cookie Preferences not set');
-    }
-  };
+  useEffect(() => {
+    const handleCookieConsent = async () => {
+      const result = await SetCookie();
+      if (result) {
+        setShowCookieModal(false); // Hide modal only when user accepts
+      } else {
+        console.error('Cookie Preferences not set');
+      }
+    };
+
+    handleCookieConsent();
+  }, [setShowCookieModal]);
 
   return (
     <div
@@ -24,16 +29,15 @@ const CookiesModal: React.FC<CookiesProps> = ({ setShowCookieModal }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Cookie Notification</h5>
-            <button
-              className="btn-close"
-              onClick={() => setShowCookieModal(false)}
-            ></button>
           </div>
           <div className="modal-body">
             This site uses cookies to improve your experience.
           </div>
           <div className="modal-footer">
-            <button className="btn btn-primary" onClick={handleAcknowledge}>
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowCookieModal(false)}
+            >
               OK
             </button>
           </div>

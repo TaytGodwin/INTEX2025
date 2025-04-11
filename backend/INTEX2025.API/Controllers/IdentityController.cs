@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
+using INTEX.API.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace INTEX.API.Controllers
 {
@@ -12,11 +14,13 @@ namespace INTEX.API.Controllers
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ApplicationDbContext _ApplicationContext;
 
-        public IdentityController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public IdentityController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _ApplicationContext = context;
         }
 
         public class LoginDto
@@ -89,7 +93,20 @@ namespace INTEX.API.Controllers
             return Ok("Cookie has been set.");
         }
 
+        [HttpPost("isEmailUsed")]
+        public async Task<IActionResult> IsEmailUsed([FromBody] string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Email is required.");
+            }
 
+            // Check if the email already exists in the database
+            var emailExists = await _ApplicationContext.Users
+                .AnyAsync(user => user.Email == email); // Check against the Identity User table
+
+            return Ok(new { exists = emailExists });
+        }
 
     }
 }

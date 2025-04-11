@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import GenreRec from '../components/Carousels/GenreRec';
 import LazyGenreRec from '../components/Carousels/LazyCarousels/LazyGenreRec';
 import { getGenres, getUserId } from '../api/MoviesAPI';
 import { Genre } from '../types/Genre';
 import GetContentRec from '../components/Carousels/GetContentRec';
-import GetTopRec from '../components/Carousels/GetTopRec';
 import LandingMovieHero from '../components/movieCards/LandingMovieHero';
 import LazyForYou from '../components/Carousels/LazyCarousels/LazyForYou';
 import { pingAuth } from '../api/IdentityAPI';
@@ -68,7 +66,18 @@ function MoviePage() {
           zIndex: 100,
         }}
       ></div>
-      {user_id !== null && <LazyForYou userId={user_id} />}
+      {user_id !== null && (<>
+      
+      <LazyForYou userId={user_id} />
+      <GetContentRec userId={user_id} />
+      </>
+        
+
+        )}
+
+{/* Because you liked..... Title .... this is this .... */}
+
+
 
       <div className="genre-recs-wrapper">
         {genres.slice(0, visibleCount).map((genre, index) => (
