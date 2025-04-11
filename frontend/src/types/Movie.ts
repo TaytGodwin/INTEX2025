@@ -1,5 +1,7 @@
 import { Genre } from './Genre';
 
+// Movie interface:
+// - Represents a movie or show with metadata such as title, director, cast, and genre list
 export interface Movie {
   show_id: number;
   title: string;
