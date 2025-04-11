@@ -2,7 +2,9 @@ function PrivacyPolicy() {
   return (
     <div
       className="max-w-4xl mx-auto py-8 text-gray-800"
-      style={{ paddingLeft: '20%', paddingRight: '20%' }}
+      style={{ 
+        paddingLeft: '20%', 
+        paddingRight: '20%', }}
     >
       <h1 className="text-4xl font-semibold text-center mb-8 text-blue-600">
         Privacy Policy
@@ -283,7 +285,7 @@ function PrivacyPolicy() {
         </p>
       </section>
       <br />
-      <p className="text-sm text-center text-gray-500 mt-8">
+      <p className="privacy-policy-subtext">
         Last updated: April 7, 2025
       </p>
     </div>

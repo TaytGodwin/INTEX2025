@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../../assets/Website_Logo.png'
+import logo from '../../assets/logos/Website_Logo.svg'
 import '../../css/theme.css'; // For custom tweaks
 
 const GuestNavbar = () => {
@@ -7,7 +7,7 @@ const GuestNavbar = () => {
     <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: 'transparent' }}>
       <div className="container-fluid">
         <Link to="/" className="navbar-brand">
-          <img src={logo} alt="My Logo" style={{ width: '150px', height: 'auto' }} />
+          <img src={logo} alt="My Logo" style={{ width: '200px', height: 'auto' }} />
         </Link>
         <button
           className="navbar-toggler"

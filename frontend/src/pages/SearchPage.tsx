@@ -7,6 +7,7 @@ import { Movie } from '../types/Movie';
 import { Genre } from '../types/Genre';
 import LazyImage from '../components/movieCards/LazyImage';
 
+
 const Spinner = () => (
   <div style={{ textAlign: 'center', padding: '2rem' }}>
     <div className="spinner" />
@@ -31,7 +32,7 @@ const Spinner = () => (
 );
 
 function sanitizeTitle(title: string): string {
-  return title.replace(/[-?#()'":’‘“”.!]/g, '');
+  return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
 
 const SearchPage: React.FC = () => {
@@ -81,9 +82,13 @@ const SearchPage: React.FC = () => {
     const fetchMovies = async () => {
       setLoading(true);
       try {
+        //gives impression things are loading in
+        await new Promise(resolve => setTimeout(resolve, 2000));
         // Pass selectedGenre as an array if one is chosen, otherwise an empty array.
         const genreList = selectedGenres.length > 0 ? selectedGenres : [];
         const newMovies = await searchMovies(searchTerm || '', 25, page, genreList);
+
+        
         setMovies(prev => (page === 1 ? newMovies : [...prev, ...newMovies]));
         setHasMore(newMovies.length > 0);
       } catch (error) {
@@ -167,14 +172,16 @@ const SearchPage: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
-                  width: '100%',
-                  padding: '0.75rem 1rem',
-                  backgroundColor: '#303030',
+                  width: '50%',
+                  padding: '1rem 1.25rem',
+                  backgroundColor: '#404040', // slightly lighter than #303030
                   border: 'none',
-                  borderRadius: '4px',
+                  borderRadius: '8px',
                   color: '#fff',
+                  fontSize: '1.1rem',
                   marginBottom: '1rem',
-
+                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+                  transition: 'box-shadow 0.3s ease',
                 }}
               />
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
@@ -214,15 +221,15 @@ const SearchPage: React.FC = () => {
 </div>
 </div>
       {searchTerm === '' && selectedGenres.length === 0 && (
-        <h3 style={{ color: '#ccc' }}>Showing all movies...</h3>
+        <h3 style={{ color: '#fff' , padding: '1rem' }}>Showing all movies...</h3>
       )}
 
       {searchTerm === '' && selectedGenres.length > 0 && (
-        <h3 style={{ color: '#ccc' }}>Showing all movies in genre(s): {selectedGenres.join(', ')}</h3>
+        <h3 style={{ color: '#fff', padding: '1rem'  }}>Showing all movies in genre(s): {selectedGenres.join(', ')}</h3>
       )}
 
       {searchTerm !== '' && (
-        <h3 style={{ color: '#ccc' }}>
+        <h3 style={{ color: '#fff' , padding: '1rem' }}>
           Searching for: "<strong>{searchTerm}</strong>"{selectedGenres.length > 0 ? ` in genre(s): ${selectedGenres.join(', ')}` : ''}
         </h3>
       )}
@@ -257,6 +264,17 @@ const SearchPage: React.FC = () => {
                         objectFit: 'cover',
                       }}
                     />
+                    {/* <MoviePoster
+                      key={movie.show_id}
+                      imageUrl={movieImages[movie.title] || '/images/default.jpg'}
+                      title={movie.title}
+                      onClick={() => {
+                        setSelectedMovie(movie);
+                        setSelectedPosterUrl(
+                          movieImages[movie.title] || '/images/default.jpg'
+                        );
+                      }} // Handle the click to open the modal
+                    /> */}
                     <h5 style={{ color: '#fff', textAlign: 'center', marginTop: '0.5rem' }}>
                       {movie.title}
                     </h5>

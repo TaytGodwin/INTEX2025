@@ -1,6 +1,7 @@
 // TopHeader.tsx
 import { Link } from 'react-router-dom';
-import logo from '../../assets/Website_Logo.png';
+import logo from '../../assets/Cineniche.svg';
+import React from 'react';
 
 function TopHeader() {
   return (
@@ -17,15 +18,36 @@ function TopHeader() {
     >
       <div className="container-fluid d-flex justify-content-start align-items-center">
         <Link to="/" className="navbar-brand">
-          <img
-            src={logo}
-            alt="My Logo"
-            style={{ width: '150px', height: 'auto' }}
-          />
+          <div
+            style={{
+              width: '150px',
+              height: '150px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#151515',
+              outline: 'none',
+              border: '#151515' // optional: background color
+            }}
+          >
+            <img
+              src={logo}
+              alt="My Logo"
+              style={{
+                width: '95%',
+                height: '95%',
+                objectFit: 'contain',
+                border: '#151515',
+                outline: 'none'
+              }}
+            />
+          </div>
         </Link>
       </div>
     </header>
   );
 }
 
-export default TopHeader;
+export default React.memo(TopHeader);

@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../assets/Website_logo.png';
+import logo from '../../assets/logos/Website_Logo.svg';
 import '../../css/theme.css'; // We'll define some CSS for the fixed positioning
 
 interface TopBarProps {
@@ -24,4 +24,4 @@ const TopBar: React.FC<TopBarProps> = ({ userName }) => {
   );
 };
 
-export default TopBar;
+export default React.memo(TopBar);

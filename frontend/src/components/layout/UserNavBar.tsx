@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout as apiLogout } from '../../api/IdentityAPI';
-import logo from '../../assets/Website_Logo.png';
+import logo from '../../assets/logos/Website_Logo.svg';
 import '../../css/theme.css'; // Custom CSS for the sidebar
 import { useAuth } from '../../context/AuthContext';
 
@@ -66,15 +66,6 @@ function UserNavbar() {
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-heart fs-2"></i>
                   <span style={labelStyle}>Favorites</span>
-                </div>
-              </Link>
-            </li>
-            {/* Add Movie */}
-            <li className="nav-item my-3">
-              <Link to="/add" className="nav-link text-white">
-                <div style={iconWrapperStyle}>
-                  <i className="bi bi-plus fs-2"></i>
-                  <span style={labelStyle}>Add</span>
                 </div>
               </Link>
             </li>

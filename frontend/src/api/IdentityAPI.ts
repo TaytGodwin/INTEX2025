@@ -165,7 +165,7 @@ export const isEmailUsed = async (email: string): Promise<boolean> => {
           'Content-Type': 'application/json', // Ensure Content-Type is application/json
         },
         credentials: 'include', // Ensure the browser sends cookies
-        body: JSON.stringify({ email }), // Send email as JSON in the body
+        body: JSON.stringify(email), // Send email as JSON in the body
       }
     );
 

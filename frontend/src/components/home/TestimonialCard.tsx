@@ -73,4 +73,4 @@ const quoteStyle: React.CSSProperties = {
   maxWidth: '300px',  // Ensures the quote doesn't get too wide
   textAlign: 'center',  // Centers the quote text
 };
-export default TestimonialCard;
+export default React.memo(TestimonialCard);
