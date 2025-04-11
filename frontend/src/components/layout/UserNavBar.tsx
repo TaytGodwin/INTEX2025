@@ -39,21 +39,43 @@ function UserNavbar() {
     <>
       <nav
         className="side-navbar d-flex flex-column text-white"
-        style={{ background: 'transparent', width: '130px', position: 'relative', height: '100vh' }}
+        style={{
+          backgroundColor: '#111',
+          width: '130px',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          height: '100vh',
+          overflowY: 'auto',
+          zIndex: 1000,
+        }}
       >
         <div className="nav-top">
           <ul className="nav flex-column text-center">
-            <li className="nav-item my-3">
+            {/* Logo */}
+            <li className="nav-item mt-3 mb-2">
               <Link to="/" className="navbar-brand">
                 <img src={logo} alt="My Logo" style={{ width: '70px', height: 'auto' }} />
               </Link>
             </li>
+
+            {/* Logged-in Username */}
+            {username && (
+              <li className="nav-item mb-3">
+                <div className="nav-link text-white">
+                  <div style={iconWrapperStyle}>
+                    <i className="bi bi-person-check fs-2"></i>
+                    <span style={labelStyle}>{username}</span>
+                  </div>
+                </div>
+              </li>
+            )}
           </ul>
         </div>
 
         <div className="nav-main flex-grow-1 d-flex flex-column justify-content-center">
           <ul className="nav flex-column text-center">
-            <li className="nav-item my-3">
+            <li className="nav-item" style={navItemStyle}>
               <Link to="/search" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-search fs-2"></i>
@@ -61,7 +83,7 @@ function UserNavbar() {
                 </div>
               </Link>
             </li>
-            <li className="nav-item my-3">
+            <li className="nav-item" style={navItemStyle}>
               <Link to="/movies" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-house fs-2"></i>
@@ -69,7 +91,7 @@ function UserNavbar() {
                 </div>
               </Link>
             </li>
-            <li className="nav-item my-3">
+            <li className="nav-item" style={navItemStyle}>
               <Link to="/favorites" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-heart fs-2"></i>
@@ -77,7 +99,7 @@ function UserNavbar() {
                 </div>
               </Link>
             </li>
-            <li className="nav-item my-3">
+            <li className="nav-item" style={navItemStyle}>
               <Link to="/add" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-plus fs-2"></i>
@@ -90,17 +112,7 @@ function UserNavbar() {
 
         <div className="nav-bottom">
           <ul className="nav flex-column text-center">
-            {username && (
-              <li className="nav-item my-3">
-                <div className="nav-link text-white">
-                  <div style={iconWrapperStyle}>
-                    <i className="bi bi-person-check fs-2"></i>
-                    <span style={labelStyle}>{username}</span>
-                  </div>
-                </div>
-              </li>
-            )}
-            <li className="nav-item my-3">
+            <li className="nav-item" style={navItemStyle}>
               <Link to="/privacy" className="nav-link text-white">
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-shield-lock fs-2"></i>
@@ -108,7 +120,7 @@ function UserNavbar() {
                 </div>
               </Link>
             </li>
-            <li className="nav-item my-3">
+            <li className="nav-item" style={navItemStyle}>
               <button onClick={confirmLogout} className="nav-link text-white btn btn-link">
                 <div style={iconWrapperStyle}>
                   <i className="bi bi-box-arrow-right fs-2"></i>
@@ -149,6 +161,7 @@ function UserNavbar() {
   );
 }
 
+// Shared icon and text style
 const iconWrapperStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
@@ -160,6 +173,11 @@ const labelStyle: React.CSSProperties = {
   fontSize: '0.8rem',
   color: '#fff',
   marginTop: '0.25rem',
+};
+
+const navItemStyle: React.CSSProperties = {
+  marginTop: '0.75rem',
+  marginBottom: '0.75rem',
 };
 
 export default UserNavbar;
