@@ -2,8 +2,8 @@ import { Genre } from '../types/Genre';
 import { Movie } from '../types/Movie';
 import { NewMovie } from '../types/NewMovie';
 
-const MOVIE_API_URL = 'https://localhost:5000';
-// 'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const MOVIE_API_URL = // 'https://localhost:5000';
+ 'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 // Gets an object back full of all movie info
 export const getAllMovies = async (): Promise<Movie[]> => {
