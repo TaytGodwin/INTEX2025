@@ -28,7 +28,7 @@ export default defineConfig({
         "img-src 'self' https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net; " + // This is for the blob storage
         "frame-ancestors 'none'; " +
         "font-src 'self'; " + // ✅ No Google Fonts needed
-        "connect-src 'self' https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net; " + //Api URL
+        "connect-src 'self' https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net https://localhost:5000; " + //Api URL
         "object-src 'none'; " +
         "base-uri 'self'; " +
         "form-action 'self'; " +

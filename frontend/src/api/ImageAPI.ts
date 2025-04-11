@@ -1,5 +1,5 @@
-const IMAGE_API_URL = //'https://localhost:5000';
-  'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
+const IMAGE_API_URL = 'https://localhost:5000';
+//'https://cinenichebackend-fjhdf8csetdbdmbv.westus2-01.azurewebsites.net';
 
 // This will get an image from the API based on the movie name which is how they are stored in the blob
 export const getImage = async (movieName: string): Promise<Blob | null> => {

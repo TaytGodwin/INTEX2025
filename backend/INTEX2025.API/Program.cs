@@ -8,7 +8,7 @@ using DotNetEnv;
 using Azure.Storage.Blobs;
 
 // Load environment variables (useful for development) so that settings are available
-// DotNetEnv.Env.Load();
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -113,7 +113,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("https://wonderful-smoke-08f7f441e.6.azurestaticapps.net")
+            policy.WithOrigins("https://wonderful-smoke-08f7f441e.6.azurestaticapps.net https://localhost:5000 http://localhost:5000")
                 .AllowCredentials() // Cookies enabled with this
                 .AllowAnyHeader()
                 .AllowAnyMethod();
