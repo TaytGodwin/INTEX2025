@@ -69,15 +69,6 @@ function UserNavbar() {
                 </div>
               </Link>
             </li>
-            {/* Add Movie */}
-            <li className="nav-item my-3">
-              <Link to="/add" className="nav-link text-white">
-                <div style={iconWrapperStyle}>
-                  <i className="bi bi-plus fs-2"></i>
-                  <span style={labelStyle}>Add</span>
-                </div>
-              </Link>
-            </li>
           </ul>
         </div>
         <div className="nav-bottom">
