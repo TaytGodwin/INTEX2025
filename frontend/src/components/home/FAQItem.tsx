@@ -6,11 +6,18 @@ interface FAQItemProps {
   answer: string;
 }
 
-
+// FAQItem component:
+// - Displays a question that can be expanded/collapsed to show the answer
+// - Uses local state (isOpen) to toggle visibility
 const FAQItem: React.FC<FAQItemProps> = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = () => setIsOpen(!isOpen);
 
+
+  // Renders a clickable FAQ item:
+  // - Displays the question with a toggle arrow
+  // - Expands to show the answer when clicked
+  // - Includes simple styling and transition effects for interactivity
 
   return (
     <div

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import logo from '../../../public/assets/Cineniche.svg';
 import '../../css/theme.css'; // For custom tweaks
 
+// For unlogged on users
 const GuestNavbar = () => {
   return (
     <nav

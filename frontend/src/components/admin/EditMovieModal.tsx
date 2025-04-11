@@ -3,8 +3,13 @@ import Select from 'react-select';
 import { Genre } from '../../types/Genre';
 import { loadImage, updateMovie, uploadImage } from '../../api/MoviesAPI';
 
+// Props for the EditMovieModal component:
+// - movie: the existing movie data to be edited
+// - genres: list of available genres for selection
+// - onClose: function to close the modal
+// - onMovieUpdated: function to update the movie list after editing
 interface EditMovieModalProps {
-  movie: any; // Replace with correct type
+  movie: any; 
   genres: Genre[];
   onClose: () => void;
   onMovieUpdated: React.Dispatch<React.SetStateAction<any[]>>;
@@ -21,9 +26,15 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
     selectedGenres: movie.genres || [], // Ensure genres are initialized as an array
   });
 
+  // State for managing image updates:
+  // - imageFile stores a new image file if uploaded
+  // - imageUrl holds the current or preview image URL
   const [imageFile, setImageFile] = useState<Blob | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
+  // Loads the existing movie poster image when the modal opens or the title changes:
+  // - Fetches the image blob using the movie title
+  // - Converts it to a preview URL and sets both imageUrl and imageFile
   useEffect(() => {
     const fetchImage = async () => {
       const blob = await loadImage(formData.title);
@@ -36,6 +47,8 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
     fetchImage();
   }, [formData.title]);
 
+  // Handles input changes for text, number, and textarea fields
+  // - Updates the corresponding value in formData
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -45,11 +58,15 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
     setFormData({ ...formData, [name]: value });
   };
 
+  // Updates the selectedGenres field in formData based on user selection from the dropdown
   const handleGenreChange = (selected: any) => {
     const genreValues = selected.map((s: any) => s.value);
     setFormData({ ...formData, selectedGenres: genreValues });
   };
 
+  // Handles new image file upload:
+  // - Accepts only JPG files
+  // - Updates imageFile state if valid
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -102,6 +119,11 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
     onClose();
   };
 
+  // Form layout for editing a movie:
+  // - Displays current poster image (or fallback)
+  // - Dynamically renders form inputs from field list
+  // - Includes genre multi-select and image upload
+  // - Save and cancel button actions at the bottom
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
@@ -193,6 +215,8 @@ const EditMovieModal: React.FC<EditMovieModalProps> = ({
   );
 };
 
+// Inline styles for the EditMovieModal component:
+// - Includes layout and design for overlay, modal container, header, form elements, buttons, and custom react-select styles
 const overlayStyle: React.CSSProperties = {
   position: 'fixed',
   top: 0,

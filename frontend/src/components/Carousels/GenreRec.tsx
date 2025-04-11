@@ -8,7 +8,7 @@ import { Movie } from '../../types/Movie';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-
+// Loading spinner when image and title can't load
 const Spinner = () => (
   <div style={{ textAlign: 'center', padding: '2rem' }}>
     <div className="spinner" />
@@ -32,14 +32,18 @@ const Spinner = () => (
     </style>
   </div>
 );
+
+// Cleans up titles that have characters we can't use in displaying
 function sanitizeTitle(title: string): string {
   return title.replace(/[-?#()'":’‘“”.!&]/g, '');
 }
 
+// tracks genre for recommendations
 interface GenreRecProps {
   genre: string; // Destructure genre as a string
 }
 
+// THis helps us get and display recommendations and a genre (this runs for all genres based on grandparent loop)
 const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [selectedPosterUrl, setSelectedPosterUrl] = useState<string>('');
@@ -50,6 +54,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const defaultImageUrl = '/images/default.jpg';
 
+  // Helps track movies being loaded in and how they are displayed, including images
   useEffect(() => {
     const fetchMovies = async () => {
       setLoading(true);
@@ -69,6 +74,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
             };
           });
 
+          // Confirm that things are working
           const images = await Promise.all(imagePromises);
           const imageMap: { [title: string]: string } = {};
           images.forEach((img) => {
@@ -108,11 +114,14 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
       </div>
     );
   }
+
+  // The output/display of the genre recommendations
   return (
     <div className="genre-rec">
       <h2>
         Recommended <strong>{genre}</strong> Movies
       </h2>
+      {/* // Helps navigate horizontally */}
       <Slider {...sliderSettings}>
         {movies.map((movie, index) => (
           <div
@@ -120,6 +129,7 @@ const GenreRec: React.FC<GenreRecProps> = ({ genre }) => {
             className="carousel-item"
             style={{ padding: '0 5px' }}
           >
+            {/* Not only for the images, but for how the movies are displayed/posterized */}
             <MoviePoster
               key={movie.show_id}
               imageUrl={movieImages[movie.title] || defaultImageUrl}

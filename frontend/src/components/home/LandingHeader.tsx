@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+// Renders the landing page header:
+// - Displays the CineNiche logo and a "Sign In" button linking to the login page
 function LandingHeader() {
   return (
     <header className="landing-header">

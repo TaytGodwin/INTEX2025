@@ -1,3 +1,6 @@
+// Props for the Pagination component:
+// - Handles current page, total pages, page size, and sort preference
+// - Includes callbacks for changing page, page size, and sort preference
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -16,7 +19,13 @@ const AdminPagination = ({
   onPageChange,
   onPageSizeChange,
   setSortByPreference,
-}: PaginationProps) => {
+}: 
+
+  // Renders pagination buttons:
+  // - Shows all pages if totalPages <= 5
+  // - Adds ellipses when totalPages > 5 for cleaner navigation
+  // - Highlights the current page and adds click handler to change pages
+  PaginationProps) => {
   const renderPageButtons = () => {
     const buttons = [];
 
@@ -57,6 +66,10 @@ const AdminPagination = ({
   };
 
   return (
+    // Renders pagination controls:
+    // - Page size selector (resets to page 1 on change)
+    // - Sort by dropdown to update sorting preference
+    // - Page navigation buttons with dynamic rendering and ellipses
     <div className="pagination-controls d-flex flex-column gap-3 mt-4">
       {/* Page Size */}
       <div className="d-flex align-items-center gap-2">
